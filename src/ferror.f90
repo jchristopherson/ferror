@@ -5,7 +5,6 @@
 !! @par Purpose
 !! Provides a series of error codes and error handling mechanisms.
 module ferror
-    use, intrinsic :: iso_fortran_env
     implicit none
     private
 
