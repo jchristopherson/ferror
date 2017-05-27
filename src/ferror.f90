@@ -63,6 +63,10 @@ contains
     !!  was encountered.
     !! @param[in] msg The error message.
     !! @param[in] flag The error flag.
+    !!
+    !! @par Remarks
+    !! The default behavior prints an error message, appends the supplied 
+    !! information to a log file, and terminates the program.
     subroutine report_error(this, fcn, msg, flag)
         ! Arguments
         class(errors), intent(in) :: this
@@ -92,6 +96,10 @@ contains
     !! @param[in] fcn The name of the function or subroutine from which the
     !!  warning was issued.
     !! @param[in] msg The warning message.
+    !!
+    !! @par Remarks
+    !! The default behavior prints the warning message, and returns control
+    !! back to the calling code.
     subroutine report_warning(this, fcn, msg)
         ! Arguments
         class(errors), intent(in) :: this
