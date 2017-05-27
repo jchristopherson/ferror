@@ -15,6 +15,14 @@ module ferror
 
         !> A maximum of 256 character error log filename
         character(len = 256) :: m_fname = "error_log.txt"
+        !> Found an error
+        logical :: m_foundError = .false.
+        !> Found a warning
+        logical :: m_foundWarning = .false.
+        !> The error flag
+        integer :: m_errorFlag = 0
+        !> The warning flag
+        integer :: m_warningFlag = 0
     contains
         !> @brief Gets the name of the error log file.
         procedure, public :: get_log_filename
@@ -26,6 +34,18 @@ module ferror
         procedure, public :: report_warning
         !> @brief Writes an error log file.
         procedure, public :: log_error
+        !> @brief Tests to see if an error has been encountered.
+        procedure, public :: has_error_occurred
+        !> @brief Resets the error status flag to false.
+        procedure, public :: reset_error_status
+        !> @brief Tests to see if a warning has been encountered.
+        procedure, public :: has_warning_occurred
+        !> @brief Resets the warning status flag to false.
+        procedure, public :: reset_warning_status
+        !> @brief Gets the current error flag.
+        procedure, public :: get_error_flag
+        !> @brief Gets the current warning flag.
+        procedure, public :: get_warning_flag
     end type
 
 contains
@@ -57,7 +77,7 @@ contains
 ! ------------------------------------------------------------------------------
     !> @brief Reports an error condition to the user.
     !!
-    !! @param[in] this The errors object.
+    !! @param[in,out] this The errors object.
     !! @param[in] fcn The name of the function or subroutine in which the error
     !!  was encountered.
     !! @param[in] msg The error message.
@@ -68,7 +88,7 @@ contains
     !! information to a log file, and terminates the program.
     subroutine report_error(this, fcn, msg, flag)
         ! Arguments
-        class(errors), intent(in) :: this
+        class(errors), intent(inout) :: this
         character(len = *), intent(in) :: fcn, msg
         integer, intent(in) :: flag
 
@@ -81,6 +101,10 @@ contains
         print '(A)', msg
         print *, ""
 
+        ! Update the error found status
+        this%m_foundError = .true.
+        this%m_errorFlag = flag
+
         ! Write the error message to a log file
         call this%log_error(fcn, msg, flag)
 
@@ -91,18 +115,20 @@ contains
 ! ------------------------------------------------------------------------------
     !> @brief Reports a warning message to the user.
     !!
-    !! @param[in] this The errors object.
+    !! @param[in,out] this The errors object.
     !! @param[in] fcn The name of the function or subroutine from which the
     !!  warning was issued.
     !! @param[in] msg The warning message.
+    !! @param[in] flag The warning flag.
     !!
     !! @par Remarks
     !! The default behavior prints the warning message, and returns control
     !! back to the calling code.
-    subroutine report_warning(this, fcn, msg)
+    subroutine report_warning(this, fcn, msg, flag)
         ! Arguments
-        class(errors), intent(in) :: this
+        class(errors), intent(inout) :: this
         character(len = *), intent(in) :: fcn, msg
+        integer, intent(in) :: flag
 
         ! Write the warning message to the command line
         print *, ""
@@ -111,6 +137,10 @@ contains
         print '(A)', "Message:"
         print '(A)', msg
         print *, ""
+
+        ! Update the warning found status
+        this%m_foundWarning = .true.
+        this%m_warningFlag = flag
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -146,5 +176,71 @@ contains
         close(fid)
     end subroutine
 
+! ------------------------------------------------------------------------------
+    !> @brief Tests to see if an error has been encountered.
+    !!
+    !! @param[in] this The errors object.
+    !! @return Returns true if an error has been encountered; else, false.
+    pure function has_error_occurred(this) result(x)
+        class(errors), intent(in) :: this
+        logical :: x
+        x = this%m_foundError
+    end function
+    
+! ------------------------------------------------------------------------------
+    !> @brief Resets the error status flag to false, and the current error flag
+    !! to zero.
+    !!
+    !! @param[in,out] this The errors object.
+    subroutine reset_error_status(this)
+        class(errors), intent(inout) :: this
+        this%m_foundError = .false.
+        this%m_errorFlag = 0
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Tests to see if a warning has been encountered.
+    !!
+    !! @param[in] this The errors object.
+    !! @return Returns true if a warning has been encountered; else, false.
+    pure function has_warning_occurred(this) result(x)
+        class(errors), intent(in) :: this
+        logical :: x
+        x = this%m_foundWarning
+    end function
+    
+! ------------------------------------------------------------------------------
+    !> @brief Resets the warning status flag to false, and the current warning
+    !! flag to zero.
+    !!
+    !! @param[in,out] this The errors object.
+    subroutine reset_warning_status(this)
+        class(errors), intent(inout) :: this
+        this%m_foundWarning = .false.
+        this%m_warningFlag = 0
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets the current error flag.
+    !!
+    !! @param[in] this The errors object.
+    !! @return The current error flag.
+    pure function get_error_flag(this) result(x)
+        class(errors), intent(in) :: this
+        integer :: x
+        x = this%m_errorFlag
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets the current warning flag.
+    !!
+    !! @param[in] this The errors object.
+    !! @return The current warning flag.
+    pure function get_warning_flag(this) result(x)
+        class(errors), intent(in) :: this
+        integer :: x
+        x = this%m_warningFlag
+    end function
+    
 ! ------------------------------------------------------------------------------
 end module
