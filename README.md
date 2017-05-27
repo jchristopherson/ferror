@@ -5,9 +5,6 @@ A library to assist with error handling in Fortran projects.
 
 ```fortran
 
-    use, intrinsic :: ISO_C_binding, only: &
-        wp => C_DOUBLE
-        
     use ferror, only : errors
     implicit none
     
