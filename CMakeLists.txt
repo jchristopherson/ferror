@@ -70,6 +70,6 @@ else (Fortran_COMPILER_NAME MATCHES "gfortran.*")
 endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
 
 # Define the library
-add_library(ferror src/ferror.f90)
+add_library(ferror src/ferror.f90 src/ferror_c_binding.f90)
 
 
