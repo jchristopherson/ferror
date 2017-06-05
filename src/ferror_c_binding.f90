@@ -47,7 +47,13 @@ contains
 ! ERROR HANDLER ACCESS ROUTINES
 ! ------------------------------------------------------------------------------
     !>
-    
+    subroutine get_error_log_fname(err, n, fname)
+        !>
+        type(c_ptr), intent(in), value :: err
+        character(kind = c_char), intent(out) :: fname(*)
+
+        ! REF: https://gcc.gnu.org/onlinedocs/gfortran/Interoperable-Subroutines-and-Functions.html
+    end subroutine
 
 ! ------------------------------------------------------------------------------
 
