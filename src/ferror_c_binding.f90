@@ -117,7 +117,7 @@ contains
 ! ------------------------------------------------------------------------------
     !> @brief Reports an error condition to the user.
     !!
-    !! @param[in] err The error handler object.
+    !! @param[in] err A pointer to the error handler object.
     !! @param[in] fcn The name of the function or subroutine in which the error
     !!  was encountered.
     !! @param[in] msg The error message.
@@ -139,7 +139,7 @@ contains
 ! ------------------------------------------------------------------------------
     !> @brief Reports a warning condition to the user.
     !!
-    !! @param[in] err The error handler object.
+    !! @param[in] err A pointer to the error handler object.
     !! @param[in] fcn The name of the function or subroutine in which the 
     !!  warning was encountered.
     !! @param[in] msg The warning message.
@@ -161,7 +161,7 @@ contains
 ! ------------------------------------------------------------------------------
     !> @brief Writes an error log file.
     !!
-    !! @param[in] this The error handler object.
+    !! @param[in] err A pointer to the error handler object.
     !! @param[in] fcn The name of the function or subroutine in which the error
     !!  was encountered.
     !! @param[in] msg The error message.
@@ -185,10 +185,10 @@ contains
     !!
     !! @param[in] err A pointer to the error handler object.
     !! @return Returns true if an error has been encountered; else, false.
-    pure function error_occurred(err) result(x) bind(C, name = "error_occurred")
+    function error_occurred(err) result(x) bind(C, name = "error_occurred")
         ! Arguments
         type(c_ptr), intent(in), value :: err
-        logical :: x
+        logical(c_bool) :: x
 
         ! Process
         type(errors), pointer :: ferr
@@ -211,7 +211,7 @@ contains
         type(errors), pointer :: ferr
         if (.not.c_associated(err)) return
         call c_f_pointer(err, ferr)
-        call x%reset_error_status()
+        call ferr%reset_error_status()
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -219,11 +219,11 @@ contains
     !!
     !! @param[in] err A pointer to the error handler object.
     !! @return Returns true if a warning has been encountered; else, false.
-    pure function warning_occurred(err) result(x) &
+    function warning_occurred(err) result(x) &
             bind(C, name = "warning_occurred")
         ! Arguments
         type(c_ptr), intent(in), value :: err
-        logical :: x
+        logical(c_bool) :: x
 
         ! Process
         type(errors), pointer :: ferr
@@ -237,7 +237,7 @@ contains
     !> @brief Resets the warning status flag to false, and the current warning
     !! flag to zero.
     !!
-    !! @param[in] err The error handler object.
+    !! @param[in] err A pointer to the error handler object.
     subroutine reset_warning(err) bind(C, name = "reset_warning")
         ! Arguments
         type(c_ptr), intent(in), value :: err
@@ -246,21 +246,22 @@ contains
         type(errors), pointer :: ferr
         if (.not.c_associated(err)) return
         call c_f_pointer(err, ferr)
-        call x%reset_warning_status()
+        call ferr%reset_warning_status()
     end subroutine
 
 ! ------------------------------------------------------------------------------
     !> @brief Gets the current error flag.
     !!
-    !! @param[in] this The errors object.
+    !! @param[in] err A pointer to the error handler object.
     !! @return The current error flag.
-    pure function get_error_code(err) result(x) bind(C, name = "get_error_code")
+    function get_error_code(err) result(x) bind(C, name = "get_error_code")
         ! Arguments
         type(c_ptr), intent(in), value :: err
         integer(c_int) :: x
 
         ! Process
         type(errors), pointer :: ferr
+        x = 0
         if (.not.c_associated(err)) return
         call c_f_pointer(err, ferr)
         x = ferr%get_error_flag()
@@ -269,9 +270,9 @@ contains
 ! ------------------------------------------------------------------------------
     !> @brief Gets the current warning flag.
     !!
-    !! @param[in] this The errors object.
+    !! @param[in] err A pointer to the error handler object.
     !! @return The current warning flag.
-    pure function get_warning_code(err) result(x) &
+    function get_warning_code(err) result(x) &
             bind(C, name = "get_warning_code")
         ! Arguments
         type(c_ptr), intent(in), value :: err
@@ -279,14 +280,53 @@ contains
 
         ! Process
         type(errors), pointer :: ferr
+        x = 0
         if (.not.c_associated(err)) return
         call c_f_pointer(err, ferr)
         x = ferr%get_warning_flag()
     end function
 
 ! ------------------------------------------------------------------------------
+    !> @brief Gets a logical value determining if the application should be
+    !! terminated when an error is encountered.
+    !!
+    !! @param[in] err A pointer to the error handler object.
+    !! @return Returns true if the application should be terminated; else, 
+    !!  false.
+    function get_exit_behavior(err) result(x) &
+            bind(C, name = "get_exit_behavior")
+        ! Arguments
+        type(c_ptr), intent(in), value :: err
+        logical(c_bool) :: x
+
+        ! Process
+        type(errors), pointer :: ferr
+        if (.not.c_associated(err)) then
+            x = .true.
+            return
+        end if
+        call c_f_pointer(err, ferr)
+        x = ferr%get_exit_on_error()
+    end function
 
 ! ------------------------------------------------------------------------------
+    !> @brief Sets a logical value determining if the application should be
+    !! terminated when an error is encountered.
+    !!
+    !! @param[in] err A pointer to the error handler object.
+    !! @param[x] in Set to true if the application should be terminated when an
+    !!  error is reported; else, false.
+    subroutine set_exit_behavior(err, x) bind(C, name = "set_exit_behavior")
+        ! Arguments
+        type(c_ptr), intent(in), value :: err
+        logical(c_bool), intent(in) :: x
+
+        ! Process
+        type(errors), pointer :: ferr
+        if (.not.c_associated(err)) return
+        call c_f_pointer(err, ferr)
+        call ferr%set_exit_on_error(logical(x))
+    end subroutine
 
 ! ******************************************************************************
 ! HELPER ROUTINES
