@@ -115,11 +115,181 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    !> @brief Reports an error condition to the user.
+    !!
+    !! @param[in] err The error handler object.
+    !! @param[in] fcn The name of the function or subroutine in which the error
+    !!  was encountered.
+    !! @param[in] msg The error message.
+    !! @param[in] flag The error flag.
+    subroutine register_error(err, fcn, msg, flag) &
+            bind(C, name = "register_error")
+        ! Arguments
+        type(c_ptr), intent(in), value :: err
+        character(kind = c_char), intent(in) :: fcn, msg
+        integer(c_int), intent(in), value :: flag
+
+        ! Process
+        type(errors), pointer :: ferr
+        if (.not.c_associated(err)) return
+        call c_f_pointer(err, ferr)
+        call ferr%report_error(cstr_2_fstr(fcn), cstr_2_fstr(msg), flag)
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Reports a warning condition to the user.
+    !!
+    !! @param[in] err The error handler object.
+    !! @param[in] fcn The name of the function or subroutine in which the 
+    !!  warning was encountered.
+    !! @param[in] msg The warning message.
+    !! @param[in] flag The warning flag.
+    subroutine register_warning(err, fcn, msg, flag) &
+            bind(C, name = "register_warning")
+        ! Arguments
+        type(c_ptr), intent(in), value :: err
+        character(kind = c_char), intent(in) :: fcn, msg
+        integer(c_int), intent(in), value :: flag
+
+        ! Process
+        type(errors), pointer :: ferr
+        if (.not.c_associated(err)) return
+        call c_f_pointer(err, ferr)
+        call ferr%report_warning(cstr_2_fstr(fcn), cstr_2_fstr(msg), flag)
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Writes an error log file.
+    !!
+    !! @param[in] this The error handler object.
+    !! @param[in] fcn The name of the function or subroutine in which the error
+    !!  was encountered.
+    !! @param[in] msg The error message.
+    !! @param[in] flag The error flag.
+    subroutine write_error_log(err, fcn, msg, flag) &
+            bind(C, name = "write_error_log")
+        ! Arguments
+        type(c_ptr), intent(in), value :: err
+        character(kind = c_char), intent(in) :: fcn, msg
+        integer(c_int), intent(in), value :: flag
+
+        ! Process
+        type(errors), pointer :: ferr
+        if (.not.c_associated(err)) return
+        call c_f_pointer(err, ferr)
+        call ferr%log_error(cstr_2_fstr(fcn), cstr_2_fstr(msg), flag)
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Tests to see if an error has been encountered.
+    !!
+    !! @param[in] err A pointer to the error handler object.
+    !! @return Returns true if an error has been encountered; else, false.
+    pure function error_occurred(err) result(x) bind(C, name = "error_occurred")
+        ! Arguments
+        type(c_ptr), intent(in), value :: err
+        logical :: x
+
+        ! Process
+        type(errors), pointer :: ferr
+        x = .false.
+        if (.not.c_associated(err)) return
+        call c_f_pointer(err, ferr)
+        x = ferr%has_error_occurred()
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Resets the error status flag to false, and the current error flag
+    !! to zero.
+    !!
+    !! @param[in] err The error handler object.
+    subroutine reset_error(err) bind(C, name = "reset_error")
+        ! Arguments
+        type(c_ptr), intent(in), value :: err
+
+        ! Process
+        type(errors), pointer :: ferr
+        if (.not.c_associated(err)) return
+        call c_f_pointer(err, ferr)
+        call x%reset_error_status()
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Tests to see if a warning has been encountered.
+    !!
+    !! @param[in] err A pointer to the error handler object.
+    !! @return Returns true if a warning has been encountered; else, false.
+    pure function warning_occurred(err) result(x) &
+            bind(C, name = "warning_occurred")
+        ! Arguments
+        type(c_ptr), intent(in), value :: err
+        logical :: x
+
+        ! Process
+        type(errors), pointer :: ferr
+        x = .false.
+        if (.not.c_associated(err)) return
+        call c_f_pointer(err, ferr)
+        x = ferr%has_warning_occurred()
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Resets the warning status flag to false, and the current warning
+    !! flag to zero.
+    !!
+    !! @param[in] err The error handler object.
+    subroutine reset_warning(err) bind(C, name = "reset_warning")
+        ! Arguments
+        type(c_ptr), intent(in), value :: err
+
+        ! Process
+        type(errors), pointer :: ferr
+        if (.not.c_associated(err)) return
+        call c_f_pointer(err, ferr)
+        call x%reset_warning_status()
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets the current error flag.
+    !!
+    !! @param[in] this The errors object.
+    !! @return The current error flag.
+    pure function get_error_code(err) result(x) bind(C, name = "get_error_code")
+        ! Arguments
+        type(c_ptr), intent(in), value :: err
+        integer(c_int) :: x
+
+        ! Process
+        type(errors), pointer :: ferr
+        if (.not.c_associated(err)) return
+        call c_f_pointer(err, ferr)
+        x = ferr%get_error_flag()
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets the current warning flag.
+    !!
+    !! @param[in] this The errors object.
+    !! @return The current warning flag.
+    pure function get_warning_code(err) result(x) &
+            bind(C, name = "get_warning_code")
+        ! Arguments
+        type(c_ptr), intent(in), value :: err
+        integer(c_int) :: x
+
+        ! Process
+        type(errors), pointer :: ferr
+        if (.not.c_associated(err)) return
+        call c_f_pointer(err, ferr)
+        x = ferr%get_warning_flag()
+    end function
+
+! ------------------------------------------------------------------------------
 
 ! ------------------------------------------------------------------------------
 
 ! ******************************************************************************
-! PRIVATE HELPER ROUTINES
+! HELPER ROUTINES
 ! ------------------------------------------------------------------------------
     !> @brief Copies a C string (null terminated) to a Fortran string.
     !!

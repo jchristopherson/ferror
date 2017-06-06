@@ -23,6 +23,8 @@ module ferror
         integer :: m_errorFlag = 0
         !> The warning flag
         integer :: m_warningFlag = 0
+        !> Terminate the application on error
+        logical :: m_exitOnError = .true.
     contains
         !> @brief Gets the name of the error log file.
         procedure, public :: get_log_filename
@@ -46,6 +48,12 @@ module ferror
         procedure, public :: get_error_flag
         !> @brief Gets the current warning flag.
         procedure, public :: get_warning_flag
+        !> @brief Gets a logical value determining if the application should be
+        !! terminated when an error is encountered.
+        procedure, public :: get_exit_on_error
+        !> @brief Sets a logical value determining if the application should be
+        !! terminated when an error is encountered.
+        procedure, public :: set_exit_on_error
     end type
 
 contains
@@ -109,7 +117,7 @@ contains
         call this%log_error(fcn, msg, flag)
 
         ! Exit the program
-        call exit(flag)
+        if (this%m_exitOnError) call exit(flag)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -242,5 +250,31 @@ contains
         x = this%m_warningFlag
     end function
     
+! ------------------------------------------------------------------------------
+    !> @brief Gets a logical value determining if the application should be
+    !! terminated when an error is encountered.
+    !!
+    !! @param[in] this The errors object.
+    !! @return Returns true if the application should be terminated; else, 
+    !!  false.
+    pure function get_exit_on_error(this) result(x)
+        class(errors), intent(in) :: this
+        logical :: x
+        x = this%m_exitOnError
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Sets a logical value determining if the application should be
+    !! terminated when an error is encountered.
+    !!
+    !! @param[in,out] this The errors object.
+    !! @param[x] in Set to true if the application should be terminated when an
+    !!  error is reported; else, false.
+    subroutine set_exit_on_error(this, x)
+        class(errors), intent(inout) :: this
+        logical, intent(in) :: x
+        this%m_exitOnError = x
+    end subroutine
+
 ! ------------------------------------------------------------------------------
 end module
