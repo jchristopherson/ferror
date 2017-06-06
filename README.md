@@ -45,6 +45,9 @@ int main() {
     // Inform the user of a warning.  The default behavior simply prints a 
     // warning message and returns to the calling code.
     register_warning(err, "function name", "Warning message here", errorFlag);
+
+    // Clean up after ourselves
+    free_error_handler(err);
 }
 
 ```
