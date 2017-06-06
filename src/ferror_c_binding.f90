@@ -5,18 +5,6 @@ module ferror_c_binding
     use ferror
     implicit none
 
-! ******************************************************************************
-! INTERFACES
-! ------------------------------------------------------------------------------
-    ! C standard library routines - must compile with -lc.
-    interface
-        function strlen(str) result(n) bind(C, name = "strlen")
-            import
-            character(kind = c_char), intent(in) :: str(*)
-            integer(c_int) :: n
-        end function
-    end interface
-
 contains
 ! ******************************************************************************
 ! TYPE CONSTRUCTION/DESTRUCTION ROUTINES
@@ -38,10 +26,10 @@ contains
 ! ------------------------------------------------------------------------------
     !> @brief Cleans up an error handler object.
     !!
-    !! @param[in,out] ptr The pointer to the error handler object.
+    !! @param[in] ptr The pointer to the error handler object.
     subroutine free_error_handler(ptr) bind(C, name = "free_error_handler")
         ! Arguments
-        type(c_ptr), intent(inout) :: ptr
+        type(c_ptr), intent(in) :: ptr
 
         ! Local Variables
         type(errors), pointer :: fptr
@@ -52,7 +40,6 @@ contains
         ! Free memory
         call c_f_pointer(ptr, fptr)
         deallocate(fptr)
-        ptr = c_null_ptr
     end subroutine
 
 ! ******************************************************************************
@@ -340,11 +327,20 @@ contains
         character(kind = c_char), intent(in) :: cstr(*)
         character(len = :), allocatable :: fstr
 
+        ! Parameters
+        integer, parameter :: maxchar = 5000 ! Maximum allowed string length
+
         ! Local Variables
         integer :: i, n
 
+        ! Determine the length of the C string
+        n = 0
+        do i = 1, maxchar
+            if (cstr(i) == c_null_char) exit
+            n = n + 1
+        end do
+
         ! Process
-         n = strlen(cstr)
          if (n == 0) return
          allocate(character(len = n) :: fstr)
          do i = 1, n
