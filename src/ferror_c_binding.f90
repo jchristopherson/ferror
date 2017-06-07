@@ -1,5 +1,9 @@
 ! ferror_c_binding.f90
 
+!> @brief \b ferror
+!!
+!! @par Purpose
+!! Provides C bindings to the ferror library.
 module ferror_c_binding
     use, intrinsic :: iso_c_binding
     use ferror
@@ -301,7 +305,7 @@ contains
     !! terminated when an error is encountered.
     !!
     !! @param[in] err A pointer to the error handler object.
-    !! @param[x] in Set to true if the application should be terminated when an
+    !! @param[in] x Set to true if the application should be terminated when an
     !!  error is reported; else, false.
     subroutine set_exit_behavior(err, x) bind(C, name = "set_exit_behavior")
         ! Arguments
