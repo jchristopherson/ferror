@@ -1,5 +1,13 @@
 ! ferror.f90
 
+!> @mainpage
+!!
+!! @section intro_sec Introduction
+!! FERROR is a library to assist with error handling in Fortran projects.
+!!
+!! @author Jason Christopherson
+!! @version 1.0
+
 !> @brief \b ferror
 !!
 !! @par Purpose
@@ -268,7 +276,7 @@ contains
     !! terminated when an error is encountered.
     !!
     !! @param[in,out] this The errors object.
-    !! @param[x] in Set to true if the application should be terminated when an
+    !! @param[in] x Set to true if the application should be terminated when an
     !!  error is reported; else, false.
     subroutine set_exit_on_error(this, x)
         class(errors), intent(inout) :: this
