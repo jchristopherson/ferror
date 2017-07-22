@@ -33,7 +33,7 @@ contains
     !! @param[in] ptr The pointer to the error handler object.
     subroutine free_error_handler(ptr) bind(C, name = "free_error_handler")
         ! Arguments
-        type(c_ptr), intent(in) :: ptr
+        type(c_ptr), intent(in), value :: ptr
 
         ! Local Variables
         type(errors), pointer :: fptr
