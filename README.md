@@ -58,8 +58,28 @@ int main() {
     // Return the error code
     printf("Retrieved Error Code: %i\n", get_error_code(&err));
 }
-
 ```
+The above program produces the following output.
+```text
+Number of characters: 14
+Error Log File: error_log.txt
+
+***** WARNING *****
+Function: function name
+Message:
+warning message
+
+Retrieved Warning Code: 1
+
+***** ERROR *****
+Function: function name
+Error Flag: 2
+Message:
+error message here
+
+Retrieved Error Code: 2
+```
+
 ## Documentation
 Documentation can be found [here](doc/refman.pdf)
 
