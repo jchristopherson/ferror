@@ -26,28 +26,37 @@ A library to assist with error handling in Fortran projects.
 
 ## C Usage
 ```c
-
+#include <stdio.h>
 #include "ferror.h"
 
 int main() {
     errorhandler err;
-    int errorFlag;
+    int errorFlag, sz;
+    char buffer[256];
 
     // Initialize the errorhandler object
-    err = alloc_error_handler();
+    alloc_errorhandler(&err);
 
-    // Inform the user of an error condition.  Notice, the default behavior
-    // creates/appends this information to a log file, prints the information,
-    // and then terminates the application.
+    // Get the name of the error log file
+    get_error_log_fname(&err, buffer, &sz);
+    printf("Number of characters: %i\nError Log File: %s\n", sz, buffer);
+
+    // Don't let the program terminate upon error.
+    set_exit_behavior(&err, false);
+
+    // Warn the user
     errorFlag = 1;
-    register_error(err, "function name", "Error message here", errorFlag);
+    register_warning(&err, "function name", "warning message", errorFlag);
 
-    // Inform the user of a warning.  The default behavior simply prints a 
-    // warning message and returns to the calling code.
-    register_warning(err, "function name", "Warning message here", errorFlag);
+    // Return the warning code
+    printf("Retrieved Warning Code: %i\n", get_warning_code(&err));
 
-    // Clean up after ourselves
-    free_error_handler(err);
+    // Inform the user of an error condition.
+    errorFlag = 2;
+    register_error(&err, "function name", "error message here", errorFlag);
+
+    // Return the error code
+    printf("Retrieved Error Code: %i\n", get_error_code(&err));
 }
 
 ```

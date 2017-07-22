@@ -9,41 +9,76 @@ module ferror_c_binding
     use ferror
     implicit none
 
+! ******************************************************************************
+! TYPES
+! ------------------------------------------------------------------------------
+    !> @brief A C compatible type encapsulating an errors object.
+    type, bind(C) :: errorhandler
+        !> @brief The size of the errors object, in bytes.
+        integer(c_int) :: n
+        !> @brief A pointer to the errors object.
+        type(c_ptr) :: ptr
+    end type
+
 contains
 ! ******************************************************************************
 ! TYPE CONSTRUCTION/DESTRUCTION ROUTINES
 ! ------------------------------------------------------------------------------
-    !> @brief Initializes a pointer to a new error handler object.
+    !> @brief Initializes a new error handler object.
     !!
-    !! @return The pointer to the newly created error handler object.
-    function alloc_error_handler() result(ptr) &
-            bind(C, name = "alloc_error_handler")
+    !! @param[in] obj The errorhandler object to allocate.
+    subroutine alloc_errorhandler(obj) bind(C, name = "alloc_errorhandler")
         ! Arguments
-        type(c_ptr) :: ptr
-
-        ! Create a new errors object, and then associate the C pointer
-        type(errors), pointer :: fptr
-        allocate(fptr)
-        ptr = c_loc(fptr)
-    end function
-
-! ------------------------------------------------------------------------------
-    !> @brief Cleans up an error handler object.
-    !!
-    !! @param[in] ptr The pointer to the error handler object.
-    subroutine free_error_handler(ptr) bind(C, name = "free_error_handler")
-        ! Arguments
-        type(c_ptr), intent(in), value :: ptr
+        type(errorhandler), intent(inout) :: obj
 
         ! Local Variables
-        type(errors), pointer :: fptr
+        integer(c_short), allocatable, target, dimension(:) :: temp
+        type(errors) :: eobj
 
-        ! Ensure the pointer isn't null
-        if (.not.c_associated(ptr)) return
+        ! Process
+        temp = transfer(eobj, temp)
+        obj%n = size(temp)
+        obj%ptr = c_loc(temp(1))
+    end subroutine
 
-        ! Free memory
-        call c_f_pointer(ptr, fptr)
-        deallocate(fptr)
+! ------------------------------------------------------------------------------
+    !> @brief Retrieves the errors object from the C compatible data structure.
+    !!
+    !! @param[in] obj The C compatible errorhandler data structure.
+    !! @param[out] eobj The resulting errors object.
+    subroutine get_errorhandler(obj, eobj)
+        ! Arguments
+        type(errorhandler), intent(in) :: obj
+        class(errors), intent(out), allocatable :: eobj
+
+        ! Local Variables
+        integer(c_short), pointer, dimension(:) :: temp
+        type(errors) :: item
+
+        ! Process
+        if (.not.c_associated(obj%ptr)) return
+        call c_f_pointer(obj%ptr, temp, shape = [obj%n])
+        item = transfer(temp, item)
+        allocate(eobj, source = item)
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Updates the errorhandler object.
+    !!
+    !! @param[in] eobj The errors object.
+    !! @param[in,out] cobj The errorhandler object to update.
+    subroutine update_errorhandler(eobj, cobj)
+        ! Arguments
+        class(errors), intent(in) :: eobj
+        type(errorhandler), intent(inout) :: cobj
+
+        ! Local Variables
+        integer(c_short), allocatable, target, dimension(:) :: temp
+
+        ! Process
+        temp = transfer(eobj, temp)
+        cobj%n = size(temp)
+        cobj%ptr = c_loc(temp(1))
     end subroutine
 
 ! ******************************************************************************
@@ -51,7 +86,7 @@ contains
 ! ------------------------------------------------------------------------------
     !> @brief Gets the name of the error log file.
     !!
-    !! @param[in] err A pointer to the error handler object.
+    !! @param[in] err The errorhandler object.
     !! @param[out] fname A character buffer where the filename will be written.
     !!  It is recommended that this be in the neighborhood of 256 elements.
     !! @param[in,out] nfname On input, the actual size of the buffer.  Be sure
@@ -61,22 +96,22 @@ contains
     subroutine get_error_log_fname(err, fname, nfname) &
             bind(C, name = "get_error_log_fname")
         ! Arguments
-        type(c_ptr), intent(in), value :: err
+        type(errorhandler), intent(in) :: err
         character(kind = c_char), intent(out) :: fname(*)
         integer(c_int), intent(inout) :: nfname
 
         ! Local Variables
-        type(errors), pointer :: ferr
+        class(errors), allocatable :: ferr
         character(len = :), allocatable :: fstr
 
-        ! Ensure the pointer from C is not null
-        if (.not.c_associated(err)) then
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) then
             nfname = 0
             return
         end if
 
         ! Process
-        call c_f_pointer(err, ferr)
         fstr = ferr%get_log_filename()
         call fstr_2_cstr(fstr, fname, nfname)
     end subroutine
@@ -84,31 +119,32 @@ contains
 ! ------------------------------------------------------------------------------
     !> @brief Sets the error log filename.
     !!
-    !! @param[in,out] err A pointer to the error handler object.
+    !! @param[in,out] err The errorhandler object.
     !! @param[in] fname A null-terminated string containing the filename.
     subroutine set_error_log_fname(err, fname) &
             bind(C, name = "set_error_log_fname")
         ! Arguments
-        type(c_ptr), intent(in), value :: err
+        type(errorhandler), intent(inout) :: err
         character(kind = c_char), intent(in) :: fname(*)
 
         ! Local Variables
-        type(errors), pointer :: ferr
+        class(errors), allocatable :: ferr
         character(len = :), allocatable :: fstr
 
-        ! Ensure the pointer from C is not null
-        if (.not.c_associated(err)) return
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) return
 
         ! Process
-        call c_f_pointer(err, ferr)
         fstr = cstr_2_fstr(fname)
         call ferr%set_log_filename(fstr)
+        call update_errorhandler(ferr, err)
     end subroutine
 
 ! ------------------------------------------------------------------------------
     !> @brief Reports an error condition to the user.
     !!
-    !! @param[in] err A pointer to the error handler object.
+    !! @param[in,out] err A pointer to the error handler object.
     !! @param[in] fcn The name of the function or subroutine in which the error
     !!  was encountered.
     !! @param[in] msg The error message.
@@ -116,43 +152,53 @@ contains
     subroutine register_error(err, fcn, msg, flag) &
             bind(C, name = "register_error")
         ! Arguments
-        type(c_ptr), intent(in), value :: err
+        type(errorhandler), intent(inout) :: err
         character(kind = c_char), intent(in) :: fcn, msg
         integer(c_int), intent(in), value :: flag
 
-        ! Process
-        type(errors), pointer :: ferr
-        if (.not.c_associated(err)) return
-        call c_f_pointer(err, ferr)
+        ! Local Variables
+        class(errors), allocatable :: ferr
+
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) return
+
+        ! Report the error
         call ferr%report_error(cstr_2_fstr(fcn), cstr_2_fstr(msg), flag)
+        call update_errorhandler(ferr, err)
     end subroutine
 
 ! ------------------------------------------------------------------------------
     !> @brief Reports a warning condition to the user.
     !!
-    !! @param[in] err A pointer to the error handler object.
-    !! @param[in] fcn The name of the function or subroutine in which the 
+    !! @param[in,out] err The errorhandler object.
+    !! @param[in] fcn The name of the function or subroutine in which the
     !!  warning was encountered.
     !! @param[in] msg The warning message.
     !! @param[in] flag The warning flag.
     subroutine register_warning(err, fcn, msg, flag) &
             bind(C, name = "register_warning")
         ! Arguments
-        type(c_ptr), intent(in), value :: err
+        type(errorhandler), intent(inout) :: err
         character(kind = c_char), intent(in) :: fcn, msg
         integer(c_int), intent(in), value :: flag
 
-        ! Process
-        type(errors), pointer :: ferr
-        if (.not.c_associated(err)) return
-        call c_f_pointer(err, ferr)
+        ! Local Variables
+        class(errors), allocatable :: ferr
+
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) return
+
+        ! Report the warning
         call ferr%report_warning(cstr_2_fstr(fcn), cstr_2_fstr(msg), flag)
+        call update_errorhandler(ferr, err)
     end subroutine
 
 ! ------------------------------------------------------------------------------
     !> @brief Writes an error log file.
     !!
-    !! @param[in] err A pointer to the error handler object.
+    !! @param[in] err The errorhandler object.
     !! @param[in] fcn The name of the function or subroutine in which the error
     !!  was encountered.
     !! @param[in] msg The error message.
@@ -160,14 +206,18 @@ contains
     subroutine write_error_log(err, fcn, msg, flag) &
             bind(C, name = "write_error_log")
         ! Arguments
-        type(c_ptr), intent(in), value :: err
+        type(errorhandler), intent(in) :: err
         character(kind = c_char), intent(in) :: fcn, msg
         integer(c_int), intent(in), value :: flag
 
-        ! Process
-        type(errors), pointer :: ferr
-        if (.not.c_associated(err)) return
-        call c_f_pointer(err, ferr)
+        ! Local Variables
+        class(errors), allocatable :: ferr
+
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) return
+
+        ! Log the error
         call ferr%log_error(cstr_2_fstr(fcn), cstr_2_fstr(msg), flag)
     end subroutine
 
@@ -178,14 +228,18 @@ contains
     !! @return Returns true if an error has been encountered; else, false.
     function error_occurred(err) result(x) bind(C, name = "error_occurred")
         ! Arguments
-        type(c_ptr), intent(in), value :: err
+        type(errorhandler), intent(in) :: err
         logical(c_bool) :: x
 
-        ! Process
-        type(errors), pointer :: ferr
+        ! Local Variables
+        class(errors), allocatable :: ferr
+
+        ! Get the errors object
         x = .false.
-        if (.not.c_associated(err)) return
-        call c_f_pointer(err, ferr)
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) return
+
+        ! Process
         x = ferr%has_error_occurred()
     end function
 
@@ -193,34 +247,43 @@ contains
     !> @brief Resets the error status flag to false, and the current error flag
     !! to zero.
     !!
-    !! @param[in] err The error handler object.
+    !! @param[in,out] err The errorhandler object.
     subroutine reset_error(err) bind(C, name = "reset_error")
         ! Arguments
-        type(c_ptr), intent(in), value :: err
+        type(errorhandler), intent(inout) :: err
+
+        ! Local Variables
+        class(errors), allocatable :: ferr
+
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) return
 
         ! Process
-        type(errors), pointer :: ferr
-        if (.not.c_associated(err)) return
-        call c_f_pointer(err, ferr)
         call ferr%reset_error_status()
+        call update_errorhandler(ferr, err)
     end subroutine
 
 ! ------------------------------------------------------------------------------
     !> @brief Tests to see if a warning has been encountered.
     !!
-    !! @param[in] err A pointer to the error handler object.
+    !! @param[in] err The errorhandler object.
     !! @return Returns true if a warning has been encountered; else, false.
     function warning_occurred(err) result(x) &
             bind(C, name = "warning_occurred")
         ! Arguments
-        type(c_ptr), intent(in), value :: err
+        type(errorhandler), intent(in) :: err
         logical(c_bool) :: x
 
-        ! Process
-        type(errors), pointer :: ferr
+        ! Local Variables
+        class(errors), allocatable :: ferr
+
+        ! Get the errors object
         x = .false.
-        if (.not.c_associated(err)) return
-        call c_f_pointer(err, ferr)
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) return
+
+        ! Process
         x = ferr%has_warning_occurred()
     end function
 
@@ -228,52 +291,65 @@ contains
     !> @brief Resets the warning status flag to false, and the current warning
     !! flag to zero.
     !!
-    !! @param[in] err A pointer to the error handler object.
+    !! @param[in,out] err The errorhandler object.
     subroutine reset_warning(err) bind(C, name = "reset_warning")
         ! Arguments
-        type(c_ptr), intent(in), value :: err
+        type(errorhandler), intent(inout) :: err
+
+        ! Local Variables
+        class(errors), allocatable :: ferr
+
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) return
 
         ! Process
-        type(errors), pointer :: ferr
-        if (.not.c_associated(err)) return
-        call c_f_pointer(err, ferr)
         call ferr%reset_warning_status()
+        call update_errorhandler(ferr, err)
     end subroutine
 
 ! ------------------------------------------------------------------------------
     !> @brief Gets the current error flag.
     !!
-    !! @param[in] err A pointer to the error handler object.
+    !! @param[in] err The errorhandler object.
     !! @return The current error flag.
     function get_error_code(err) result(x) bind(C, name = "get_error_code")
         ! Arguments
-        type(c_ptr), intent(in), value :: err
+        type(errorhandler), intent(in) :: err
         integer(c_int) :: x
 
-        ! Process
-        type(errors), pointer :: ferr
+        ! Local Variables
+        class(errors), allocatable :: ferr
+
+        ! Get the errors object
         x = 0
-        if (.not.c_associated(err)) return
-        call c_f_pointer(err, ferr)
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) return
+
+        ! Process
         x = ferr%get_error_flag()
     end function
 
 ! ------------------------------------------------------------------------------
     !> @brief Gets the current warning flag.
     !!
-    !! @param[in] err A pointer to the error handler object.
+    !! @param[in] err The errorhandler object.
     !! @return The current warning flag.
     function get_warning_code(err) result(x) &
             bind(C, name = "get_warning_code")
         ! Arguments
-        type(c_ptr), intent(in), value :: err
+        type(errorhandler), intent(in) :: err
         integer(c_int) :: x
 
-        ! Process
-        type(errors), pointer :: ferr
+        ! Local Variables
+        class(errors), allocatable :: ferr
+
+        ! Get the errors object
         x = 0
-        if (.not.c_associated(err)) return
-        call c_f_pointer(err, ferr)
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) return
+
+        ! Process
         x = ferr%get_warning_flag()
     end function
 
@@ -281,22 +357,24 @@ contains
     !> @brief Gets a logical value determining if the application should be
     !! terminated when an error is encountered.
     !!
-    !! @param[in] err A pointer to the error handler object.
-    !! @return Returns true if the application should be terminated; else, 
+    !! @param[in] err The errorhandler object.
+    !! @return Returns true if the application should be terminated; else,
     !!  false.
     function get_exit_behavior(err) result(x) &
             bind(C, name = "get_exit_behavior")
         ! Arguments
-        type(c_ptr), intent(in), value :: err
+        type(errorhandler), intent(in) :: err
         logical(c_bool) :: x
 
+        ! Local Variables
+        class(errors), allocatable :: ferr
+
+        ! Get the errors object
+        x = .true.
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) return
+
         ! Process
-        type(errors), pointer :: ferr
-        if (.not.c_associated(err)) then
-            x = .true.
-            return
-        end if
-        call c_f_pointer(err, ferr)
         x = ferr%get_exit_on_error()
     end function
 
@@ -304,19 +382,24 @@ contains
     !> @brief Sets a logical value determining if the application should be
     !! terminated when an error is encountered.
     !!
-    !! @param[in] err A pointer to the error handler object.
+    !! @param[in,out] err The errorhandler object.
     !! @param[in] x Set to true if the application should be terminated when an
     !!  error is reported; else, false.
     subroutine set_exit_behavior(err, x) bind(C, name = "set_exit_behavior")
         ! Arguments
-        type(c_ptr), intent(in), value :: err
-        logical(c_bool), intent(in) :: x
+        type(errorhandler), intent(inout) :: err
+        logical(c_bool), intent(in), value :: x
+
+        ! Local Variables
+        class(errors), allocatable :: ferr
+
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) return
 
         ! Process
-        type(errors), pointer :: ferr
-        if (.not.c_associated(err)) return
-        call c_f_pointer(err, ferr)
         call ferr%set_exit_on_error(logical(x))
+        call update_errorhandler(ferr, err)
     end subroutine
 
 ! ******************************************************************************
@@ -351,7 +434,7 @@ contains
             fstr(i:i) = cstr(i)
          end do
     end function
-    
+
 ! ------------------------------------------------------------------------------
     !> @brief Copies a Fortran string into a C string.
     !!
@@ -377,4 +460,5 @@ contains
         csize = i
     end subroutine
 
+! ------------------------------------------------------------------------------
 end module
