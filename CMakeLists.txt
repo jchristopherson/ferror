@@ -5,7 +5,7 @@ project(ferror)
 
 # Define output directories, if undefined
 if (NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
-  message(STATUS "Library output directories undefined.  Using default directories.")
+  message(STATUS "FERROR library output directories undefined.  Using default directories.")
   if (CMAKE_BUILD_TYPE MATCHES Debug)
     # Debug Build
     if (BUILD_SHARED_LIBS)
@@ -71,4 +71,11 @@ endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
 # Define the library
 add_library(ferror src/ferror.f90 src/ferror_c_binding.f90)
 
+# ------------------------------------------------------------------------------
+# Examples
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/examples/build)
 
+# Example 1
+set(example_1_sources src/ferror.f90 examples/ferror_example_1.f90)
+add_executable(ferror_example_1 ${example_1_sources})
+execute_process(COMMAND ${PROJECT_SOURCE_DIR}/examples/build/ferror_example_1)

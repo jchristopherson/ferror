@@ -4,24 +4,55 @@ A library to assist with error handling in Fortran projects.
 ## Usage
 
 ```fortran
-
+program  example
     use ferror, only : errors
     implicit none
-    
+
+    ! Local Variables
     type(errors) :: err
+    integer :: errorFlag
+    character(len = :), allocatable :: fname
 
-    ! A flag to identify the error
-    integer :: errorFlag = 1
-    
-    ! Inform the user of an error condition.  Notice, the default behavior
-    ! creates/appends this information to a log file, prints the information,
-    ! and then terminates the application.
-    call err%report_error("function name", "Error message here", errorFlag)
+    ! Get the name of the error log file used by default
+    fname = err%get_log_filename()
+    print '(A)', "Error Log File: " // fname
 
-    ! Inform the user of a warning.  The default behavior simply prints a 
-    ! warning message and returns to the calling code.
-    call err%report_warning("function name", "Warning message here", errorFlag)
+    ! Don't let the program terminate upon error
+    call err%set_exit_on_error(.false.)
 
+    ! Warn the user
+    errorFlag = 1
+    call err%report_warning("function name", "warning message", errorFlag)
+
+    ! Get the warning code
+    print '(AI0)', "Retrieved Warning Code: ", err%get_warning_flag()
+
+    ! Inform the user of an error condition
+    errorFlag = 2
+    call err%report_error("function name", "error message", errorFlag)
+
+    ! Get the error code
+    print '(AI0)', "Retrieved Error Code: ", err%get_error_flag()
+end program 
+```
+The above program produces the following output.
+```text
+Error Log File: error_log.txt
+ 
+***** WARNING *****
+Function: function name
+Message:
+warning message
+ 
+Retrieved Warning Code: 1
+ 
+***** ERROR *****
+Function: function name
+Error Flag: 2
+Message:
+error message
+ 
+Retrieved Error Code: 2
 ```
 
 ## C Usage
