@@ -150,6 +150,7 @@ contains
         print *, ""
         print '(A)', "***** WARNING *****"
         print '(A)', "Function: " // fcn
+        print '(AI0)', "Warning Flag: ", flag
         print '(A)', "Message:"
         print '(A)', msg
         print *, ""
