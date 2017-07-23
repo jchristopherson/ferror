@@ -40,18 +40,22 @@ The above program produces the following output.
 Error Log File: error_log.txt
  
 ***** WARNING *****
+Error Log File: error_log.txt
+
+***** WARNING *****
 Function: function name
+Warning Flag: 1
 Message:
 warning message
- 
+
 Retrieved Warning Code: 1
- 
+
 ***** ERROR *****
 Function: function name
 Error Flag: 2
 Message:
 error message
- 
+
 Retrieved Error Code: 2
 ```
 
@@ -97,6 +101,7 @@ Error Log File: error_log.txt
 
 ***** WARNING *****
 Function: function name
+Warning Flag: 1
 Message:
 warning message
 
