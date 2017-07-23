@@ -72,14 +72,20 @@ endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
 add_library(ferror src/ferror.f90 src/ferror_c_binding.f90)
 
 # ------------------------------------------------------------------------------
-# Examples
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/examples/build)
+option(BUILD_EXAMPLES "Build examples?" OFF)
+if (BUILD_EXAMPLES)
+  # Inform the user we're building the examples
+  message(STATUS "Building FERROR examples.")
 
-# Example 1
-set(example_1_sources src/ferror.f90 examples/ferror_example_1.f90)
-add_executable(ferror_example_1 ${example_1_sources})
-add_custom_command(OUTPUT ex1
-  DEPENDS ${example_1_sources}
-  COMMAND ${PROJECT_SOURCE_DIR}/examples/build/ferror_example_1)
-add_custom_target(run_example_1 ALL 
-  DEPENDS ex1)
+  # Establish the output directory
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/examples/build)
+
+  # Example 1
+  set(example_1_sources src/ferror.f90 examples/ferror_example_1.f90)
+  add_executable(ferror_example_1 ${example_1_sources})
+  add_custom_command(OUTPUT ex1
+    DEPENDS ${example_1_sources}
+    COMMAND ${PROJECT_SOURCE_DIR}/examples/build/ferror_example_1)
+  add_custom_target(run_example_1 ALL 
+    DEPENDS ex1)
+endif()
