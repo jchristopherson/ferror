@@ -78,4 +78,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/examples/build)
 # Example 1
 set(example_1_sources src/ferror.f90 examples/ferror_example_1.f90)
 add_executable(ferror_example_1 ${example_1_sources})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/examples/build/ferror_example_1)
+add_custom_command(OUTPUT ex1
+  DEPENDS ${example_1_sources}
+  COMMAND ${PROJECT_SOURCE_DIR}/examples/build/ferror_example_1)
+add_custom_target(run_example_1 ALL 
+  DEPENDS ex1)
