@@ -94,22 +94,22 @@ int main() {
 The above program produces the following output.
 ```text
 Number of characters: 14
-Error Log File: error_log.txt
-
+Error Log File: error_log.txt
+ 
 ***** WARNING *****
 Function: function name
 Warning Flag: 1
 Message:
 warning message
-
+ 
 Retrieved Warning Code: 1
-
+ 
 ***** ERROR *****
 Function: function name
 Error Flag: 2
 Message:
 error message here
-
+ 
 Retrieved Error Code: 2
 ```
 
