@@ -50,6 +50,10 @@ Retrieved Warning Code: 1
 ***** ERROR *****
 Function: function name
 Error Flag: 2
+Message:
+error message
+ 
+Retrieved Error Code: 2
 ```
 
 ## C Usage
