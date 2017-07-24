@@ -71,6 +71,8 @@ endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
 add_library(ferror src/ferror.f90 src/ferror_c_binding.f90)
 
 # ------------------------------------------------------------------------------
+# EXAMPLES
+# ------------------------------------------------------------------------------
 option(BUILD_EXAMPLES "Build examples?" OFF)
 if (BUILD_EXAMPLES)
   # Inform the user we're building the examples
@@ -87,3 +89,15 @@ if (BUILD_EXAMPLES)
   add_executable(ferror_example_1c ${example_1_sources_c})
   target_link_libraries(ferror_example_1c ferror)
 endif()
+
+# ------------------------------------------------------------------------------
+# TESTS
+# ------------------------------------------------------------------------------
+# C Based Testing
+include_directories(${PROJECT_SOURCE_DIR}/include)
+set(c_test_source test/ferror_test_c.c)
+add_executable(ferror_test_c ${c_test_source})
+target_link_libraries(ferror_test_c ferror)
+add_custom_command(OUTPUT c_api_test DEPENDS ${c_test_source}
+  COMMAND ferror_test_c)
+add_custom_target(run_c_api_test ALL DEPENDS c_api_test)
