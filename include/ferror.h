@@ -4,9 +4,11 @@
 
 #include <stdbool.h>
 
-// Convenience type to avoid confusion with void* for error handler object.
+/** @brief A C compatible type encapsulating an errors object. */
 typedef struct {
+    /** @brief The size of the errors object, in bytes. */
     int n;
+    /** @brief A pointer to the errors object. */
     void *ptr;
 } errorhandler;
 

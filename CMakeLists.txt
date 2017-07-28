@@ -1,6 +1,5 @@
 # CMake project file for FERROR
-cmake_minimum_required(VERSION 2.6)
-#enable_language(Fortran)
+cmake_minimum_required(VERSION 3.0)
 project(ferror C CXX Fortran)
 
 # Define output directories, if undefined
@@ -72,31 +71,33 @@ endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
 add_library(ferror src/ferror.f90 src/ferror_c_binding.f90)
 
 # ------------------------------------------------------------------------------
+# EXAMPLES
+# ------------------------------------------------------------------------------
 option(BUILD_EXAMPLES "Build examples?" OFF)
 if (BUILD_EXAMPLES)
   # Inform the user we're building the examples
   message(STATUS "Building FERROR examples.")
 
-  # Establish the output directory
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/examples/build)
-
   # Example 1
-  set(example_1_sources src/ferror.f90 examples/ferror_example_1.f90)
+  set(example_1_sources examples/ferror_example_1.f90)
   add_executable(ferror_example_1 ${example_1_sources})
-  add_custom_command(OUTPUT ex1
-    DEPENDS ${example_1_sources}
-    COMMAND ${PROJECT_SOURCE_DIR}/examples/build/ferror_example_1)
-  add_custom_target(run_example_1 ALL 
-    DEPENDS ex1)
+  target_link_libraries(ferror_example_1 ferror)
   
   # Example 1 - C API
   include_directories(${PROJECT_SOURCE_DIR}/include)
-  set(example_1_sources_c src/ferror.f90 src/ferror_c_binding.f90 
-    examples/ferror_example_1c.c)
+  set(example_1_sources_c examples/ferror_example_1c.c)
   add_executable(ferror_example_1c ${example_1_sources_c})
-  add_custom_command(OUTPUT cex1
-    DEPENDS ${example_1_sources_c}
-    COMMAND ${PROJECT_SOURCE_DIR}/examples/build/ferror_example_1c)
-  add_custom_target(run_example_1c ALL
-    DEPENDS cex1)
+  target_link_libraries(ferror_example_1c ferror)
 endif()
+
+# ------------------------------------------------------------------------------
+# TESTS
+# ------------------------------------------------------------------------------
+# C Based Testing
+include_directories(${PROJECT_SOURCE_DIR}/include)
+set(c_test_source test/ferror_test_c.c)
+add_executable(ferror_test_c ${c_test_source})
+target_link_libraries(ferror_test_c ferror)
+add_custom_command(OUTPUT c_api_test DEPENDS ${c_test_source}
+  COMMAND ferror_test_c)
+add_custom_target(run_c_api_test ALL DEPENDS c_api_test)

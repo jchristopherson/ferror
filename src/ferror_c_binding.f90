@@ -48,14 +48,17 @@ contains
     !! @param[out] eobj The resulting errors object.
     subroutine get_errorhandler(obj, eobj)
         ! Arguments
-        type(errorhandler), intent(in) :: obj
+        type(errorhandler), intent(in), target :: obj
         class(errors), intent(out), allocatable :: eobj
 
         ! Local Variables
         integer(c_short), pointer, dimension(:) :: temp
         type(errors) :: item
+        type(c_ptr) :: testptr
 
         ! Process
+        testptr = c_loc(obj) ! Ensures that obj wasn't passed as NULL from C
+        if (.not.c_associated(testptr)) return
         if (.not.c_associated(obj%ptr)) return
         call c_f_pointer(obj%ptr, temp, shape = [obj%n])
         item = transfer(temp, item)
