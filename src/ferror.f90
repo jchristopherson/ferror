@@ -33,6 +33,8 @@ module ferror
         integer :: m_warningFlag = 0
         !> Terminate the application on error
         logical :: m_exitOnError = .true.
+        !> Suppress printing of error and warning messages
+        logical :: m_suppressPrinting = .false.
     contains
         !> @brief Gets the name of the error log file.
         procedure, public :: get_log_filename
@@ -62,6 +64,12 @@ module ferror
         !> @brief Sets a logical value determining if the application should be
         !! terminated when an error is encountered.
         procedure, public :: set_exit_on_error
+        !> @brief Gets a logical value determining if printing of error and 
+        !! warning messages should be suppressed.
+        procedure, public :: get_suppress_printing
+        !> @brief Sets a logical value determining if printing of error and 
+        !! warning messages should be suppressed.
+        procedure, public :: set_suppress_printing
     end type
 
 contains
@@ -109,13 +117,15 @@ contains
         integer, intent(in) :: flag
 
         ! Write the error message to the command line
-        print *, ""
-        print '(A)', "***** ERROR *****"
-        print '(A)', "Function: " // fcn
-        print '(AI0)', "Error Flag: ", flag
-        print '(A)', "Message:"
-        print '(A)', msg
-        print *, ""
+        if (.not.this%m_suppressPrinting) then
+            print *, ""
+            print '(A)', "***** ERROR *****"
+            print '(A)', "Function: " // fcn
+            print '(AI0)', "Error Flag: ", flag
+            print '(A)', "Message:"
+            print '(A)', msg
+            print *, ""
+        end if
 
         ! Update the error found status
         this%m_foundError = .true.
@@ -147,13 +157,15 @@ contains
         integer, intent(in) :: flag
 
         ! Write the warning message to the command line
-        print *, ""
-        print '(A)', "***** WARNING *****"
-        print '(A)', "Function: " // fcn
-        print '(AI0)', "Warning Flag: ", flag
-        print '(A)', "Message:"
-        print '(A)', msg
-        print *, ""
+        if (.not.this%m_suppressPrinting) then
+            print *, ""
+            print '(A)', "***** WARNING *****"
+            print '(A)', "Function: " // fcn
+            print '(AI0)', "Warning Flag: ", flag
+            print '(A)', "Message:"
+            print '(A)', msg
+            print *, ""
+        end if
 
         ! Update the warning found status
         this%m_foundWarning = .true.
@@ -283,6 +295,32 @@ contains
         class(errors), intent(inout) :: this
         logical, intent(in) :: x
         this%m_exitOnError = x
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets a logical value determining if printing of error and warning
+    !! messages should be suppressed.
+    !!
+    !! @param[in] this The errors object.
+    !! @return True if message printing should be suppressed; else, false to 
+    !!  allow printing.
+    pure function get_suppress_printing(this) result(x)
+        class(errors), intent(in) :: this
+        logical :: x
+        x = this%m_suppressPrinting
+    end function
+
+! --------------------
+    !> @brief Sets a logical value determining if printing of error and warning
+    !! messages should be suppressed.
+    !!
+    !! @param[in,out] this The errors object.
+    !! @param[in] x Set to true if message printing should be suppressed; else,
+    !!  false to allow printing.
+    subroutine set_suppress_printing(this, x)
+        class(errors), intent(inout) :: this
+        logical, intent(in) :: x
+        this%m_suppressPrinting = x
     end subroutine
 
 ! ------------------------------------------------------------------------------

@@ -402,6 +402,56 @@ contains
         call update_errorhandler(ferr, err)
     end subroutine
 
+! ------------------------------------------------------------------------------
+    !> @brief Gets a logical value determining if printing of error and warning
+    !! messages should be suppressed.
+    !!
+    !! @param[in] err The errorhandler object.
+    !! @return True if message printing should be suppressed; else, false to 
+    !!  allow printing.
+    function get_suppress_printing(err) result(x) &
+            bind(C, name = "get_suppress_printing")
+        ! Arguments
+        type(errorhandler), intent(in) :: err
+        logical(c_bool) :: x
+
+        ! Local Variables
+        class(errors), allocatable :: ferr
+        
+        ! Get the errors object
+        x = .false.
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) return
+
+        ! Process
+        x = ferr%get_suppress_printing()
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Sets a logical value determining if printing of error and warning
+    !! messages should be suppressed.
+    !!
+    !! @param[in,out] err The errorhandler object.
+    !! @param[in] x Set to true if message printing should be suppressed; else,
+    !!  false to allow printing.
+    subroutine set_suppress_printing(err, x) &
+            bind(C, name = "set_suppress_printing")
+        ! Arguments
+        type(errorhandler), intent(inout) :: err
+        logical(c_bool), intent(in), value :: x
+
+        ! Local Variables
+        class(errors), allocatable :: ferr
+
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.allocated(ferr)) return
+
+        ! Process
+        call ferr%set_suppress_printing(logical(x))
+        call update_errorhandler(ferr, err)
+    end subroutine
+
 ! ******************************************************************************
 ! HELPER ROUTINES
 ! ------------------------------------------------------------------------------

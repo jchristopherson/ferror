@@ -132,6 +132,24 @@ bool get_exit_behavior(const errorhandler *err);
  */
 void set_exit_behavior(errorhandler *err, bool x);
 
+/** @brief Gets a logical value determining if printing of error and warning
+ * messages should be suppressed.
+ *
+ * @param err The errorhandler object.
+ * @return True if message printing should be suppressed; else, false to 
+ *  allow printing.
+ */
+bool get_suppress_printing(const errorhandler *err);
+
+/** @brief Sets a logical value determining if printing of error and warning
+ * messages should be suppressed.
+ *
+ * @param err The errorhandler object.
+ * @param x Set to true if message printing should be suppressed; else,
+ *  false to allow printing.
+ */
+void set_suppress_printing(errorhandler *err, bool x);
+
 #ifdef __cplusplus
 }
 #endif

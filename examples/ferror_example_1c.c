@@ -17,6 +17,7 @@ int main() {
     set_exit_behavior(&err, false);
 
     // Warn the user
+    set_suppress_printing(&err, true);
     errorFlag = 1;
     register_warning(&err, "function name", "warning message", errorFlag);
 
