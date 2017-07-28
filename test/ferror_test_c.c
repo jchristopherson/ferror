@@ -10,9 +10,9 @@ int main() {
     // Initialize the errorhandler object
     alloc_errorhandler(&err);
 
-    // Try and pass NULL to the register_error routine and ensure it doesn't 
+    // Try and pass NULL to the report_error routine and ensure it doesn't 
     // bomb out.
-    register_error(NULL, "function name", "error message", 1);
+    report_error(NULL, "function name", "error message", 1);
 
     // If we're still running, the test has passed
     printf("FERROR C INTERFACE TEST STATUS: PASS\n");

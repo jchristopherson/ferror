@@ -96,8 +96,8 @@ contains
     !!  to leave room for the null terminator character.  On output, the actual
     !!  numbers of characters written to @p fname (not including the null
     !!  character).
-    subroutine get_error_log_fname(err, fname, nfname) &
-            bind(C, name = "get_error_log_fname")
+    subroutine get_log_filename(err, fname, nfname) &
+            bind(C, name = "get_log_filename")
         ! Arguments
         type(errorhandler), intent(in) :: err
         character(kind = c_char), intent(out) :: fname(*)
@@ -124,8 +124,8 @@ contains
     !!
     !! @param[in,out] err The errorhandler object.
     !! @param[in] fname A null-terminated string containing the filename.
-    subroutine set_error_log_fname(err, fname) &
-            bind(C, name = "set_error_log_fname")
+    subroutine set_log_filename(err, fname) &
+            bind(C, name = "set_log_filename")
         ! Arguments
         type(errorhandler), intent(inout) :: err
         character(kind = c_char), intent(in) :: fname(*)
@@ -152,8 +152,8 @@ contains
     !!  was encountered.
     !! @param[in] msg The error message.
     !! @param[in] flag The error flag.
-    subroutine register_error(err, fcn, msg, flag) &
-            bind(C, name = "register_error")
+    subroutine report_error(err, fcn, msg, flag) &
+            bind(C, name = "report_error")
         ! Arguments
         type(errorhandler), intent(inout) :: err
         character(kind = c_char), intent(in) :: fcn, msg
@@ -179,8 +179,8 @@ contains
     !!  warning was encountered.
     !! @param[in] msg The warning message.
     !! @param[in] flag The warning flag.
-    subroutine register_warning(err, fcn, msg, flag) &
-            bind(C, name = "register_warning")
+    subroutine report_warning(err, fcn, msg, flag) &
+            bind(C, name = "report_warning")
         ! Arguments
         type(errorhandler), intent(inout) :: err
         character(kind = c_char), intent(in) :: fcn, msg
@@ -206,8 +206,8 @@ contains
     !!  was encountered.
     !! @param[in] msg The error message.
     !! @param[in] flag The error flag.
-    subroutine write_error_log(err, fcn, msg, flag) &
-            bind(C, name = "write_error_log")
+    subroutine log_error(err, fcn, msg, flag) &
+            bind(C, name = "log_error")
         ! Arguments
         type(errorhandler), intent(in) :: err
         character(kind = c_char), intent(in) :: fcn, msg
@@ -229,7 +229,8 @@ contains
     !!
     !! @param[in] err A pointer to the error handler object.
     !! @return Returns true if an error has been encountered; else, false.
-    function error_occurred(err) result(x) bind(C, name = "error_occurred")
+    function has_error_occurred(err) result(x) &
+            bind(C, name = "has_error_occurred")
         ! Arguments
         type(errorhandler), intent(in) :: err
         logical(c_bool) :: x
@@ -251,7 +252,7 @@ contains
     !! to zero.
     !!
     !! @param[in,out] err The errorhandler object.
-    subroutine reset_error(err) bind(C, name = "reset_error")
+    subroutine reset_error_status(err) bind(C, name = "reset_error_status")
         ! Arguments
         type(errorhandler), intent(inout) :: err
 
@@ -272,8 +273,8 @@ contains
     !!
     !! @param[in] err The errorhandler object.
     !! @return Returns true if a warning has been encountered; else, false.
-    function warning_occurred(err) result(x) &
-            bind(C, name = "warning_occurred")
+    function has_warning_occurred(err) result(x) &
+            bind(C, name = "has_warning_occurred")
         ! Arguments
         type(errorhandler), intent(in) :: err
         logical(c_bool) :: x
@@ -295,7 +296,7 @@ contains
     !! flag to zero.
     !!
     !! @param[in,out] err The errorhandler object.
-    subroutine reset_warning(err) bind(C, name = "reset_warning")
+    subroutine reset_warning_status(err) bind(C, name = "reset_warning_status")
         ! Arguments
         type(errorhandler), intent(inout) :: err
 
@@ -316,7 +317,7 @@ contains
     !!
     !! @param[in] err The errorhandler object.
     !! @return The current error flag.
-    function get_error_code(err) result(x) bind(C, name = "get_error_code")
+    function get_error_flag(err) result(x) bind(C, name = "get_error_flag")
         ! Arguments
         type(errorhandler), intent(in) :: err
         integer(c_int) :: x
@@ -338,8 +339,8 @@ contains
     !!
     !! @param[in] err The errorhandler object.
     !! @return The current warning flag.
-    function get_warning_code(err) result(x) &
-            bind(C, name = "get_warning_code")
+    function get_warning_flag(err) result(x) &
+            bind(C, name = "get_warning_flag")
         ! Arguments
         type(errorhandler), intent(in) :: err
         integer(c_int) :: x
@@ -363,8 +364,8 @@ contains
     !! @param[in] err The errorhandler object.
     !! @return Returns true if the application should be terminated; else,
     !!  false.
-    function get_exit_behavior(err) result(x) &
-            bind(C, name = "get_exit_behavior")
+    function get_exit_on_error(err) result(x) &
+            bind(C, name = "get_exit_on_error")
         ! Arguments
         type(errorhandler), intent(in) :: err
         logical(c_bool) :: x
@@ -388,7 +389,7 @@ contains
     !! @param[in,out] err The errorhandler object.
     !! @param[in] x Set to true if the application should be terminated when an
     !!  error is reported; else, false.
-    subroutine set_exit_behavior(err, x) bind(C, name = "set_exit_behavior")
+    subroutine set_exit_on_error(err, x) bind(C, name = "set_exit_on_error")
         ! Arguments
         type(errorhandler), intent(inout) :: err
         logical(c_bool), intent(in), value :: x

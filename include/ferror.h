@@ -32,14 +32,14 @@ void alloc_errorhandler(errorhandler *obj);
  *  numbers of characters written to @p fname (not including the null
  *  character).
  */
-void get_error_log_fname(const errorhandler *err, char *fname, int *nfname);
+void get_log_filename(const errorhandler *err, char *fname, int *nfname);
 
 /** @brief Sets the error log filename.
  *
  * @param err The errorhandler object.
  * @param fname A null-terminated string containing the filename.
  */
-void set_error_log_fname(errorhandler *err, const char *fname);
+void set_log_filename(errorhandler *err, const char *fname);
 
 /** @brief Reports an error condition to the user.
  *
@@ -49,8 +49,8 @@ void set_error_log_fname(errorhandler *err, const char *fname);
  * @param msg The error message.
  * @param flag The error flag.
  */
-void register_error(errorhandler *err, const char *fcn, const char *msg,
-                    int flag);
+void report_error(errorhandler *err, const char *fcn, const char *msg,
+                  int flag);
 
 /** @brief Reports a warning condition to the user.
  *
@@ -60,8 +60,8 @@ void register_error(errorhandler *err, const char *fcn, const char *msg,
  * @param msg The warning message.
  * @param flag The warning flag.
  */
-void register_warning(errorhandler *err, const char *fcn, const char *msg,
-                      int flag);
+void report_warning(errorhandler *err, const char *fcn, const char *msg,
+                    int flag);
 
 /** @brief Writes an error log file.
  *
@@ -71,50 +71,50 @@ void register_warning(errorhandler *err, const char *fcn, const char *msg,
  * @param msg The error message.
  * @param flag The error flag.
  */
-void write_error_log(const errorhandler *err, const char *fcn, const char *msg,
-                     int flag);
+void log_error(const errorhandler *err, const char *fcn, const char *msg,
+               int flag);
 
 /** @brief Tests to see if an error has been encountered.
  *
  * @param err The errorhandler object.
  * @return Returns true if an error has been encountered; else, false.
  */
-bool error_occurred(const errorhandler *err);
+bool has_error_occurred(const errorhandler *err);
 
 /** @brief Resets the error status flag to false, and the current error flag
  * to zero.
  *
  * @param err The errorhandler object.
  */
-void reset_error(errorhandler *err);
+void reset_error_status(errorhandler *err);
 
 /** @brief Tests to see if a warning has been encountered.
  *
  * @param err The errorhandler object.
  * @return Returns true if a warning has been encountered; else, false.
  */
-bool warning_occurred(const errorhandler *err);
+bool has_warning_occurred(const errorhandler *err);
 
 /** @brief Resets the warning status flag to false, and the current warning
  * flag to zero.
  *
  * @param err The errorhandler object.
  */
-void reset_warning(errorhandler *err);
+void reset_warning_status(errorhandler *err);
 
 /** @brief Gets the current error flag.
  *
  * @param err The errorhandler object.
  * @return The current error flag.
  */
-int get_error_code(const errorhandler *err);
+int get_error_flag(const errorhandler *err);
 
 /** @brief Gets the current warning flag.
  *
  * @param err The errorhandler object.
  * @return The current warning flag.
  */
-int get_warning_code(const errorhandler *err);
+int get_warning_flag(const errorhandler *err);
 
 /** @brief Gets a logical value determining if the application should be
  * terminated when an error is encountered.
@@ -123,7 +123,7 @@ int get_warning_code(const errorhandler *err);
  * @return Returns true if the application should be terminated; else,
  *  false.
  */
-bool get_exit_behavior(const errorhandler *err);
+bool get_exit_on_error(const errorhandler *err);
 
 /** @brief Sets a logical value determining if the application should be
  * terminated when an error is encountered.
@@ -132,7 +132,7 @@ bool get_exit_behavior(const errorhandler *err);
  * @param[x] in Set to true if the application should be terminated when an
  *  error is reported; else, false.
  */
-void set_exit_behavior(errorhandler *err, bool x);
+void set_exit_on_error(errorhandler *err, bool x);
 
 /** @brief Gets a logical value determining if printing of error and warning
  * messages should be suppressed.

@@ -10,23 +10,23 @@ int main() {
     alloc_errorhandler(&err);
 
     // Get the name of the error log file
-    get_error_log_fname(&err, buffer, &sz);
+    get_log_filename(&err, buffer, &sz);
     printf("Number of characters: %i\nError Log File: %s\n", sz, buffer);
 
     // Don't let the program terminate upon error.
-    set_exit_behavior(&err, false);
+    set_exit_on_error(&err, false);
 
     // Warn the user
     errorFlag = 1;
-    register_warning(&err, "function name", "warning message", errorFlag);
+    report_warning(&err, "function name", "warning message", errorFlag);
 
     // Return the warning code
-    printf("Retrieved Warning Code: %i\n", get_warning_code(&err));
+    printf("Retrieved Warning Code: %i\n", get_warning_flag(&err));
 
     // Inform the user of an error condition.
     errorFlag = 2;
-    register_error(&err, "function name", "error message here", errorFlag);
+    report_error(&err, "function name", "error message here", errorFlag);
 
     // Return the error code
-    printf("Retrieved Error Code: %i\n", get_error_code(&err));
+    printf("Retrieved Error Code: %i\n", get_error_flag(&err));
 }
