@@ -25,7 +25,7 @@ int main() {
 
     // Inform the user of an error condition.
     errorFlag = 2;
-    report_error(&err, "function name", "error message here", errorFlag);
+    report_error(&err, "function name", "error message", errorFlag);
 
     // Return the error code
     printf("Retrieved Error Code: %i\n", get_error_flag(&err));
