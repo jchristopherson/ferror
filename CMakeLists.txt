@@ -2,6 +2,11 @@
 cmake_minimum_required(VERSION 3.0)
 project(ferror C CXX Fortran)
 
+# Define version information
+set(linalg_VERSION_MAJOR 1)
+set(linalg_VERSION_MINOR 2)
+set(linalg_VERSION_PATCH 1)
+
 # Define output directories, if undefined
 if (NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
   message(STATUS "FERROR library output directories undefined.  Using default directories.")
