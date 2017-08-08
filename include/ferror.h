@@ -6,10 +6,10 @@
 
 /** @brief A C compatible type encapsulating an errors object. */
 typedef struct {
-    /** @brief The size of the errors object, in bytes. */
-    int n;
     /** @brief A pointer to the errors object. */
     void *ptr;
+    /** @brief The size of the errors object, in bytes. */
+    int n;
 } errorhandler;
 
 #ifdef __cplusplus

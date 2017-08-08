@@ -37,39 +37,39 @@ module ferror
         logical :: m_suppressPrinting = .false.
     contains
         !> @brief Gets the name of the error log file.
-        procedure, public :: get_log_filename
+        procedure, public :: get_log_filename => er_get_log_filename
         !> @brief Sets the name of the error log file.
-        procedure, public :: set_log_filename
+        procedure, public :: set_log_filename => er_set_log_filename
         !> eports an error condition to the user.
-        procedure, public :: report_error
+        procedure, public :: report_error => er_report_error
         !> @brief Reports a warning message to the user.
-        procedure, public :: report_warning
+        procedure, public :: report_warning => er_report_warning
         !> @brief Writes an error log file.
-        procedure, public :: log_error
+        procedure, public :: log_error => er_log_error
         !> @brief Tests to see if an error has been encountered.
-        procedure, public :: has_error_occurred
+        procedure, public :: has_error_occurred => er_has_error_occurred
         !> @brief Resets the error status flag to false.
-        procedure, public :: reset_error_status
+        procedure, public :: reset_error_status => er_reset_error_status
         !> @brief Tests to see if a warning has been encountered.
-        procedure, public :: has_warning_occurred
+        procedure, public :: has_warning_occurred => er_has_warning_occurred
         !> @brief Resets the warning status flag to false.
-        procedure, public :: reset_warning_status
+        procedure, public :: reset_warning_status => er_reset_warning_status
         !> @brief Gets the current error flag.
-        procedure, public :: get_error_flag
+        procedure, public :: get_error_flag => er_get_error_flag
         !> @brief Gets the current warning flag.
-        procedure, public :: get_warning_flag
+        procedure, public :: get_warning_flag => er_get_warning_flag
         !> @brief Gets a logical value determining if the application should be
         !! terminated when an error is encountered.
-        procedure, public :: get_exit_on_error
+        procedure, public :: get_exit_on_error => er_get_exit_on_error
         !> @brief Sets a logical value determining if the application should be
         !! terminated when an error is encountered.
-        procedure, public :: set_exit_on_error
+        procedure, public :: set_exit_on_error => er_set_exit_on_error
         !> @brief Gets a logical value determining if printing of error and 
         !! warning messages should be suppressed.
-        procedure, public :: get_suppress_printing
+        procedure, public :: get_suppress_printing => er_get_suppress_printing
         !> @brief Sets a logical value determining if printing of error and 
         !! warning messages should be suppressed.
-        procedure, public :: set_suppress_printing
+        procedure, public :: set_suppress_printing => er_set_suppress_printing
     end type
 
 contains
@@ -78,7 +78,7 @@ contains
     !!
     !! @param[in] this The errors object.
     !! @return The filename.
-    pure function get_log_filename(this) result(str)
+    pure function er_get_log_filename(this) result(str)
         class(errors), intent(in) :: this
         character(len = :), allocatable :: str
         str = trim(this%m_fname)
@@ -89,7 +89,7 @@ contains
     !!
     !! @param[in,out] this The errors object.
     !! @param[in] str The filename.
-    subroutine set_log_filename(this, str)
+    subroutine er_set_log_filename(this, str)
         class(errors), intent(inout) :: this
         character(len = :), allocatable :: str
         integer :: n
@@ -110,7 +110,7 @@ contains
     !! @par Remarks
     !! The default behavior prints an error message, appends the supplied 
     !! information to a log file, and terminates the program.
-    subroutine report_error(this, fcn, msg, flag)
+    subroutine er_report_error(this, fcn, msg, flag)
         ! Arguments
         class(errors), intent(inout) :: this
         character(len = *), intent(in) :: fcn, msg
@@ -150,7 +150,7 @@ contains
     !! @par Remarks
     !! The default behavior prints the warning message, and returns control
     !! back to the calling code.
-    subroutine report_warning(this, fcn, msg, flag)
+    subroutine er_report_warning(this, fcn, msg, flag)
         ! Arguments
         class(errors), intent(inout) :: this
         character(len = *), intent(in) :: fcn, msg
@@ -180,7 +180,7 @@ contains
     !!  was encountered.
     !! @param[in] msg The error message.
     !! @param[in] flag The error flag.
-    subroutine log_error(this, fcn, msg, flag)
+    subroutine er_log_error(this, fcn, msg, flag)
         ! Arguments
         class(errors), intent(in) :: this
         character(len = *), intent(in) :: fcn, msg
@@ -210,7 +210,7 @@ contains
     !!
     !! @param[in] this The errors object.
     !! @return Returns true if an error has been encountered; else, false.
-    pure function has_error_occurred(this) result(x)
+    pure function er_has_error_occurred(this) result(x)
         class(errors), intent(in) :: this
         logical :: x
         x = this%m_foundError
@@ -221,7 +221,7 @@ contains
     !! to zero.
     !!
     !! @param[in,out] this The errors object.
-    subroutine reset_error_status(this)
+    subroutine er_reset_error_status(this)
         class(errors), intent(inout) :: this
         this%m_foundError = .false.
         this%m_errorFlag = 0
@@ -232,7 +232,7 @@ contains
     !!
     !! @param[in] this The errors object.
     !! @return Returns true if a warning has been encountered; else, false.
-    pure function has_warning_occurred(this) result(x)
+    pure function er_has_warning_occurred(this) result(x)
         class(errors), intent(in) :: this
         logical :: x
         x = this%m_foundWarning
@@ -243,7 +243,7 @@ contains
     !! flag to zero.
     !!
     !! @param[in,out] this The errors object.
-    subroutine reset_warning_status(this)
+    subroutine er_reset_warning_status(this)
         class(errors), intent(inout) :: this
         this%m_foundWarning = .false.
         this%m_warningFlag = 0
@@ -254,7 +254,7 @@ contains
     !!
     !! @param[in] this The errors object.
     !! @return The current error flag.
-    pure function get_error_flag(this) result(x)
+    pure function er_get_error_flag(this) result(x)
         class(errors), intent(in) :: this
         integer :: x
         x = this%m_errorFlag
@@ -265,7 +265,7 @@ contains
     !!
     !! @param[in] this The errors object.
     !! @return The current warning flag.
-    pure function get_warning_flag(this) result(x)
+    pure function er_get_warning_flag(this) result(x)
         class(errors), intent(in) :: this
         integer :: x
         x = this%m_warningFlag
@@ -278,7 +278,7 @@ contains
     !! @param[in] this The errors object.
     !! @return Returns true if the application should be terminated; else, 
     !!  false.
-    pure function get_exit_on_error(this) result(x)
+    pure function er_get_exit_on_error(this) result(x)
         class(errors), intent(in) :: this
         logical :: x
         x = this%m_exitOnError
@@ -291,7 +291,7 @@ contains
     !! @param[in,out] this The errors object.
     !! @param[in] x Set to true if the application should be terminated when an
     !!  error is reported; else, false.
-    subroutine set_exit_on_error(this, x)
+    subroutine er_set_exit_on_error(this, x)
         class(errors), intent(inout) :: this
         logical, intent(in) :: x
         this%m_exitOnError = x
@@ -304,7 +304,7 @@ contains
     !! @param[in] this The errors object.
     !! @return True if message printing should be suppressed; else, false to 
     !!  allow printing.
-    pure function get_suppress_printing(this) result(x)
+    pure function er_get_suppress_printing(this) result(x)
         class(errors), intent(in) :: this
         logical :: x
         x = this%m_suppressPrinting
@@ -317,7 +317,7 @@ contains
     !! @param[in,out] this The errors object.
     !! @param[in] x Set to true if message printing should be suppressed; else,
     !!  false to allow printing.
-    subroutine set_suppress_printing(this, x)
+    subroutine er_set_suppress_printing(this, x)
         class(errors), intent(inout) :: this
         logical, intent(in) :: x
         this%m_suppressPrinting = x

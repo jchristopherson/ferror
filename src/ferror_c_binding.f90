@@ -14,10 +14,10 @@ module ferror_c_binding
 ! ------------------------------------------------------------------------------
     !> @brief A C compatible type encapsulating an errors object.
     type, bind(C) :: errorhandler
-        !> @brief The size of the errors object, in bytes.
-        integer(c_int) :: n
         !> @brief A pointer to the errors object.
         type(c_ptr) :: ptr
+        !> @brief The size of the errors object, in bytes.
+        integer(c_int) :: n
     end type
 
 contains
@@ -31,14 +31,22 @@ contains
         ! Arguments
         type(errorhandler), intent(inout) :: obj
 
+        ! ! Local Variables
+        ! integer(c_short), allocatable, target, dimension(:) :: temp
+        ! type(errors) :: eobj
+
+        ! ! Process
+        ! temp = transfer(eobj, temp)
+        ! obj%n = size(temp)
+        ! obj%ptr = c_loc(temp(1))
+
         ! Local Variables
-        integer(c_short), allocatable, target, dimension(:) :: temp
-        type(errors) :: eobj
+        type(errors), pointer :: ptr
 
         ! Process
-        temp = transfer(eobj, temp)
-        obj%n = size(temp)
-        obj%ptr = c_loc(temp(1))
+        allocate(ptr)
+        obj%n = sizeof(ptr)
+        obj%ptr = c_loc(ptr)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -47,22 +55,34 @@ contains
     !! @param[in] obj The C compatible errorhandler data structure.
     !! @param[out] eobj The resulting errors object.
     subroutine get_errorhandler(obj, eobj)
+        ! ! Arguments
+        ! type(errorhandler), intent(in), target :: obj
+        ! class(errors), intent(out), allocatable :: eobj
+
+        ! ! Local Variables
+        ! integer(c_short), pointer, dimension(:) :: temp
+        ! type(errors) :: item
+        ! type(c_ptr) :: testptr
+
+        ! ! Process
+        ! testptr = c_loc(obj) ! Ensures that obj wasn't passed as NULL from C
+        ! if (.not.c_associated(testptr)) return
+        ! if (.not.c_associated(obj%ptr)) return
+        ! call c_f_pointer(obj%ptr, temp, shape = [obj%n])
+        ! item = transfer(temp, item)
+        ! allocate(eobj, source = item)
+
         ! Arguments
         type(errorhandler), intent(in), target :: obj
-        class(errors), intent(out), allocatable :: eobj
-
-        ! Local Variables
-        integer(c_short), pointer, dimension(:) :: temp
-        type(errors) :: item
-        type(c_ptr) :: testptr
+        type(errors), intent(out), pointer :: eobj
 
         ! Process
-        testptr = c_loc(obj) ! Ensures that obj wasn't passed as NULL from C
+        type(c_ptr) :: testptr
+        testptr = c_loc(obj)
         if (.not.c_associated(testptr)) return
         if (.not.c_associated(obj%ptr)) return
-        call c_f_pointer(obj%ptr, temp, shape = [obj%n])
-        item = transfer(temp, item)
-        allocate(eobj, source = item)
+        if (obj%n == 0) return
+        call c_f_pointer(obj%ptr, eobj)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -79,9 +99,9 @@ contains
         integer(c_short), allocatable, target, dimension(:) :: temp
 
         ! Process
-        temp = transfer(eobj, temp)
-        cobj%n = size(temp)
-        cobj%ptr = c_loc(temp(1))
+        ! temp = transfer(eobj, temp)
+        ! cobj%n = size(temp)
+        ! cobj%ptr = c_loc(temp(1))
     end subroutine
 
 ! ******************************************************************************
@@ -104,12 +124,12 @@ contains
         integer(c_int), intent(inout) :: nfname
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
         character(len = :), allocatable :: fstr
 
         ! Get the errors object
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) then
+        if (.not.associated(ferr)) then
             nfname = 0
             return
         end if
@@ -131,12 +151,12 @@ contains
         character(kind = c_char), intent(in) :: fname(*)
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
         character(len = :), allocatable :: fstr
 
         ! Get the errors object
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) return
+        if (.not.associated(ferr)) return
 
         ! Process
         fstr = cstr_2_fstr(fname)
@@ -160,11 +180,11 @@ contains
         integer(c_int), intent(in), value :: flag
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
 
         ! Get the errors object
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) return
+        if (.not.associated(ferr)) return
 
         ! Report the error
         call ferr%report_error(cstr_2_fstr(fcn), cstr_2_fstr(msg), flag)
@@ -187,11 +207,11 @@ contains
         integer(c_int), intent(in), value :: flag
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
 
         ! Get the errors object
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) return
+        if (.not.associated(ferr)) return
 
         ! Report the warning
         call ferr%report_warning(cstr_2_fstr(fcn), cstr_2_fstr(msg), flag)
@@ -214,11 +234,11 @@ contains
         integer(c_int), intent(in), value :: flag
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
 
         ! Get the errors object
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) return
+        if (.not.associated(ferr)) return
 
         ! Log the error
         call ferr%log_error(cstr_2_fstr(fcn), cstr_2_fstr(msg), flag)
@@ -236,12 +256,12 @@ contains
         logical(c_bool) :: x
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
 
         ! Get the errors object
         x = .false.
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) return
+        if (.not.associated(ferr)) return
 
         ! Process
         x = ferr%has_error_occurred()
@@ -257,11 +277,11 @@ contains
         type(errorhandler), intent(inout) :: err
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
 
         ! Get the errors object
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) return
+        if (.not.associated(ferr)) return
 
         ! Process
         call ferr%reset_error_status()
@@ -280,12 +300,12 @@ contains
         logical(c_bool) :: x
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
 
         ! Get the errors object
         x = .false.
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) return
+        if (.not.associated(ferr)) return
 
         ! Process
         x = ferr%has_warning_occurred()
@@ -301,11 +321,11 @@ contains
         type(errorhandler), intent(inout) :: err
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
 
         ! Get the errors object
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) return
+        if (.not.associated(ferr)) return
 
         ! Process
         call ferr%reset_warning_status()
@@ -323,12 +343,12 @@ contains
         integer(c_int) :: x
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
 
         ! Get the errors object
         x = 0
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) return
+        if (.not.associated(ferr)) return
 
         ! Process
         x = ferr%get_error_flag()
@@ -346,12 +366,12 @@ contains
         integer(c_int) :: x
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
 
         ! Get the errors object
         x = 0
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) return
+        if (.not.associated(ferr)) return
 
         ! Process
         x = ferr%get_warning_flag()
@@ -371,12 +391,12 @@ contains
         logical(c_bool) :: x
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
 
         ! Get the errors object
         x = .true.
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) return
+        if (.not.associated(ferr)) return
 
         ! Process
         x = ferr%get_exit_on_error()
@@ -395,11 +415,11 @@ contains
         logical(c_bool), intent(in), value :: x
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
 
         ! Get the errors object
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) return
+        if (.not.associated(ferr)) return
 
         ! Process
         call ferr%set_exit_on_error(logical(x))
@@ -420,12 +440,12 @@ contains
         logical(c_bool) :: x
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
         
         ! Get the errors object
         x = .false.
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) return
+        if (.not.associated(ferr)) return
 
         ! Process
         x = ferr%get_suppress_printing()
@@ -445,11 +465,11 @@ contains
         logical(c_bool), intent(in), value :: x
 
         ! Local Variables
-        class(errors), allocatable :: ferr
+        type(errors), pointer :: ferr
 
         ! Get the errors object
         call get_errorhandler(err, ferr)
-        if (.not.allocated(ferr)) return
+        if (.not.associated(ferr)) return
 
         ! Process
         call ferr%set_suppress_printing(logical(x))
