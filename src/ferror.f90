@@ -187,14 +187,20 @@ contains
         integer, intent(in) :: flag
 
         ! Local Variables
-        integer :: fid
+        integer :: fid, time(3), date(3)
 
         ! Open the file
-        open(newunit = fid, file = this%m_fname)
+        open(newunit = fid, file = this%m_fname, access = "append")
+
+        ! Determine the time
+        call itime(time)
+        call idate(date)
 
         ! Write the error information
         write(fid, '(A)') ""
         write(fid, '(A)') "***** ERROR *****"
+        write(fid, '(I0AI0AI0AI0AI0AI0)') date(1), "/", date(2), "/", date(3), &
+            "; ", time(1), ":", time(2), ":", time(3)
         write(fid, '(A)') "Function: " // fcn
         write(fid, '(AI0)') "Error Flag: ", flag
         write(fid, '(A)') "Message:"
