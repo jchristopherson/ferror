@@ -6,7 +6,7 @@
 !! FERROR is a library to assist with error handling in Fortran projects.
 !!
 !! @author Jason Christopherson
-!! @version 1.2.1
+!! @version 1.2.2
 
 !> @brief \b ferror
 !!

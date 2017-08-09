@@ -29,4 +29,7 @@ int main() {
 
     // Return the error code
     printf("Retrieved Error Code: %i\n", get_error_flag(&err));
+
+    // Clean Up
+    free_errorhandler(&err);
 }

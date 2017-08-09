@@ -18,5 +18,6 @@ int main() {
     printf("FERROR C INTERFACE TEST STATUS: PASS\n");
 
     // End
+    free_errorhandler(&err);
     return 0;
 }
