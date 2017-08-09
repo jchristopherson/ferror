@@ -22,6 +22,12 @@ extern "C" {
  */
 void alloc_errorhandler(errorhandler *obj);
 
+/** @brief Frees resources held by the errorhandler object.
+ *
+ * @param obj The errorhandler object.
+ */
+void free_errorhandler(errorhandler *obj);
+
 /** @brief Gets the name of the error log file.
  *
  * @param err The errorhandler object.

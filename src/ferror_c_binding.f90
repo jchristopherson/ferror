@@ -31,15 +31,6 @@ contains
         ! Arguments
         type(errorhandler), intent(inout) :: obj
 
-        ! ! Local Variables
-        ! integer(c_short), allocatable, target, dimension(:) :: temp
-        ! type(errors) :: eobj
-
-        ! ! Process
-        ! temp = transfer(eobj, temp)
-        ! obj%n = size(temp)
-        ! obj%ptr = c_loc(temp(1))
-
         ! Local Variables
         type(errors), pointer :: ptr
 
@@ -50,28 +41,33 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    !> @brief Frees resources held by the errorhandler object.
+    !!
+    !! @param[in,out] obj The errorhandler object.
+    subroutine free_errorhandler(obj) bind(C, name = "free_errorhandler")
+        ! Arguments
+        type(errorhandler), intent(inout), target :: obj
+
+        ! Local Variables
+        type(c_ptr) :: testptr
+        type(errorhandler), pointer :: err
+
+        ! Process
+        testptr = c_loc(obj)
+        if (.not.c_associated(testptr)) return
+        if (.not.c_associated(obj%ptr)) return
+        call c_f_pointer(obj%ptr, err)
+        if (associated(err)) deallocate(err)
+        obj%n = 0
+        obj%ptr = c_null_ptr
+    end subroutine
+
+! ------------------------------------------------------------------------------
     !> @brief Retrieves the errors object from the C compatible data structure.
     !!
     !! @param[in] obj The C compatible errorhandler data structure.
     !! @param[out] eobj The resulting errors object.
     subroutine get_errorhandler(obj, eobj)
-        ! ! Arguments
-        ! type(errorhandler), intent(in), target :: obj
-        ! class(errors), intent(out), allocatable :: eobj
-
-        ! ! Local Variables
-        ! integer(c_short), pointer, dimension(:) :: temp
-        ! type(errors) :: item
-        ! type(c_ptr) :: testptr
-
-        ! ! Process
-        ! testptr = c_loc(obj) ! Ensures that obj wasn't passed as NULL from C
-        ! if (.not.c_associated(testptr)) return
-        ! if (.not.c_associated(obj%ptr)) return
-        ! call c_f_pointer(obj%ptr, temp, shape = [obj%n])
-        ! item = transfer(temp, item)
-        ! allocate(eobj, source = item)
-
         ! Arguments
         type(errorhandler), intent(in), target :: obj
         type(errors), intent(out), pointer :: eobj
@@ -79,29 +75,11 @@ contains
         ! Process
         type(c_ptr) :: testptr
         testptr = c_loc(obj)
+        nullify(eobj)
         if (.not.c_associated(testptr)) return
         if (.not.c_associated(obj%ptr)) return
         if (obj%n == 0) return
         call c_f_pointer(obj%ptr, eobj)
-    end subroutine
-
-! ------------------------------------------------------------------------------
-    !> @brief Updates the errorhandler object.
-    !!
-    !! @param[in] eobj The errors object.
-    !! @param[in,out] cobj The errorhandler object to update.
-    subroutine update_errorhandler(eobj, cobj)
-        ! Arguments
-        class(errors), intent(in) :: eobj
-        type(errorhandler), intent(inout) :: cobj
-
-        ! Local Variables
-        integer(c_short), allocatable, target, dimension(:) :: temp
-
-        ! Process
-        ! temp = transfer(eobj, temp)
-        ! cobj%n = size(temp)
-        ! cobj%ptr = c_loc(temp(1))
     end subroutine
 
 ! ******************************************************************************
@@ -161,7 +139,6 @@ contains
         ! Process
         fstr = cstr_2_fstr(fname)
         call ferr%set_log_filename(fstr)
-        call update_errorhandler(ferr, err)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -188,7 +165,6 @@ contains
 
         ! Report the error
         call ferr%report_error(cstr_2_fstr(fcn), cstr_2_fstr(msg), flag)
-        call update_errorhandler(ferr, err)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -215,7 +191,6 @@ contains
 
         ! Report the warning
         call ferr%report_warning(cstr_2_fstr(fcn), cstr_2_fstr(msg), flag)
-        call update_errorhandler(ferr, err)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -285,7 +260,6 @@ contains
 
         ! Process
         call ferr%reset_error_status()
-        call update_errorhandler(ferr, err)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -329,7 +303,6 @@ contains
 
         ! Process
         call ferr%reset_warning_status()
-        call update_errorhandler(ferr, err)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -423,7 +396,6 @@ contains
 
         ! Process
         call ferr%set_exit_on_error(logical(x))
-        call update_errorhandler(ferr, err)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -473,7 +445,6 @@ contains
 
         ! Process
         call ferr%set_suppress_printing(logical(x))
-        call update_errorhandler(ferr, err)
     end subroutine
 
 ! ******************************************************************************
