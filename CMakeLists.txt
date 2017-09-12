@@ -103,6 +103,8 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 set(c_test_source test/ferror_test_c.c)
 add_executable(ferror_test_c ${c_test_source})
 target_link_libraries(ferror_test_c ferror)
-add_custom_command(OUTPUT c_api_test DEPENDS ${c_test_source}
-  COMMAND ferror_test_c)
-add_custom_target(run_c_api_test ALL DEPENDS c_api_test)
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+  add_custom_command(OUTPUT c_api_test DEPENDS ${c_test_source}
+    COMMAND ferror_test_c)
+  add_custom_target(run_c_api_test ALL DEPENDS c_api_test)
+endif()
