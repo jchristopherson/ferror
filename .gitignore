@@ -36,6 +36,7 @@ bin/
 build/
 html/
 latex/
+lib/
 
 # CMake Stuff
 *.json
