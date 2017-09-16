@@ -5,7 +5,7 @@ project(ferror C CXX Fortran)
 # Define version information
 set(linalg_VERSION_MAJOR 1)
 set(linalg_VERSION_MINOR 2)
-set(linalg_VERSION_PATCH 3)
+set(linalg_VERSION_PATCH 4)
 
 # Define output directories, if undefined
 if (NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
