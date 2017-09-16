@@ -5,7 +5,7 @@ project(ferror C CXX Fortran)
 # Define version information
 set(linalg_VERSION_MAJOR 1)
 set(linalg_VERSION_MINOR 2)
-set(linalg_VERSION_PATCH 2)
+set(linalg_VERSION_PATCH 3)
 
 # Define output directories, if undefined
 if (NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
@@ -58,7 +58,7 @@ get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 if (Fortran_COMPILER_NAME MATCHES "gfortran.*")
   # gfortran
   # Options: https://gcc.gnu.org/onlinedocs/gfortran/Option-Summary.html
-  set (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
+  set (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O1")
   set (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g -Wall")
 elseif (Fortran_COMPILER_NAME MATCHES "ifort.*")
   # ifort (untested)
@@ -103,8 +103,6 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 set(c_test_source test/ferror_test_c.c)
 add_executable(ferror_test_c ${c_test_source})
 target_link_libraries(ferror_test_c ferror)
-if (CMAKE_BUILD_TYPE MATCHES Debug)
-  add_custom_command(OUTPUT c_api_test DEPENDS ${c_test_source}
-    COMMAND ferror_test_c)
-  add_custom_target(run_c_api_test ALL DEPENDS c_api_test)
-endif()
+add_custom_command(OUTPUT c_api_test DEPENDS ${c_test_source}
+  COMMAND ferror_test_c)
+add_custom_target(run_c_api_test ALL DEPENDS c_api_test)
