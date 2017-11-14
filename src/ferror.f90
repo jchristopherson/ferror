@@ -6,13 +6,14 @@
 !! FERROR is a library to assist with error handling in Fortran projects.
 !!
 !! @author Jason Christopherson
-!! @version 1.2.4
+!! @version 1.2.5
 
 !> @brief \b ferror
 !!
 !! @par Purpose
 !! Provides a series of error codes and error handling mechanisms.
 module ferror
+    use, intrinsic :: iso_fortran_env, only : int32
     implicit none
     private
 
@@ -28,9 +29,9 @@ module ferror
         !> Found a warning
         logical :: m_foundWarning = .false.
         !> The error flag
-        integer :: m_errorFlag = 0
+        integer(int32) :: m_errorFlag = 0
         !> The warning flag
-        integer :: m_warningFlag = 0
+        integer(int32) :: m_warningFlag = 0
         !> Terminate the application on error
         logical :: m_exitOnError = .true.
         !> Suppress printing of error and warning messages
@@ -92,7 +93,7 @@ contains
     subroutine er_set_log_filename(this, str)
         class(errors), intent(inout) :: this
         character(len = :), allocatable :: str
-        integer :: n
+        integer(int32) :: n
         n = min(len(str), 256)
         this%m_fname = ""
         this%m_fname(1:n) = str(1:n)
@@ -114,7 +115,7 @@ contains
         ! Arguments
         class(errors), intent(inout) :: this
         character(len = *), intent(in) :: fcn, msg
-        integer, intent(in) :: flag
+        integer(int32), intent(in) :: flag
 
         ! Write the error message to the command line
         if (.not.this%m_suppressPrinting) then
@@ -154,7 +155,7 @@ contains
         ! Arguments
         class(errors), intent(inout) :: this
         character(len = *), intent(in) :: fcn, msg
-        integer, intent(in) :: flag
+        integer(int32), intent(in) :: flag
 
         ! Write the warning message to the command line
         if (.not.this%m_suppressPrinting) then
@@ -184,10 +185,10 @@ contains
         ! Arguments
         class(errors), intent(in) :: this
         character(len = *), intent(in) :: fcn, msg
-        integer, intent(in) :: flag
+        integer(int32), intent(in) :: flag
 
         ! Local Variables
-        integer :: fid, time(3), date(3)
+        integer(int32) :: fid, time(3), date(3)
 
         ! Open the file
         open(newunit = fid, file = this%m_fname, access = "append")
@@ -262,7 +263,7 @@ contains
     !! @return The current error flag.
     pure function er_get_error_flag(this) result(x)
         class(errors), intent(in) :: this
-        integer :: x
+        integer(int32) :: x
         x = this%m_errorFlag
     end function
 
@@ -273,7 +274,7 @@ contains
     !! @return The current warning flag.
     pure function er_get_warning_flag(this) result(x)
         class(errors), intent(in) :: this
-        integer :: x
+        integer(int32) :: x
         x = this%m_warningFlag
     end function
     
