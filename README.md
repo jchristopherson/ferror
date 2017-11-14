@@ -1,6 +1,9 @@
 # ferror
 A library to assist with error handling in Fortran projects.
 
+## Status
+![Build Status](https://travis-ci.org/jchristopherson/ferror.svg?branch=master)
+
 ## Usage
 
 ```fortran
