@@ -5,7 +5,7 @@ project(ferror C CXX Fortran)
 # Define version information
 set(linalg_VERSION_MAJOR 1)
 set(linalg_VERSION_MINOR 2)
-set(linalg_VERSION_PATCH 5)
+set(linalg_VERSION_PATCH 6)
 
 # Define output directories, if undefined
 if (NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
@@ -56,24 +56,24 @@ endif()
 get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 
 if (Fortran_COMPILER_NAME MATCHES "gfortran.*")
-  # gfortran
-  # Options: https://gcc.gnu.org/onlinedocs/gfortran/Option-Summary.html
-  set (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O1")
-  set (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g -Wall")
+    # gfortran
+    # Options: https://gcc.gnu.org/onlinedocs/gfortran/Option-Summary.html
+    set (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O1")
+    set (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g -Wall")
 elseif (Fortran_COMPILER_NAME MATCHES "ifort.*")
-  # ifort (untested)
-  set (CMAKE_Fortran_FLAGS_RELEASE "-f77rtl -O1")
-  set (CMAKE_Fortran_FLAGS_DEBUG   "-f77rtl -O0 -g")
+    # ifort (untested)
+    set (CMAKE_Fortran_FLAGS_RELEASE "-f77rtl -O1")
+    set (CMAKE_Fortran_FLAGS_DEBUG   "-f77rtl -O0 -g")
 else (Fortran_COMPILER_NAME MATCHES "gfortran.*")
-  message ("CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
-  message ("Fortran compiler: " ${Fortran_COMPILER_NAME})
-  message ("No optimized Fortran compiler flags are known, we just try -O1...")
-  set (CMAKE_Fortran_FLAGS_RELEASE "-O1")
-  set (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g -Wall")
+    message ("CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
+    message ("Fortran compiler: " ${Fortran_COMPILER_NAME})
+    message ("No optimized Fortran compiler flags are known, we just try -O1...")
+    set (CMAKE_Fortran_FLAGS_RELEASE "-O1")
+    set (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g -Wall")
 endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
 
 # Define the library
-add_library(ferror src/ferror.f90 src/ferror_c_binding.f90)
+add_subdirectory(src)
 
 # ------------------------------------------------------------------------------
 # EXAMPLES
