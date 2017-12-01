@@ -50,4 +50,4 @@ install_manifest.txt
 CTestTestfile.cmake
 
 # Misc. Stuff
-*.txt
+error_log.txt
