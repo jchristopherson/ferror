@@ -122,8 +122,3 @@ Retrieved Error Code: 2
 
 ## Documentation
 Documentation can be found [here](doc/refman.pdf)
-
-## Contributing
-This project is a work in progress and anyone is free to contribute.
-
-For bug reports or feature requests please open an issue on github.
