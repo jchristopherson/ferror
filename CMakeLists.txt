@@ -5,7 +5,7 @@ project(ferror C CXX Fortran)
 # Define version information
 set(linalg_VERSION_MAJOR 1)
 set(linalg_VERSION_MINOR 2)
-set(linalg_VERSION_PATCH 6)
+set(linalg_VERSION_PATCH 7)
 
 # Define output directories, if undefined
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
