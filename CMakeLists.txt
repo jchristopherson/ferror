@@ -7,6 +7,51 @@ set(linalg_VERSION_MAJOR 1)
 set(linalg_VERSION_MINOR 2)
 set(linalg_VERSION_PATCH 6)
 
+# Define output directories, if undefined
+set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
+# if (NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
+#   message(STATUS "FERROR library output directories undefined.  Using default directories.")
+#   if (CMAKE_BUILD_TYPE MATCHES Debug)
+#     # Debug Build
+#     if (BUILD_SHARED_LIBS)
+#       set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug)
+#       set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug)
+#       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug)
+#       set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug/mod)
+#     else()
+#       set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug)
+#       set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug)
+#       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug)
+#       set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug/mod)
+#     endif()
+#   elseif (CMAKE_BUILD_TYPE MATCHES Release)
+#     # Release Build
+#     if (BUILD_SHARED_LIBS)
+#       set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Release)
+#       set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Release)
+#       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Release)
+#       set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Release/mod)
+#     else()
+#       set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Release)
+#       set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Release)
+#       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Release)
+#       set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Release/mod)
+#     endif()
+#   else()
+#     # Default Condition
+#     if (BUILD_SHARED_LIBS)
+#       set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug)
+#       set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug)
+#       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug)
+#       set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug/mod)
+#     else()
+#       set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug)
+#       set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug)
+#       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug)
+#       set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug/mod)
+#     endif()
+#   endif()
+# endif()
 
 # FFLAGS depend on the compiler
 get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
@@ -47,12 +92,12 @@ endif()
 # TESTS
 # ------------------------------------------------------------------------------
 # C Based Testing
-option(BUILD_FERROR_TESTS "Build FERROR tests?" ON)
+option(BUILD_FERROR_TESTS "Build FERROR tests?" OFF)
 if (BUILD_FERROR_TESTS)
   # Inform the user we're building the tests
   message(STATUS "Building FERROR tests.")
 
   # Build the tests
-  add_subdirectory(test)
+#   add_subdirectory(test)
 endif()
 
