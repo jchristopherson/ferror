@@ -9,49 +9,12 @@ set(linalg_VERSION_PATCH 7)
 
 # Define output directories, if undefined
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
-# if (NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
-#   message(STATUS "FERROR library output directories undefined.  Using default directories.")
-#   if (CMAKE_BUILD_TYPE MATCHES Debug)
-#     # Debug Build
-#     if (BUILD_SHARED_LIBS)
-#       set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug)
-#       set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug)
-#       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug)
-#       set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug/mod)
-#     else()
-#       set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug)
-#       set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug)
-#       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug)
-#       set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug/mod)
-#     endif()
-#   elseif (CMAKE_BUILD_TYPE MATCHES Release)
-#     # Release Build
-#     if (BUILD_SHARED_LIBS)
-#       set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Release)
-#       set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Release)
-#       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Release)
-#       set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Release/mod)
-#     else()
-#       set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Release)
-#       set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Release)
-#       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Release)
-#       set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Release/mod)
-#     endif()
-#   else()
-#     # Default Condition
-#     if (BUILD_SHARED_LIBS)
-#       set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug)
-#       set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug)
-#       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug)
-#       set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/Debug/mod)
-#     else()
-#       set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug)
-#       set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug)
-#       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug)
-#       set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/Debug/mod)
-#     endif()
-#   endif()
-# endif()
+
+# If building a shared library, put the example and test executables in the
+# same directory as the shared library.
+if (BUILD_SHARED_LIBS)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+endif()
 
 # FFLAGS depend on the compiler
 get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
@@ -65,13 +28,13 @@ elseif (Fortran_COMPILER_NAME MATCHES "ifort.*")
     # ifort (untested)
     set (CMAKE_Fortran_FLAGS_RELEASE "-f77rtl -O1")
     set (CMAKE_Fortran_FLAGS_DEBUG   "-f77rtl -O0 -g")
-else (Fortran_COMPILER_NAME MATCHES "gfortran.*")
+else()
     message ("CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
     message ("Fortran compiler: " ${Fortran_COMPILER_NAME})
     message ("No optimized Fortran compiler flags are known, we just try -O1...")
     set (CMAKE_Fortran_FLAGS_RELEASE "-O1")
     set (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g -Wall")
-endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
+endif()
 
 # Build the library
 add_subdirectory(src)
@@ -92,12 +55,12 @@ endif()
 # TESTS
 # ------------------------------------------------------------------------------
 # C Based Testing
-option(BUILD_FERROR_TESTS "Build FERROR tests?" OFF)
+option(BUILD_FERROR_TESTS "Build FERROR tests?" ON)
 if (BUILD_FERROR_TESTS)
-  # Inform the user we're building the tests
-  message(STATUS "Building FERROR tests.")
+    # Inform the user we're building the tests
+    message(STATUS "Building FERROR tests.")
 
-  # Build the tests
-#   add_subdirectory(test)
+    # Build the tests
+    add_subdirectory(test)
 endif()
 

@@ -5,6 +5,7 @@
 
 // Testing code for the ferror library via it's C interface.
 int main() {
+    // Local Variables
     errorhandler err;
 
     // Initialize the errorhandler object
