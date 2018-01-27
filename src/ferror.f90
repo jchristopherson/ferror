@@ -92,7 +92,7 @@ contains
     !! @param[in] str The filename.
     subroutine er_set_log_filename(this, str)
         class(errors), intent(inout) :: this
-        character(len = :), allocatable :: str
+        character(len = *), intent(in) :: str
         integer(int32) :: n
         n = min(len(str), 256)
         this%m_fname = ""

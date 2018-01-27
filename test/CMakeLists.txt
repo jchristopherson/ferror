@@ -1,3 +1,23 @@
+# ------------------------------------------------------------------------------
+# FORTRAN API TESTS
+# ------------------------------------------------------------------------------
+set(f_test_source ferror_test.f90)
+
+# Locate the source files
+set(ferror_test_source ferror_test.f90)
+
+# Build the executable
+add_executable(ferror_test ${f_test_source})
+target_link_libraries(ferror_test ferror)
+
+# Force the tests to run as part of the build process
+add_custom_command(OUTPUT ferror_api_test DEPENDS ${f_test_source}
+  COMMAND ferror_test)
+add_custom_target(run_ferror_tests ALL DEPENDS ferror_api_test)
+
+# ------------------------------------------------------------------------------
+# C API TESTS
+# ------------------------------------------------------------------------------
 # Define the include directories
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
