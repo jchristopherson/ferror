@@ -637,14 +637,15 @@ contains
         integer, intent(inout) :: csize
 
         ! Local Variables
-        integer :: i
+        integer :: i, n
 
         ! Process
-        do i = 1, min(len(fstr), csize - 1) ! -1 allows room for the null char
+        n = min(len(fstr), csize - 1) ! -1 allows room for the null char
+        do i = 1, n
             cstr(i) = fstr(i:i)
         end do
-        cstr(i+1) = c_null_char
-        csize = i
+        cstr(n+1) = c_null_char
+        csize = n
     end subroutine
 
 ! ------------------------------------------------------------------------------
