@@ -158,6 +158,48 @@ bool get_suppress_printing(const errorhandler *err);
  */
 void set_suppress_printing(errorhandler *err, bool x);
 
+/** @brief Gets the current error message.
+ *
+ * @param err The errorhandler object.
+ * @param mst A character buffer where the message will be written.
+ * @param nmsg On input, the actual size of the buffer.  On output,
+ *  the actual number of characters written to @p msg (not including the 
+ *  null character).
+ */
+void get_error_message(const errorhandler *err, char *msg, int *nmsg);
+
+/** @brief Gets the current warning message.
+ *
+ * @param err The errorhandler object.
+ * @param mst A character buffer where the message will be written.
+ * @param nmsg On input, the actual size of the buffer.  On output,
+ *  the actual number of characters written to @p msg (not including the 
+ *  null character).
+ */
+void get_warning_message(const errorhandler *err, char *msg, int *nmsg);
+
+/** @brief Gets the name of the function or subroutine that issued the last
+ * error message.
+ *
+ * @param err The errorhandler object.
+ * @param fname A character buffer where the name will be written.
+ * @param nfname On input, the actual size of the buffer.  On 
+ *  output, the actual number of characters written to @p fname (not
+ *  including the null character).
+ */
+void get_error_fcn_name(const errorhandler *err, char *fname, int *nfname);
+
+/** @brief Gets the name of the function or subroutine that issued the last
+ * warning message.
+ *
+ * @param err The errorhandler object.
+ * @param fname A character buffer where the name will be written.
+ * @param nfname On input, the actual size of the buffer.  On 
+ *  output, the actual number of characters written to @p fname (not
+ *  including the null character).
+ */
+void get_warning_fcn_name(const errorhandler *err, char *fname, int *nfname);
+
 #ifdef __cplusplus
 }
 #endif
