@@ -19,6 +19,12 @@ program main
     test_result = test_warning_reporting()
     if (.not.test_result) overall = .false.
 
+    test_result = test_error_reset()
+    if (.not.test_result) overall = .false.
+
+    test_result = test_warning_reset()
+    if (.not.test_result) overall = .false.
+
     if (overall) then
         print '(A)', "FERROR TEST STATUS: PASS"
         call exit(0)
@@ -157,14 +163,57 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    function test_error_reset() result(rst)
+        ! Local Variables
+        logical :: rst
+        type(errors) :: obj
+
+        ! Initialization
+        rst = .true.
+
+        ! Ensure the error reporting doesn't terminate the application
+        call obj%set_exit_on_error(.false.)
+
+        ! Don't print the error message to the command line
+        call obj%set_suppress_printing(.true.)
+
+        ! Set an error condition
+        call obj%report_error("fcn1", "Error Message", 1)
+
+        ! Reset the error
+        call obj%reset_error_status()
+
+        ! Ensure the error was reset
+        if (obj%has_error_occurred()) then
+            rst = .false.
+            print '(A)', "Expected the error message to be reset."
+        end if
+    end function
 
 ! ------------------------------------------------------------------------------
+    function test_warning_reset() result(rst)
+        ! Local Variables
+        logical :: rst
+        type(errors) :: obj
 
-! ------------------------------------------------------------------------------
+        ! Initialization
+        rst = .true.
 
-! ------------------------------------------------------------------------------
+        ! Don't print the warning message to the command line
+        call obj%set_suppress_printing(.true.)
 
-! ------------------------------------------------------------------------------
+        ! Set a warning condition
+        call obj%report_warning("fcn1", "Warning Message", 1)
+
+        ! Reset the warning
+        call obj%reset_warning_status()
+
+        ! Ensure the warning was reset
+        if (obj%has_warning_occurred()) then
+            rst = .false.
+            print '(A)', "Expected the warning message to be reset."
+        end if
+    end function
 
 ! ------------------------------------------------------------------------------
 end program main
