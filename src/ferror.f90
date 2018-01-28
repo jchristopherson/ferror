@@ -22,20 +22,24 @@ module ferror
     type, public :: errors
         private
 
-        !> A maximum of 256 character error log filename
+        !> A maximum of 256 character error log filename.
         character(len = 256) :: m_fname = "error_log.txt"
-        !> Found an error
+        !> Found an error.
         logical :: m_foundError = .false.
-        !> Found a warning
+        !> Found a warning.
         logical :: m_foundWarning = .false.
-        !> The error flag
+        !> The error flag.
         integer(int32) :: m_errorFlag = 0
-        !> The warning flag
+        !> The warning flag.
         integer(int32) :: m_warningFlag = 0
-        !> Terminate the application on error
+        !> Terminate the application on error.
         logical :: m_exitOnError = .true.
-        !> Suppress printing of error and warning messages
+        !> Suppress printing of error and warning messages.
         logical :: m_suppressPrinting = .false.
+        !> The error message.
+        character(len = :), allocatable :: m_errorMessage
+        !> The warning message.
+        character(len = :), allocatable :: m_warningMessage
     contains
         !> @brief Gets the name of the error log file.
         procedure, public :: get_log_filename => er_get_log_filename
@@ -71,6 +75,10 @@ module ferror
         !> @brief Sets a logical value determining if printing of error and 
         !! warning messages should be suppressed.
         procedure, public :: set_suppress_printing => er_set_suppress_printing
+        !> @brief Gets the currently error message.
+        procedure, public :: get_error_message => er_get_err_msg
+        ! !> @brief Gets the current warning message.
+        procedure, public :: get_warning_message => er_get_warning_msg
     end type
 
 contains
@@ -117,6 +125,9 @@ contains
         character(len = *), intent(in) :: fcn, msg
         integer(int32), intent(in) :: flag
 
+        ! Local Variables
+        integer(int32) :: n
+
         ! Write the error message to the command line
         if (.not.this%m_suppressPrinting) then
             print *, ""
@@ -131,6 +142,12 @@ contains
         ! Update the error found status
         this%m_foundError = .true.
         this%m_errorFlag = flag
+
+        ! Store the message
+        n = len(msg)
+        if (allocated(this%m_errorMessage)) deallocate(this%m_errorMessage)
+        allocate(character(len = n) :: this%m_errorMessage)
+        this%m_errorMessage = msg(1:n)
 
         ! Write the error message to a log file
         call this%log_error(fcn, msg, flag)
@@ -157,6 +174,9 @@ contains
         character(len = *), intent(in) :: fcn, msg
         integer(int32), intent(in) :: flag
 
+        ! Local Variables
+        integer(int32) :: n
+
         ! Write the warning message to the command line
         if (.not.this%m_suppressPrinting) then
             print *, ""
@@ -171,6 +191,12 @@ contains
         ! Update the warning found status
         this%m_foundWarning = .true.
         this%m_warningFlag = flag
+
+        ! Store the message
+        n = len(msg)
+        if (allocated(this%m_warningMessage)) deallocate(this%m_warningMessage)
+        allocate(character(len = n) :: this%m_warningMessage)
+        this%m_warningMessage = msg(1:n)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -232,6 +258,7 @@ contains
         class(errors), intent(inout) :: this
         this%m_foundError = .false.
         this%m_errorFlag = 0
+        if (allocated(this%m_errorMessage)) deallocate(this%m_errorMessage)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -254,6 +281,7 @@ contains
         class(errors), intent(inout) :: this
         this%m_foundWarning = .false.
         this%m_warningFlag = 0
+        if (allocated(this%m_warningMessage)) deallocate(this%m_warningMessage)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -329,6 +357,38 @@ contains
         logical, intent(in) :: x
         this%m_suppressPrinting = x
     end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets the current error message.
+    !!
+    !! @param[in] this The errors object.
+    !! @return The error message.
+    function er_get_err_msg(this) result(msg)
+        class(errors), intent(in) :: this
+        character(len = :), allocatable :: msg
+        integer(int32) :: n
+        if (allocated(this%m_errorMessage)) then
+            n = len(this%m_errorMessage)
+            allocate(character(len = n) :: msg)
+            msg = this%m_errorMessage(1:n)
+        end if
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets the current warning message.
+    !!
+    !! @param[in] this The errors object.
+    !! @return The warning message.
+    function er_get_warning_msg(this) result(msg)
+        class(errors), intent(in) :: this
+        character(len = :), allocatable :: msg
+        integer(int32) :: n
+        if (allocated(this%m_warningMessage)) then
+            n = len(this%m_warningMessage)
+            allocate(character(len = n) :: msg)
+            msg = this%m_warningMessage(1:n)
+        end if
+    end function
 
 ! ------------------------------------------------------------------------------
 end module

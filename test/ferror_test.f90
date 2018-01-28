@@ -1,6 +1,7 @@
 ! ferror_test.f90
 
 program main
+    use, intrinsic :: iso_fortran_env, only : int32
     use ferror
     implicit none
 
@@ -10,6 +11,12 @@ program main
 
     ! Tests
     test_result = test_log_file_get_set()
+    if (.not.test_result) overall = .false.
+
+    test_result = test_error_reporting()
+    if (.not.test_result) overall = .false.
+
+    test_result = test_warning_reporting()
     if (.not.test_result) overall = .false.
 
     if (overall) then
@@ -41,8 +48,93 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    function test_error_reporting() result(rst)
+        ! Local Variables
+        logical :: rst
+        type(errors) :: obj
+        integer(int32), parameter :: code = 100
+        character(len = *), parameter :: msg = "Test error message.  Do not be alarmed"
+        integer(int32) :: flag
+        character(len = :), allocatable :: check
+        logical :: test
+
+        ! Initialization
+        rst = .true.
+
+        ! Ensure the error reporting doesn't terminate the application
+        call obj%set_exit_on_error(.false.)
+
+        ! Don't print the error message to the command line
+        call obj%set_suppress_printing(.true.)
+
+        ! Report the error
+        call obj%report_error("fcn1", msg, code)
+
+        ! Ensure an error was logged
+        test = obj%has_error_occurred()
+        if (.not.test) then
+            rst = .false.
+            print '(A)', "Expected an error, but found none."
+        end if
+
+        ! Check the error flag
+        if (obj%get_error_flag() /= code) then
+            rst = .false.
+            print '(AI0AI0)', "Expected an error code of ", code, &
+                ", but received an error code of ", flag, "."
+        end if
+
+        ! Check the error message
+        check = obj%get_error_message()
+        if (check /= msg) then
+            rst = .false.
+            print '(A)', "Expected an error message of: " // msg // &
+                ", but found a message of: " // check // "."
+        end if
+    end function
 
 ! ------------------------------------------------------------------------------
+    function test_warning_reporting() result(rst)
+        ! Local Variables
+        logical :: rst
+        type(errors) :: obj
+        integer(int32), parameter :: code = 100
+        character(len = *), parameter :: msg = "Test warning message.  Do not be alarmed"
+        integer(int32) :: flag
+        character(len = :), allocatable :: check
+        logical :: test
+
+        ! Initialization
+        rst = .true.
+
+        ! Don't print the warning message to the command line
+        call obj%set_suppress_printing(.true.)
+
+        ! Report the warning
+        call obj%report_warning("fcn1", msg, code)
+
+        ! Ensure a warning was logged
+        test = obj%has_warning_occurred()
+        if (.not.test) then
+            rst = .false.
+            print '(A)', "Expected a warning, but found none."
+        end if
+
+        ! Check the warning flag
+        if (obj%get_warning_flag() /= code) then
+            rst = .false.
+            print '(AI0AI0)', "Expected an warning code of ", code, &
+                ", but received an warning code of ", flag, "."
+        end if
+
+        ! Check the warning message
+        check = obj%get_warning_message()
+        if (check /= msg) then
+            rst = .false.
+            print '(A)', "Expected a warning message of: " // msg // &
+                ", but found a message of: " // check // "."
+        end if
+    end function
 
 ! ------------------------------------------------------------------------------
 
