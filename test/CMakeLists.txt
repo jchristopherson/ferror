@@ -1,10 +1,8 @@
 # ------------------------------------------------------------------------------
 # FORTRAN API TESTS
 # ------------------------------------------------------------------------------
-set(f_test_source ferror_test.f90)
-
 # Locate the source files
-set(ferror_test_source ferror_test.f90)
+set(f_test_source ferror_test.f90)
 
 # Build the executable
 add_executable(ferror_test ${f_test_source})

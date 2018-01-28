@@ -21,8 +21,10 @@ program main
 
     if (overall) then
         print '(A)', "FERROR TEST STATUS: PASS"
+        call exit(0)
     else
         print '(A)', "FERROR TEST STATUS: FAIL"
+        call exit(1)
     end if
 
 contains
@@ -54,6 +56,7 @@ contains
         type(errors) :: obj
         integer(int32), parameter :: code = 100
         character(len = *), parameter :: msg = "Test error message.  Do not be alarmed"
+        character(len = *), parameter :: fcn = "Test_Fcn"
         integer(int32) :: flag
         character(len = :), allocatable :: check
         logical :: test
@@ -68,7 +71,7 @@ contains
         call obj%set_suppress_printing(.true.)
 
         ! Report the error
-        call obj%report_error("fcn1", msg, code)
+        call obj%report_error(fcn, msg, code)
 
         ! Ensure an error was logged
         test = obj%has_error_occurred()
@@ -91,6 +94,14 @@ contains
             print '(A)', "Expected an error message of: " // msg // &
                 ", but found a message of: " // check // "."
         end if
+
+        ! Check the function name
+        check = obj%get_error_fcn_name()
+        if (check /= fcn) then
+            rst = .false.
+            print '(A)', "Expected a function name of: " // fcn // &
+                ", but found a name of: " // check // "."
+        end if
     end function
 
 ! ------------------------------------------------------------------------------
@@ -100,6 +111,7 @@ contains
         type(errors) :: obj
         integer(int32), parameter :: code = 100
         character(len = *), parameter :: msg = "Test warning message.  Do not be alarmed"
+        character(len = *), parameter :: fcn = "Test_Fcn"
         integer(int32) :: flag
         character(len = :), allocatable :: check
         logical :: test
@@ -111,7 +123,7 @@ contains
         call obj%set_suppress_printing(.true.)
 
         ! Report the warning
-        call obj%report_warning("fcn1", msg, code)
+        call obj%report_warning(fcn, msg, code)
 
         ! Ensure a warning was logged
         test = obj%has_warning_occurred()
@@ -133,6 +145,14 @@ contains
             rst = .false.
             print '(A)', "Expected a warning message of: " // msg // &
                 ", but found a message of: " // check // "."
+        end if
+
+        ! Check the function name
+        check = obj%get_warning_fcn_name()
+        if (check /= fcn) then
+            rst = .false.
+            print '(A)', "Expected a function name of: " // fcn // &
+                ", but found a name of: " // check // "."
         end if
     end function
 

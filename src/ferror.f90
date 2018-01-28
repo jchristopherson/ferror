@@ -40,6 +40,10 @@ module ferror
         character(len = :), allocatable :: m_errorMessage
         !> The warning message.
         character(len = :), allocatable :: m_warningMessage
+        !> The function where the error occurred.
+        character(len = :), allocatable :: m_eFunName
+        !> The function where the warning occurred.
+        character(len = :), allocatable :: m_wFunName
     contains
         !> @brief Gets the name of the error log file.
         procedure, public :: get_log_filename => er_get_log_filename
@@ -77,8 +81,12 @@ module ferror
         procedure, public :: set_suppress_printing => er_set_suppress_printing
         !> @brief Gets the currently error message.
         procedure, public :: get_error_message => er_get_err_msg
-        ! !> @brief Gets the current warning message.
+        !> @brief Gets the current warning message.
         procedure, public :: get_warning_message => er_get_warning_msg
+        !> @brief Gets the name of the routine that initiated the error.
+        procedure, public :: get_error_fcn_name => er_get_err_fcn
+        !> @brief Gets the name of the routine that initiated the warning.
+        procedure, public :: get_warning_fcn_name => er_get_warning_fcn
     end type
 
 contains
@@ -149,6 +157,12 @@ contains
         allocate(character(len = n) :: this%m_errorMessage)
         this%m_errorMessage = msg(1:n)
 
+        ! Store the function name
+        n = len(fcn)
+        if (allocated(this%m_eFunName)) deallocate(this%m_eFunName)
+        allocate(character(len = n) :: this%m_eFunName)
+        this%m_eFunName = fcn(1:n)
+
         ! Write the error message to a log file
         call this%log_error(fcn, msg, flag)
 
@@ -197,6 +211,12 @@ contains
         if (allocated(this%m_warningMessage)) deallocate(this%m_warningMessage)
         allocate(character(len = n) :: this%m_warningMessage)
         this%m_warningMessage = msg(1:n)
+
+        ! Store the function name
+        n = len(fcn)
+        if (allocated(this%m_wFunName)) deallocate(this%m_wFunName)
+        allocate(character(len = n) :: this%m_wFunName)
+        this%m_wFunName = fcn(1:n)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -259,6 +279,7 @@ contains
         this%m_foundError = .false.
         this%m_errorFlag = 0
         if (allocated(this%m_errorMessage)) deallocate(this%m_errorMessage)
+        if (allocated(this%m_eFunName)) deallocate(this%m_eFunName)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -282,6 +303,7 @@ contains
         this%m_foundWarning = .false.
         this%m_warningFlag = 0
         if (allocated(this%m_warningMessage)) deallocate(this%m_warningMessage)
+        if (allocated(this%m_wFunName)) deallocate(this%m_wFunName)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -387,6 +409,38 @@ contains
             n = len(this%m_warningMessage)
             allocate(character(len = n) :: msg)
             msg = this%m_warningMessage(1:n)
+        end if
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets the name of the routine that initiated the error.
+    !!
+    !! @param[in] this The errors object.
+    !! @return The routine or function name.
+    function er_get_err_fcn(this) result(fcn)
+        class(errors), intent(in) :: this
+        character(len = :), allocatable :: fcn
+        integer(int32) :: n
+        if (allocated(this%m_eFunName)) then
+            n = len(this%m_eFunName)
+            allocate(character(len = n) :: fcn)
+            fcn = this%m_eFunName
+        end if
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets the name of the routine that initiated the warning.
+    !!
+    !! @param[in] this The errors object.
+    !! @return The routine or function name.
+    function er_get_warning_fcn(this) result(fcn)
+        class(errors), intent(in) :: this
+        character(len = :), allocatable :: fcn
+        integer(int32) :: n
+        if (allocated(this%m_wFunName)) then
+            n = len(this%m_wFunName)
+            allocate(character(len = n) :: fcn)
+            fcn = this%m_wFunName
         end if
     end function
 
