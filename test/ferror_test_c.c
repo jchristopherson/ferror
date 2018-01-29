@@ -8,6 +8,8 @@
 bool test_log_file_get_set(void);
 bool test_error_reporting(void);
 bool test_warning_reporting(void);
+bool test_error_reset(void);
+bool test_warning_reset(void);
 
 // Testing code for the ferror library via it's C interface.
 int main() {
@@ -25,6 +27,12 @@ int main() {
     if (!test_result) overall = false;
 
     test_result = test_warning_reporting();
+    if (!test_result) overall = false;
+
+    test_result = test_error_reset();
+    if (!test_result) overall = false;
+
+    test_result = test_warning_reset();
     if (!test_result) overall = false;
 
     // End
@@ -187,7 +195,66 @@ bool test_warning_reporting(void) {
 }
 
 /* ************************************************************************** */
+bool test_error_reset(void) {
+    // Local Variables
+    bool rst = true;
+    errorhandler obj;
+
+    // Initialization
+    alloc_errorhandler(&obj);
+
+    // Ensure the error reporting doesn't kill the application
+    set_exit_on_error(&obj, false);
+
+    // Don't print anything either
+    set_suppress_printing(&obj, true);
+
+    // Set an error condition
+    report_error(&obj, "fcn1", "Error Message", 1);
+
+    // Reset the error
+    reset_error_status(&obj);
+
+    // Ensure the error was reset
+    if (has_error_occurred(&obj)) {
+        rst = false;
+        printf("Expected the error message to be reset.\n");
+    }
+
+
+    // End
+    free_errorhandler(&obj);
+    return rst;
+}
 
 /* ************************************************************************** */
+bool test_warning_reset(void) {
+    // Local Variables
+    bool rst = true;
+    errorhandler obj;
+
+    // Initialization
+    alloc_errorhandler(&obj);
+
+    // Don't print anything
+    set_suppress_printing(&obj, true);
+
+    // Set a warning condition
+    report_warning(&obj, "fcn1", "Warning Message", 1);
+
+    // Reset the error
+    reset_warning_status(&obj);
+
+    // Ensure the warning was reset
+    if (has_warning_occurred(&obj)) {
+        rst = false;
+        printf("Expected the warning message to be reset.\n");
+    }
+
+
+    // End
+    free_errorhandler(&obj);
+    return rst;
+}
 
 /* ************************************************************************** */
