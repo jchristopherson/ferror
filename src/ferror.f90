@@ -102,9 +102,12 @@ module ferror
         !!
         !! @param[in] err The errors-based object managing the error handling
         !!  tasks.
-        subroutine error_clean_up(err)
+        !! @param[in,out] obj An unlimited polymorphic object that can be passed
+        !!  to provide information to the clean-up routine.
+        subroutine error_clean_up(err, obj)
             import errors
             class(errors), intent(in) :: err
+            class(*), intent(inout) :: obj
         end subroutine
 end interface
 
@@ -142,18 +145,21 @@ contains
     !!  was encountered.
     !! @param[in] msg The error message.
     !! @param[in] flag The error flag.
+    !! @param[in,out] obj An optional unlimited polymorphic object that can be
+    !!  passed to provide information to the clean-up routine.
     !!
     !! @par Remarks
     !! The default behavior prints an error message, appends the supplied 
     !! information to a log file, and terminates the program.
-    subroutine er_report_error(this, fcn, msg, flag)
+    subroutine er_report_error(this, fcn, msg, flag, obj)
         ! Arguments
         class(errors), intent(inout) :: this
         character(len = *), intent(in) :: fcn, msg
         integer(int32), intent(in) :: flag
+        class(*), intent(inout), optional :: obj
 
         ! Local Variables
-        integer(int32) :: n
+        integer(int32) :: n, dummy
 
         ! Write the error message to the command line
         if (.not.this%m_suppressPrinting) then
@@ -187,7 +193,12 @@ contains
 
         ! Call the clean-up routine, if available
         if (associated(this%m_errCleanUp)) then
-            call this%m_errCleanUp()
+            if (present(obj)) then
+                call this%m_errCleanUp(obj)
+            else
+                dummy = 0
+                call this%m_errCleanUp(dummy)
+            end if
         end if
 
         ! Exit the program
