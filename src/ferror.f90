@@ -44,6 +44,8 @@ module ferror
         character(len = :), allocatable :: m_eFunName
         !> The function where the warning occurred.
         character(len = :), allocatable :: m_wFunName
+        !> A pointer to a routine that can be called upon notice of an error.
+        procedure(error_clean_up), pointer, pass :: m_errCleanUp => null()
     contains
         !> @brief Gets the name of the error log file.
         procedure, public :: get_log_filename => er_get_log_filename
@@ -87,7 +89,24 @@ module ferror
         procedure, public :: get_error_fcn_name => er_get_err_fcn
         !> @brief Gets the name of the routine that initiated the warning.
         procedure, public :: get_warning_fcn_name => er_get_warning_fcn
+        !> @brief Gets the routine to call when an error has been logged.
+        procedure, public :: get_clean_up_routine => er_get_err_fcn_ptr
+        !> @brief Sets the routine to call when an error has been logged.
+        procedure, public :: set_clean_up_routine => er_set_err_fcn_ptr
     end type
+
+! ------------------------------------------------------------------------------
+    interface
+        !> @brief Defines the signature of routine that can be used to clean
+        !! up after an error condition is encountered.
+        !!
+        !! @param[in] err The errors-based object managing the error handling
+        !!  tasks.
+        subroutine error_clean_up(err)
+            import errors
+            class(errors), intent(in) :: err
+        end subroutine
+end interface
 
 contains
 ! ------------------------------------------------------------------------------
@@ -165,6 +184,11 @@ contains
 
         ! Write the error message to a log file
         call this%log_error(fcn, msg, flag)
+
+        ! Call the clean-up routine, if available
+        if (associated(this%m_errCleanUp)) then
+            call this%m_errCleanUp()
+        end if
 
         ! Exit the program
         if (this%m_exitOnError) call exit(flag)
@@ -443,6 +467,28 @@ contains
             fcn = this%m_wFunName
         end if
     end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets the routine to call when an error has been logged.
+    !!
+    !! @param[in] this The errors object.
+    !! @return A pointer to the routine.
+    function er_get_err_fcn_ptr(this) result(ptr)
+        class(errors), intent(in) :: this
+        procedure(error_clean_up), pointer :: ptr
+        ptr => this%m_errCleanUp
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Sets the routine to call when an error has been logged.
+    !!
+    !! @param[in,out] this The errors object.
+    !! @param[in] ptr A pointer to the routine.
+    subroutine er_set_err_fcn_ptr(this, ptr)
+        class(errors), intent(inout) :: this
+        procedure(error_clean_up), intent(in), pointer :: ptr
+        this%m_errCleanUp => ptr
+    end subroutine
 
 ! ------------------------------------------------------------------------------
 end module
