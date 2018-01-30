@@ -25,6 +25,9 @@ program main
     test_result = test_warning_reset()
     if (.not.test_result) overall = .false.
 
+    test_result = test_error_callback()
+    if (.not.test_result) overall = .false.
+
     if (overall) then
         print '(A)', "FERROR TEST STATUS: PASS"
         call exit(0)
@@ -214,6 +217,52 @@ contains
             print '(A)', "Expected the warning message to be reset."
         end if
     end function
+
+! ------------------------------------------------------------------------------
+    function test_error_callback() result(rst)
+        ! Local Variables
+        logical :: rst, check
+        procedure(error_clean_up), pointer :: fcn
+        type(errors) :: obj
+
+        ! Initialization
+        rst = .true.
+        check = .false.
+        fcn => clean_up_callback
+
+        ! Ensure the error reporting doesn't terminate the application
+        call obj%set_exit_on_error(.false.)
+
+        ! Don't print the error message to the command line
+        call obj%set_suppress_printing(.true.)
+
+        ! Define the callback routine
+        call obj%set_clean_up_routine(fcn)
+
+        ! Report the error - pass the variable 'check' as a test parameter
+        ! to the clean up routine.  Let it set to true, and then check
+        ! to ensure the value was changed
+        call obj%report_error("fcn_name", "Error message", 1, check)
+
+        ! Check
+        if (.not.check) then
+            rst = .false.
+            print '(A)', &
+                "The error callback routine did not modify the test value."
+        end if
+    end function
+
+! ******************************************************************************
+! CALLBACK ROUTINES
+! ------------------------------------------------------------------------------
+    subroutine clean_up_callback(this, obj)
+        class(errors), intent(in) :: this
+        class(*), intent(inout) :: obj
+        select type (obj)
+        type is (logical)
+            obj = .true.
+        end select
+    end subroutine
 
 ! ------------------------------------------------------------------------------
 end program main

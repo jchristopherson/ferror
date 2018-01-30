@@ -16,10 +16,12 @@ module ferror
     use, intrinsic :: iso_fortran_env, only : int32
     implicit none
     private
+    public :: errors
+    public :: error_clean_up
 
 ! ------------------------------------------------------------------------------
     !> @brief Defines a type for managing errors and warnings.
-    type, public :: errors
+    type :: errors
         private
 
         !> A maximum of 256 character error log filename.
