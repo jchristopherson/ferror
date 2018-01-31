@@ -20,6 +20,24 @@ module ferror_c_binding
         integer(c_int) :: n
     end type
 
+! ------------------------------------------------------------------------------
+    interface
+        subroutine c_error_callback(ptr)
+            use, intrinsic :: iso_c_binding
+            type(c_ptr), intent(in), value :: ptr
+        end subroutine
+    end interface
+
+! ------------------------------------------------------------------------------
+    !> @brief A type that allows C interop with the Fortran error callback
+    !! routine.
+    type :: callback_manager
+        !> A pointer to the C callback routine.
+        procedure(c_error_callback), pointer, nopass :: fcn
+        !> A pointer to the C-supplied arguments.
+        type(c_ptr) :: args
+    end type
+
 contains
 ! ******************************************************************************
 ! TYPE CONSTRUCTION/DESTRUCTION ROUTINES
@@ -589,6 +607,45 @@ contains
         call fstr_2_cstr(fstr, fname, nfname)
     end subroutine
 
+! ------------------------------------------------------------------------------
+    !> @brief Reports an error condition to the user, and executes a callback
+    !! routine.
+    !!
+    !! @param[in,out] err A pointer to the error handler object.
+    !! @param[in] fcn The name of the function or subroutine in which the error
+    !!  was encountered.
+    !! @param[in] msg The error message.
+    !! @param[in] flag The error flag.
+    subroutine report_error_with_callback(err, fcn, msg, flag, cback, args) &
+            bind(C, name = "report_error_with_callback")
+        ! Arguments
+        type(errorhandler), intent(inout) :: err
+        character(kind = c_char), intent(in) :: fcn, msg
+        integer(c_int), intent(in), value :: flag
+        procedure(error_clean_up), pointer :: ffcn
+        type(c_funptr), intent(in), value :: cback
+        type(c_ptr), intent(in), value :: args
+
+        ! Local Variables
+        type(errors), pointer :: ferr
+        type(callback_manager) :: mgr
+        procedure(c_error_callback), pointer :: fcback
+
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.associated(ferr)) return
+
+        ! Define the callback
+        call c_f_procpointer(cback, fcback)
+        mgr%fcn => fcback
+        mgr%args = args
+        ffcn => err_callback
+        call ferr%set_clean_up_routine(ffcn)
+
+        ! Report the error
+        call ferr%report_error(cstr_2_fstr(fcn), cstr_2_fstr(msg), flag, mgr)
+    end subroutine
+
 ! ******************************************************************************
 ! HELPER ROUTINES
 ! ------------------------------------------------------------------------------
@@ -646,6 +703,17 @@ contains
         end do
         cstr(n+1) = c_null_char
         csize = n
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !
+    subroutine err_callback(this, obj)
+        class(errors), intent(in) :: this
+        class(*), intent(inout) :: obj
+        select type (obj)
+        class is (callback_manager)
+            call obj%fcn(obj%args)
+        end select
     end subroutine
 
 ! ------------------------------------------------------------------------------

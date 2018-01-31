@@ -12,6 +12,12 @@ typedef struct {
     int n;
 } errorhandler;
 
+/** @brief Describes a function to call when an error is encountered.
+ * 
+ * @param args A pointer to any object to pass to the callback routine.
+ */
+typedef void (*error_callback)(void *args);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
