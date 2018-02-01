@@ -3,10 +3,70 @@
 !> @mainpage
 !!
 !! @section intro_sec Introduction
-!! FERROR is a library to assist with error handling in Fortran projects.
+!! FERROR is a library to assist with error handling in Fortran projects.  The 
+!! error handling capabilities also have been extended to be called from C
+!! thereby providing both an error handling mechanism for C projects as well as
+!! allowing C interop with Fortran projects that use this library to handle
+!! errors.
 !!
 !! @author Jason Christopherson
 !! @version 1.3.0
+!!
+!! @par Example
+!! The following piece of code offers a simple introduction to the use of this
+!! library.
+!! @code{.f90}
+!! program example
+!!     use ferror
+!!     use, intrinsic :: iso_fortran_env, only : int32
+!!     implicit none
+!! 
+!!     ! Variables
+!!     type(errors) :: err_mgr
+!! 
+!!     ! Ensure the error reporting doesn't terminate the application.  The default
+!!     ! behavior terminates the application.
+!!     call err_mgr%set_exit_on_error(.false.)
+!! 
+!!     ! Don't print the error message to the command line.  The default behavior
+!!     ! prints the error information to the command line.
+!!     call err_mgr%set_suppress_printing(.true.)
+!! 
+!!     ! Call the routine that causes the error
+!!     call causes_error(err_mgr)
+!! 
+!!     ! Print the error information
+!!     print '(A)', "An error occurred in the following subroutine: " // &
+!!         err_mgr%get_error_fcn_name()
+!!     print '(A)', "The error message is: " // err_mgr%get_error_message()
+!!     print '(AI0)', "The error code is: ", err_mgr%get_error_flag()
+!! contains
+!! 
+!! ! The purpose of this subroutine is to simply trigger an error condition.
+!! subroutine causes_error(err)
+!!     ! Arguments
+!!     class(errors), intent(inout) :: err
+!! 
+!!     ! Define an error flag
+!!     integer(int32), parameter :: error_flag = 200
+!! 
+!!     ! Trigger the error condition
+!!     call err%report_error(&
+!!         "causes_error", &                   ! The subroutine or function name
+!!         "This is a test error message.", &  ! The error message.
+!!         error_flag)                         ! The error flag
+!! end subroutine
+!! 
+!! end program
+!! @endcode
+!!
+!! @par
+!! The above program produces the following output.
+!! @code{.txt}
+!! An error occurred in the following subroutine: causes_error
+!! The error message is: This is a test error message.
+!! The error code is: 200
+!! @endcode
 
 !> @brief \b ferror
 !!

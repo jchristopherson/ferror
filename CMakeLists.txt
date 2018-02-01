@@ -13,11 +13,9 @@ SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 # Define output directories, if undefined
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
 
-# If building a shared library, put the example and test executables in the
-# same directory as the shared library.
-if (BUILD_SHARED_LIBS)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-endif()
+# Put the example and test executables in the same directory as the shared 
+# library.
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # FFLAGS depend on the compiler
 get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
@@ -45,13 +43,13 @@ add_subdirectory(src)
 # ------------------------------------------------------------------------------
 # EXAMPLES
 # ------------------------------------------------------------------------------
-option(BUILD_FERROR_EXAMPLES "Build FERROR examples?" OFF)
+option(BUILD_FERROR_EXAMPLES "Build FERROR examples?" ON)
 if (BUILD_FERROR_EXAMPLES)
-  # Inform the user we're building the examples
-  message(STATUS "Building FERROR examples.")
+    # Inform the user we're building the examples
+    message(STATUS "Building FERROR examples.")
 
-  # Build the examples
-  add_subdirectory(examples)
+    # Build the examples
+    add_subdirectory(examples)
 endif()
 
 # ------------------------------------------------------------------------------
