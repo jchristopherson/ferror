@@ -206,6 +206,21 @@ void get_error_fcn_name(const errorhandler *err, char *fname, int *nfname);
  */
 void get_warning_fcn_name(const errorhandler *err, char *fname, int *nfname);
 
+/** @brief Reports an error condition to the user, and executes a callback
+ * routine.
+ *
+ * @param err A pointer to the error handler object.
+ * @param fcn The name of the function or subroutine in which the error
+ *  was encountered.
+ * @param msg The error message.
+ * @param flag The error flag.
+ * @param cback A pointer to the callback function.
+ * @param args A pointer to an object to pass to the callback function.
+ */
+void report_error_with_callback(errorhandler *err, const char *fname, 
+                                const char *msg, int flag, errorhandler cback, 
+                                void *args);
+
 #ifdef __cplusplus
 }
 #endif

@@ -616,13 +616,15 @@ contains
     !!  was encountered.
     !! @param[in] msg The error message.
     !! @param[in] flag The error flag.
+    !! @param[in] cback A pointer to the callback function.
+    !! @param[in] args A pointer to an object to pass to the callback function.
     subroutine report_error_with_callback(err, fcn, msg, flag, cback, args) &
             bind(C, name = "report_error_with_callback")
         ! Arguments
         type(errorhandler), intent(inout) :: err
         character(kind = c_char), intent(in) :: fcn, msg
         integer(c_int), intent(in), value :: flag
-        procedure(error_clean_up), pointer :: ffcn
+        procedure(error_callback), pointer :: ffcn
         type(c_funptr), intent(in), value :: cback
         type(c_ptr), intent(in), value :: args
 

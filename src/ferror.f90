@@ -17,7 +17,7 @@ module ferror
     implicit none
     private
     public :: errors
-    public :: error_clean_up
+    public :: error_callback
 
 ! ------------------------------------------------------------------------------
     !> @brief Defines a type for managing errors and warnings.
@@ -47,7 +47,7 @@ module ferror
         !> The function where the warning occurred.
         character(len = :), allocatable :: m_wFunName
         !> A pointer to a routine that can be called upon notice of an error.
-        procedure(error_clean_up), pointer, pass :: m_errCleanUp => null()
+        procedure(error_callback), pointer, pass :: m_errCleanUp => null()
     contains
         !> @brief Gets the name of the error log file.
         procedure, public :: get_log_filename => er_get_log_filename
@@ -106,7 +106,7 @@ module ferror
         !!  tasks.
         !! @param[in,out] obj An unlimited polymorphic object that can be passed
         !!  to provide information to the clean-up routine.
-        subroutine error_clean_up(err, obj)
+        subroutine error_callback(err, obj)
             import errors
             class(errors), intent(in) :: err
             class(*), intent(inout) :: obj
@@ -488,7 +488,7 @@ contains
     !! @return A pointer to the routine.
     function er_get_err_fcn_ptr(this) result(ptr)
         class(errors), intent(in) :: this
-        procedure(error_clean_up), pointer :: ptr
+        procedure(error_callback), pointer :: ptr
         ptr => this%m_errCleanUp
     end function
 
@@ -499,7 +499,7 @@ contains
     !! @param[in] ptr A pointer to the routine.
     subroutine er_set_err_fcn_ptr(this, ptr)
         class(errors), intent(inout) :: this
-        procedure(error_clean_up), intent(in), pointer :: ptr
+        procedure(error_callback), intent(in), pointer :: ptr
         this%m_errCleanUp => ptr
     end subroutine
 

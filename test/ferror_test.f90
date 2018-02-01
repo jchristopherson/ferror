@@ -222,7 +222,7 @@ contains
     function test_error_callback() result(rst)
         ! Local Variables
         logical :: rst, check
-        procedure(error_clean_up), pointer :: fcn
+        procedure(error_callback), pointer :: fcn
         type(errors) :: obj
 
         ! Initialization
