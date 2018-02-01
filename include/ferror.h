@@ -218,7 +218,7 @@ void get_warning_fcn_name(const errorhandler *err, char *fname, int *nfname);
  * @param args A pointer to an object to pass to the callback function.
  */
 void report_error_with_callback(errorhandler *err, const char *fname, 
-                                const char *msg, int flag, errorhandler cback, 
+                                const char *msg, int flag, error_callback cback, 
                                 void *args);
 
 #ifdef __cplusplus

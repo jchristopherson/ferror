@@ -10,6 +10,8 @@ bool test_error_reporting(void);
 bool test_warning_reporting(void);
 bool test_error_reset(void);
 bool test_warning_reset(void);
+bool test_error_callback(void);
+void callback(void *args);
 
 // Testing code for the ferror library via it's C interface.
 int main() {
@@ -33,6 +35,9 @@ int main() {
     if (!test_result) overall = false;
 
     test_result = test_warning_reset();
+    if (!test_result) overall = false;
+
+    test_result = test_error_callback();
     if (!test_result) overall = false;
 
     // End
@@ -255,6 +260,47 @@ bool test_warning_reset(void) {
     // End
     free_errorhandler(&obj);
     return rst;
+}
+
+/* ************************************************************************** */
+bool test_error_callback(void) {
+    // Local Variables
+    bool test, rst = true;
+    errorhandler obj;
+    const int code = 100;
+    const char msg[] = "Test error message.  Do not be alarmed.";
+    const char fcn[] = "Test_Fcn";
+    int flag, nbuffer = 256, nfbuffer = 256;
+    char buffer[256], fbuffer[256];
+
+    // Initialization
+    alloc_errorhandler(&obj);
+
+    // Ensure the error reporting doesn't terminate the application
+    set_exit_on_error(&obj, false);
+
+    // Don't print the error message to the command line
+    set_suppress_printing(&obj, true);
+
+    // Report the error
+    test = false;
+    report_error_with_callback(&obj, fcn, msg, code, callback, &test);
+
+    // Ensure test is now true
+    if (!test) {
+        rst = false;
+        printf("The error callback routine did not modify the test value.");
+    }
+
+    // End
+    return rst;
+}
+
+/* ************************************************************************** */
+void callback(void *args) {
+    bool *stuff;
+    stuff = (bool*)args;
+    *stuff = true;
 }
 
 /* ************************************************************************** */
