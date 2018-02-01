@@ -67,6 +67,23 @@
 !! The error message is: This is a test error message.
 !! The error code is: 200
 !! @endcode
+!!
+!! @par
+!! The above program also creates a log file.  The log file is titled 
+!! error_log.txt by default, but can be named whatever by the user.  The 
+!! contents of the file written from the above program are as follows.  
+!! @code{.txt}
+!! ***** ERROR *****
+!! 1/2/2018; 16:49:40
+!! Function: causes_error
+!! Error Flag: 200
+!! Message:
+!! This is a test error message.
+!! @endcode
+!!
+!! @par
+!! If additional errors are encountered, the information is simply appended to
+!! the end of the file.
 
 !> @brief \b ferror
 !!
