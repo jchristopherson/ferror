@@ -119,4 +119,5 @@ This library utilizes [CMake](https://cmake.org/) to facilitate its build.  Usin
 - cmake ...
 - make
 - make install
+
 See [Running CMake](https://cmake.org/runningcmake/) for more details on the use of CMake.
