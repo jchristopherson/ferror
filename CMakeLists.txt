@@ -41,6 +41,26 @@ endif()
 add_subdirectory(src)
 
 # ------------------------------------------------------------------------------
+# INSTALLATION INSTRUCTINOS
+# ------------------------------------------------------------------------------
+# Define the installation instructions
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include  
+    DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY ${CMAKE_BINARY_DIR}/mod DESTINATION fortran)
+install(TARGETS ferror
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    CONFIGURATIONS Release)
+
+# Include the documentation
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/doc/html DESTINATION doc)
+
+# TO DO: Investigate CPACK
+# https://cmake.org/Wiki/CMake:Packaging_With_CPack
+# https://cmake.org/pipermail/cmake/2010-June/037461.html
+
+# ------------------------------------------------------------------------------
 # EXAMPLES
 # ------------------------------------------------------------------------------
 option(BUILD_FERROR_EXAMPLES "Build FERROR examples?" ON)
