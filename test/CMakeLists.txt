@@ -16,9 +16,6 @@ add_custom_target(run_ferror_tests ALL DEPENDS ferror_api_test)
 # ------------------------------------------------------------------------------
 # C API TESTS
 # ------------------------------------------------------------------------------
-# Define the include directories
-include_directories(${PROJECT_SOURCE_DIR}/include)
-
 # Locate the source files
 set(c_test_source ferror_test_c.c)
 
