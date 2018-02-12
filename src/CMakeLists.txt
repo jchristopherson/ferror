@@ -24,11 +24,6 @@ install(TARGETS ferror EXPORT ferrorTargets
     CONFIGURATIONS Release
     INCLUDES DESTINATION include
 )
-# install(
-#     DIRECTORY ${CMAKE_BINARY_DIR}/mod 
-#     DESTINATION ${CMAKE_INSTALL_PREFIX}/include
-#     COMPONENT Devel
-# )
 install(
     DIRECTORY ${PROJECT_SOURCE_DIR}/include 
     DESTINATION ${CMAKE_INSTALL_PREFIX}
