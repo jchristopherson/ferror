@@ -15,7 +15,6 @@ set_property(TARGET ferror APPEND PROPERTY COMPATIBLE_INTERFACE_STRING ferror_MA
 
 # Locate the "include" directories
 set(ferror_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include)
-set(ferror_MODULE_DIRS ${CMAKE_BINARY_DIR}/mod)
 
 # Define the installation instructions
 install(TARGETS ferror EXPORT ferrorTargets
@@ -25,11 +24,11 @@ install(TARGETS ferror EXPORT ferrorTargets
     CONFIGURATIONS Release
     INCLUDES DESTINATION include
 )
-install(
-    DIRECTORY ${CMAKE_BINARY_DIR}/mod 
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/include
-    COMPONENT Devel
-)
+# install(
+#     DIRECTORY ${CMAKE_BINARY_DIR}/mod 
+#     DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+#     COMPONENT Devel
+# )
 install(
     DIRECTORY ${PROJECT_SOURCE_DIR}/include 
     DESTINATION ${CMAKE_INSTALL_PREFIX}

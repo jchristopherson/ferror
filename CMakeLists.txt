@@ -14,8 +14,8 @@ set(FERROR_VERSION ${FERROR_MAJOR_VERSION}.${FERROR_MINOR_VERSION}.${FERROR_PATC
 # Export all symbols on Windows when building shared libraries
 SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
-# Define output directories, if undefined
-set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
+# Locate the module files
+set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/include)
 
 # Put the example and test executables in the same directory as the shared 
 # library.
