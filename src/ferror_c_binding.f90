@@ -20,6 +20,24 @@ module ferror_c_binding
         integer(c_int) :: n
     end type
 
+! ------------------------------------------------------------------------------
+    interface
+        subroutine c_error_callback(ptr)
+            use, intrinsic :: iso_c_binding
+            type(c_ptr), intent(in), value :: ptr
+        end subroutine
+    end interface
+
+! ------------------------------------------------------------------------------
+    !> @brief A type that allows C interop with the Fortran error callback
+    !! routine.
+    type :: callback_manager
+        !> A pointer to the C callback routine.
+        procedure(c_error_callback), pointer, nopass :: fcn
+        !> A pointer to the C-supplied arguments.
+        type(c_ptr) :: args
+    end type
+
 contains
 ! ******************************************************************************
 ! TYPE CONSTRUCTION/DESTRUCTION ROUTINES
@@ -92,7 +110,7 @@ contains
     !!  It is recommended that this be in the neighborhood of 256 elements.
     !! @param[in,out] nfname On input, the actual size of the buffer.  Be sure
     !!  to leave room for the null terminator character.  On output, the actual
-    !!  numbers of characters written to @p fname (not including the null
+    !!  number of characters written to @p fname (not including the null
     !!  character).
     subroutine get_log_filename(err, fname, nfname) &
             bind(C, name = "get_log_filename")
@@ -447,6 +465,189 @@ contains
         call ferr%set_suppress_printing(logical(x))
     end subroutine
 
+! ------------------------------------------------------------------------------
+    !> @brief Gets the current error message.
+    !!
+    !! @param[in] err The errorhandler object.
+    !! @param[out] mst A character buffer where the message will be written.
+    !! @param[in,out] nmsg On input, the actual size of the buffer.  On output,
+    !!  the actual number of characters written to @p msg (not including the 
+    !!  null character).
+    subroutine get_error_message(err, msg, nmsg) &
+            bind(C, name = "get_error_message")
+        ! Arguments
+        type(errorhandler), intent(in) :: err
+        character(kind = c_char), intent(out) :: msg(*)
+        integer(c_int), intent(inout) :: nmsg
+
+        ! Local Variables
+        type(errors), pointer :: ferr
+        character(len = :), allocatable :: fstr
+
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.associated(ferr)) then
+            nmsg = 0
+            return
+        end if
+
+        ! Process
+        fstr = ferr%get_error_message()
+        if (.not.allocated(fstr)) then
+            nmsg = 0
+            return
+        end if
+        call fstr_2_cstr(fstr, msg, nmsg)
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets the current warning message.
+    !!
+    !! @param[in] err The errorhandler object.
+    !! @param[out] mst A character buffer where the message will be written.
+    !! @param[in,out] nmsg On input, the actual size of the buffer.  On output,
+    !!  the actual number of characters written to @p msg (not including the 
+    !!  null character).
+    subroutine get_warning_message(err, msg, nmsg) &
+            bind(C, name = "get_warning_message")
+        ! Arguments
+        type(errorhandler), intent(in) :: err
+        character(kind = c_char), intent(out) :: msg(*)
+        integer(c_int), intent(inout) :: nmsg
+
+        ! Local Variables
+        type(errors), pointer :: ferr
+        character(len = :), allocatable :: fstr
+
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.associated(ferr)) then
+            nmsg = 0
+            return
+        end if
+
+        ! Process
+        fstr = ferr%get_warning_message()
+        if (.not.allocated(fstr)) then
+            nmsg = 0
+            return
+        end if
+        call fstr_2_cstr(fstr, msg, nmsg)
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets the name of the function or subroutine that issued the last
+    !! error message.
+    !!
+    !! @param[in] err The errorhandler object.
+    !! @param[out] fname A character buffer where the name will be written.
+    !! @param[in,out] nfname On input, the actual size of the buffer.  On 
+    !!  output, the actual number of characters written to @p fname (not
+    !!  including the null character).
+    subroutine get_error_fcn_name(err, fname, nfname) &
+            bind(C, name = "get_error_fcn_name")
+        ! Arguments
+        type(errorhandler), intent(in) :: err
+        character(kind = c_char), intent(out) :: fname(*)
+        integer(c_int), intent(inout) :: nfname
+
+        ! Local Variables
+        type(errors), pointer :: ferr
+        character(len = :), allocatable :: fstr
+
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.associated(ferr)) then
+            nfname = 0
+            return
+        end if
+
+        ! Process
+        fstr = ferr%get_error_fcn_name()
+        if (.not.allocated(fstr)) then
+            nfname = 0
+            return
+        end if
+        call fstr_2_cstr(fstr, fname, nfname)
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets the name of the function or subroutine that issued the last
+    !! warning message.
+    !!
+    !! @param[in] err The errorhandler object.
+    !! @param[out] fname A character buffer where the name will be written.
+    !! @param[in,out] nfname On input, the actual size of the buffer.  On 
+    !!  output, the actual number of characters written to @p fname (not
+    !!  including the null character).
+    subroutine get_warning_fcn_name(err, fname, nfname) &
+            bind(C, name = "get_warning_fcn_name")
+        ! Arguments
+        type(errorhandler), intent(in) :: err
+        character(kind = c_char), intent(out) :: fname(*)
+        integer(c_int), intent(inout) :: nfname
+
+        ! Local Variables
+        type(errors), pointer :: ferr
+        character(len = :), allocatable :: fstr
+
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.associated(ferr)) then
+            nfname = 0
+            return
+        end if
+
+        ! Process
+        fstr = ferr%get_warning_fcn_name()
+        if (.not.allocated(fstr)) then
+            nfname = 0
+            return
+        end if
+        call fstr_2_cstr(fstr, fname, nfname)
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Reports an error condition to the user, and executes a callback
+    !! routine.
+    !!
+    !! @param[in,out] err A pointer to the error handler object.
+    !! @param[in] fcn The name of the function or subroutine in which the error
+    !!  was encountered.
+    !! @param[in] msg The error message.
+    !! @param[in] flag The error flag.
+    !! @param[in] cback A pointer to the callback function.
+    !! @param[in] args A pointer to an object to pass to the callback function.
+    subroutine report_error_with_callback(err, fcn, msg, flag, cback, args) &
+            bind(C, name = "report_error_with_callback")
+        ! Arguments
+        type(errorhandler), intent(inout) :: err
+        character(kind = c_char), intent(in) :: fcn, msg
+        integer(c_int), intent(in), value :: flag
+        procedure(error_callback), pointer :: ffcn
+        type(c_funptr), intent(in), value :: cback
+        type(c_ptr), intent(in), value :: args
+
+        ! Local Variables
+        type(errors), pointer :: ferr
+        type(callback_manager) :: mgr
+        procedure(c_error_callback), pointer :: fcback
+
+        ! Get the errors object
+        call get_errorhandler(err, ferr)
+        if (.not.associated(ferr)) return
+
+        ! Define the callback
+        call c_f_procpointer(cback, fcback)
+        mgr%fcn => fcback
+        mgr%args = args
+        ffcn => err_callback
+        call ferr%set_clean_up_routine(ffcn)
+
+        ! Report the error
+        call ferr%report_error(cstr_2_fstr(fcn), cstr_2_fstr(msg), flag, mgr)
+    end subroutine
+
 ! ******************************************************************************
 ! HELPER ROUTINES
 ! ------------------------------------------------------------------------------
@@ -495,14 +696,26 @@ contains
         integer, intent(inout) :: csize
 
         ! Local Variables
-        integer :: i
+        integer :: i, n
 
         ! Process
-        do i = 1, min(len(fstr), csize - 1) ! -1 allows room for the null char
+        n = min(len(fstr), csize - 1) ! -1 allows room for the null char
+        do i = 1, n
             cstr(i) = fstr(i:i)
         end do
-        cstr(i+1) = c_null_char
-        csize = i
+        cstr(n+1) = c_null_char
+        csize = n
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !
+    subroutine err_callback(this, obj)
+        class(errors), intent(in) :: this
+        class(*), intent(inout) :: obj
+        select type (obj)
+        class is (callback_manager)
+            call obj%fcn(obj%args)
+        end select
     end subroutine
 
 ! ------------------------------------------------------------------------------

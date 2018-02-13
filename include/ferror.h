@@ -12,6 +12,12 @@ typedef struct {
     int n;
 } errorhandler;
 
+/** @brief Describes a function to call when an error is encountered.
+ * 
+ * @param args A pointer to any object to pass to the callback routine.
+ */
+typedef void (*error_callback)(void *args);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -157,6 +163,63 @@ bool get_suppress_printing(const errorhandler *err);
  *  false to allow printing.
  */
 void set_suppress_printing(errorhandler *err, bool x);
+
+/** @brief Gets the current error message.
+ *
+ * @param err The errorhandler object.
+ * @param mst A character buffer where the message will be written.
+ * @param nmsg On input, the actual size of the buffer.  On output,
+ *  the actual number of characters written to @p msg (not including the 
+ *  null character).
+ */
+void get_error_message(const errorhandler *err, char *msg, int *nmsg);
+
+/** @brief Gets the current warning message.
+ *
+ * @param err The errorhandler object.
+ * @param mst A character buffer where the message will be written.
+ * @param nmsg On input, the actual size of the buffer.  On output,
+ *  the actual number of characters written to @p msg (not including the 
+ *  null character).
+ */
+void get_warning_message(const errorhandler *err, char *msg, int *nmsg);
+
+/** @brief Gets the name of the function or subroutine that issued the last
+ * error message.
+ *
+ * @param err The errorhandler object.
+ * @param fname A character buffer where the name will be written.
+ * @param nfname On input, the actual size of the buffer.  On 
+ *  output, the actual number of characters written to @p fname (not
+ *  including the null character).
+ */
+void get_error_fcn_name(const errorhandler *err, char *fname, int *nfname);
+
+/** @brief Gets the name of the function or subroutine that issued the last
+ * warning message.
+ *
+ * @param err The errorhandler object.
+ * @param fname A character buffer where the name will be written.
+ * @param nfname On input, the actual size of the buffer.  On 
+ *  output, the actual number of characters written to @p fname (not
+ *  including the null character).
+ */
+void get_warning_fcn_name(const errorhandler *err, char *fname, int *nfname);
+
+/** @brief Reports an error condition to the user, and executes a callback
+ * routine.
+ *
+ * @param err A pointer to the error handler object.
+ * @param fcn The name of the function or subroutine in which the error
+ *  was encountered.
+ * @param msg The error message.
+ * @param flag The error flag.
+ * @param cback A pointer to the callback function.
+ * @param args A pointer to an object to pass to the callback function.
+ */
+void report_error_with_callback(errorhandler *err, const char *fname, 
+                                const char *msg, int flag, error_callback cback, 
+                                void *args);
 
 #ifdef __cplusplus
 }
