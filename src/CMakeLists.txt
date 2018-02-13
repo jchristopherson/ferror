@@ -32,6 +32,7 @@ install(
 
 # Include the documentation
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/doc/html DESTINATION doc)
+install(FILES ${PROJECT_SOURCE_DIR}/doc/refman.pdf DESTINATION doc)
 
 # Define the version file
 include(CMakePackageConfigHelpers)
