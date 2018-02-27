@@ -49,7 +49,7 @@ add_subdirectory(src)
 # ------------------------------------------------------------------------------
 # EXAMPLES
 # ------------------------------------------------------------------------------
-option(BUILD_FERROR_EXAMPLES "Build FERROR examples?" ON)
+option(BUILD_FERROR_EXAMPLES "Build FERROR examples?" OFF)
 if (BUILD_FERROR_EXAMPLES)
     # Inform the user we're building the examples
     message(STATUS "Building FERROR examples.")
@@ -62,7 +62,7 @@ endif()
 # TESTS
 # ------------------------------------------------------------------------------
 # C Based Testing
-option(BUILD_FERROR_TESTS "Build FERROR tests?" ON)
+option(BUILD_FERROR_TESTS "Build FERROR tests?" OFF)
 if (BUILD_FERROR_TESTS)
     # Inform the user we're building the tests
     message(STATUS "Building FERROR tests.")
