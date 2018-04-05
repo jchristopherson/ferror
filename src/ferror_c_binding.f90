@@ -8,6 +8,31 @@ module ferror_c_binding
     use, intrinsic :: iso_c_binding
     use ferror
     implicit none
+    private
+    public :: errorhandler
+    public :: get_errorhandler
+    public :: alloc_errorhandler
+    public :: free_errorhandler
+    public :: get_log_filename
+    public :: set_log_filename
+    public :: report_error
+    public :: report_warning
+    public :: log_error
+    public :: has_error_occurred
+    public :: reset_error_status
+    public :: has_warning_occurred
+    public :: reset_warning_status
+    public :: get_error_flag
+    public :: get_warning_flag
+    public :: get_exit_on_error
+    public :: set_exit_on_error
+    public :: get_suppress_printing
+    public :: set_suppress_printing
+    public :: get_error_message
+    public :: get_warning_message
+    public :: get_error_fcn_name
+    public :: get_warning_fcn_name
+    public :: report_error_with_callback
 
 ! ******************************************************************************
 ! TYPES
