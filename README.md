@@ -112,7 +112,7 @@ The error code is: 200
 ```
 
 ## Documentation
-Documentation can be found [here](doc/refman.pdf)
+Documentation can be found [here](http://htmlpreview.github.io/?https://github.com/jchristopherson/ferror/blob/master/doc/html/index.html).
 
 ## Build Instructions
 This library utilizes [CMake](https://cmake.org/) to facilitate its build.  Using CMake is as simple as issuing the following commands.
