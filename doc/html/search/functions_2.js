@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['er_5fget_5ferr_5ffcn',['er_get_err_fcn',['../namespaceferror.html#aa628dd0900ea087d7991fbf2314caa54',1,'ferror']]],
+  ['er_5fget_5ferr_5ffcn_5fptr',['er_get_err_fcn_ptr',['../namespaceferror.html#a04d2801d7a75d15cf0025d68d57a480a',1,'ferror']]],
+  ['er_5fget_5ferr_5fmsg',['er_get_err_msg',['../namespaceferror.html#a053cad9b481563a8882872d3de9e1f42',1,'ferror']]],
+  ['er_5fget_5ferror_5fflag',['er_get_error_flag',['../namespaceferror.html#a7be1ff71be88ba5af8b554cf6f713aab',1,'ferror']]],
+  ['er_5fget_5fexit_5fon_5ferror',['er_get_exit_on_error',['../namespaceferror.html#ad9ebe77df5da1027b061e389be42f9ca',1,'ferror']]],
+  ['er_5fget_5flog_5ffilename',['er_get_log_filename',['../namespaceferror.html#a465a6580f1dae708b55558af5cea72fe',1,'ferror']]],
+  ['er_5fget_5fsuppress_5fprinting',['er_get_suppress_printing',['../namespaceferror.html#aa882c3ea090d9c0a72ae67afd486d27a',1,'ferror']]],
+  ['er_5fget_5fwarning_5ffcn',['er_get_warning_fcn',['../namespaceferror.html#a3a2293fe372ed6220d72f49b912b0383',1,'ferror']]],
+  ['er_5fget_5fwarning_5fflag',['er_get_warning_flag',['../namespaceferror.html#a5f8b98fe8c826bc72776931dca70160e',1,'ferror']]],
+  ['er_5fget_5fwarning_5fmsg',['er_get_warning_msg',['../namespaceferror.html#aa1d7232fc80d29862107a336e6e599e7',1,'ferror']]],
+  ['er_5fhas_5ferror_5foccurred',['er_has_error_occurred',['../namespaceferror.html#a8848160c35e71dc7fd7141560988d9c9',1,'ferror']]],
+  ['er_5fhas_5fwarning_5foccurred',['er_has_warning_occurred',['../namespaceferror.html#af6bbe2455b92b028cc5c2be4eaff421b',1,'ferror']]],
+  ['er_5flog_5ferror',['er_log_error',['../namespaceferror.html#a88c346ad084451f0b0989bc6dc532687',1,'ferror']]],
+  ['er_5freport_5ferror',['er_report_error',['../namespaceferror.html#acfd84def6b641819e181c525f561c564',1,'ferror']]],
+  ['er_5freport_5fwarning',['er_report_warning',['../namespaceferror.html#a7a70dcbc4759672518b34a2da7706794',1,'ferror']]],
+  ['er_5freset_5ferror_5fstatus',['er_reset_error_status',['../namespaceferror.html#a32837283f1a3802b05525aebc87476f7',1,'ferror']]],
+  ['er_5freset_5fwarning_5fstatus',['er_reset_warning_status',['../namespaceferror.html#a7f44492f0f13dab5c1789cf810202648',1,'ferror']]],
+  ['er_5fset_5ferr_5ffcn_5fptr',['er_set_err_fcn_ptr',['../namespaceferror.html#a0bd0e554302427b94d0740a3afaa311f',1,'ferror']]],
+  ['er_5fset_5fexit_5fon_5ferror',['er_set_exit_on_error',['../namespaceferror.html#a780c54d9d90bb17debf56c49796017ab',1,'ferror']]],
+  ['er_5fset_5flog_5ffilename',['er_set_log_filename',['../namespaceferror.html#a951db6756ce5fb546a9e9b1d3b2a2e8b',1,'ferror']]],
+  ['er_5fset_5fsuppress_5fprinting',['er_set_suppress_printing',['../namespaceferror.html#ac5afee2bce36774173f5dca1bc5dac81',1,'ferror']]]
+];
