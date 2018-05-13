@@ -18,21 +18,21 @@ set(ferror_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include)
 
 # Define the installation instructions
 install(TARGETS ferror EXPORT ferrorTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION ferror/bin
+    LIBRARY DESTINATION ferror/lib
+    ARCHIVE DESTINATION ferror/lib
     CONFIGURATIONS Release
-    INCLUDES DESTINATION include
+    INCLUDES DESTINATION ferror/include
 )
 install(
-    DIRECTORY ${PROJECT_SOURCE_DIR}/include 
-    DESTINATION ${CMAKE_INSTALL_PREFIX}
+    DIRECTORY ${PROJECT_SOURCE_DIR}/include
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/ferror
     COMPONENT Devel
 )
 
 # Include the documentation
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/doc/html DESTINATION doc)
-install(FILES ${PROJECT_SOURCE_DIR}/doc/refman.pdf DESTINATION doc)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/doc/html DESTINATION ferror/doc)
+install(FILES ${PROJECT_SOURCE_DIR}/doc/refman.pdf DESTINATION ferror/doc)
 
 # Define the version file
 include(CMakePackageConfigHelpers)
