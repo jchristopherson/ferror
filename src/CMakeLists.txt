@@ -53,7 +53,7 @@ configure_file(
     COPYONLY
 )
 
-set(ConfigPackageLocation lib/cmake/ferror)
+set(ConfigPackageLocation ferror/lib/cmake/ferror)
 install(
     EXPORT ferrorTargets
     FILE ferrorTargets.cmake
