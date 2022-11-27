@@ -1,4 +1,4 @@
-// ferror.h
+/** @file ferror.h */
 #ifndef FERROR_H_DEFINED
 #define FERROR_H_DEFINED
 
@@ -9,7 +9,7 @@ typedef struct {
     /** @brief A pointer to the errors object. */
     void *ptr;
     /** @brief The size of the errors object, in bytes. */
-    int n;
+    int object_size;
 } errorhandler;
 
 /** @brief Describes a function to call when an error is encountered.
@@ -167,7 +167,7 @@ void set_suppress_printing(errorhandler *err, bool x);
 /** @brief Gets the current error message.
  *
  * @param err The errorhandler object.
- * @param mst A character buffer where the message will be written.
+ * @param msg A character buffer where the message will be written.
  * @param nmsg On input, the actual size of the buffer.  On output,
  *  the actual number of characters written to @p msg (not including the 
  *  null character).
@@ -177,7 +177,7 @@ void get_error_message(const errorhandler *err, char *msg, int *nmsg);
 /** @brief Gets the current warning message.
  *
  * @param err The errorhandler object.
- * @param mst A character buffer where the message will be written.
+ * @param msg A character buffer where the message will be written.
  * @param nmsg On input, the actual size of the buffer.  On output,
  *  the actual number of characters written to @p msg (not including the 
  *  null character).
@@ -210,7 +210,7 @@ void get_warning_fcn_name(const errorhandler *err, char *fname, int *nfname);
  * routine.
  *
  * @param err A pointer to the error handler object.
- * @param fcn The name of the function or subroutine in which the error
+ * @param fname The name of the function or subroutine in which the error
  *  was encountered.
  * @param msg The error message.
  * @param flag The error flag.
