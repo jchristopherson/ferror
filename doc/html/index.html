@@ -105,11 +105,11 @@ Introduction</h1>
 <div class="line">    <span class="keywordtype">type</span>(errors) :: err_mgr</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">! Ensure the error reporting doesn&#39;t terminate the application.  The default</span></div>
-<div class="line">    <span class="comment">! behavior terminates the application.</span></div>
+<div class="line">    <span class="comment">! behavior terminates the application - optional.</span></div>
 <div class="line">    <span class="keyword">call </span>err_mgr%set_exit_on_error(.false.)</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">! Don&#39;t print the error message to the command line.  The default behavior</span></div>
-<div class="line">    <span class="comment">! prints the error information to the command line.</span></div>
+<div class="line">    <span class="comment">! prints the error information to the command line - optional.</span></div>
 <div class="line">    <span class="keyword">call </span>err_mgr%set_suppress_printing(.true.)</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">! Call the routine that causes the error</span></div>
@@ -138,7 +138,7 @@ Introduction</h1>
 <div class="line"><span class="keyword">end subroutine</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">end program</span></div>
-<div class="ttc" id="anamespaceferror_html"><div class="ttname"><a href="namespaceferror.html">ferror</a></div><div class="ttdoc">ferror</div><div class="ttdef"><b>Definition:</b> <a href="ferror_8f90_source.html#l00143">ferror.f90:143</a></div></div>
+<div class="ttc" id="anamespaceferror_html"><div class="ttname"><a href="namespaceferror.html">ferror</a></div><div class="ttdoc">ferror</div><div class="ttdef"><b>Definition:</b> <a href="ferror_8f90_source.html#l00091">ferror.f90:91</a></div></div>
 </div><!-- fragment --></dd></dl>
 <dl class="section user"><dt></dt><dd>The above program produces the following output. <div class="fragment"><div class="line">An error occurred in the following subroutine: causes_error</div>
 <div class="line">The error message is: This is a test error message.</div>
@@ -152,52 +152,7 @@ Introduction</h1>
 <div class="line">Message:</div>
 <div class="line">This is a test error message.</div>
 </div><!-- fragment --></dd></dl>
-<dl class="section user"><dt></dt><dd>If additional errors are encountered, the information is simply appended to the end of the file.</dd></dl>
-<dl class="section user"><dt></dt><dd>The same example above can be written in C. The C implementation is as follows. <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;ferror.h&quot;</span></div>
-<div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> causes_error(errorhandler *err);</div>
-<div class="line"> </div>
-<div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">void</span>) {</div>
-<div class="line">    <span class="comment">// Variables</span></div>
-<div class="line">    errorhandler err_mgr;</div>
-<div class="line">    <span class="keywordtype">char</span> fname[256], msg[256];</div>
-<div class="line">    <span class="keywordtype">int</span> flag, fnamelength = 256, msglength = 256;</div>
-<div class="line"> </div>
-<div class="line">    <span class="comment">// Initialization</span></div>
-<div class="line">    alloc_errorhandler(&amp;err_mgr);</div>
-<div class="line"> </div>
-<div class="line">    <span class="comment">// Ensure the error reporting doesn&#39;t terminate the application</span></div>
-<div class="line">    set_exit_on_error(&amp;err_mgr, <span class="keyword">false</span>);</div>
-<div class="line"> </div>
-<div class="line">    <span class="comment">// Don&#39;t print the error message to the command line</span></div>
-<div class="line">    set_suppress_printing(&amp;err_mgr, <span class="keyword">true</span>);</div>
-<div class="line"> </div>
-<div class="line">    <span class="comment">// Call the routine that causes the error</span></div>
-<div class="line">    causes_error(&amp;err_mgr);</div>
-<div class="line"> </div>
-<div class="line">    <span class="comment">// Retrieve the error information</span></div>
-<div class="line">    get_error_fcn_name(&amp;err_mgr, fname, &amp;fnamelength);</div>
-<div class="line">    get_error_message(&amp;err_mgr, msg, &amp;msglength);</div>
-<div class="line">    flag = get_error_flag(&amp;err_mgr);</div>
-<div class="line"> </div>
-<div class="line">    <span class="comment">// Print the error information</span></div>
-<div class="line">    printf(<span class="stringliteral">&quot;An error occurred in the following subroutine: %s\nThe error message is: %s\nThe error code is: %i\n&quot;</span>,</div>
-<div class="line">        fname, msg, flag);</div>
-<div class="line"> </div>
-<div class="line">    <span class="comment">// End</span></div>
-<div class="line">    free_errorhandler(&amp;err_mgr);</div>
-<div class="line">    <span class="keywordflow">return</span> 0;</div>
-<div class="line">}</div>
-<div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> causes_error(errorhandler *err) {</div>
-<div class="line">    report_error(err,                       <span class="comment">// The errorhandler object</span></div>
-<div class="line">        <span class="stringliteral">&quot;causes_error&quot;</span>,                     <span class="comment">// The function name</span></div>
-<div class="line">        <span class="stringliteral">&quot;This is a test error message.&quot;</span>,    <span class="comment">// The error message</span></div>
-<div class="line">        200);                               <span class="comment">// The error flag</span></div>
-<div class="line">}</div>
-</div><!-- fragment --></dd></dl>
-<dl class="section user"><dt></dt><dd>The above C program produces exactly the same output as the Fortran example. </dd></dl>
+<dl class="section user"><dt></dt><dd>If additional errors are encountered, the information is simply appended to the end of the file. </dd></dl>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

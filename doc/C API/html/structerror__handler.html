@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ferror: ferror::error_callback Interface Reference</title>
+<title>ferror: error_handler Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -16,6 +16,13 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -27,7 +34,7 @@
   <td id="projectalign">
    <div id="projectname">ferror<span id="projectnumber">&#160;1.4.0</span>
    </div>
-   <div id="projectbrief">FERROR is a library to assist with error handling in Fortran projects.</div>
+   <div id="projectbrief">FERROR is a library to assist with error handling in Fortran projects.  This documentation refers to the C API of the FERROR library.</div>
   </td>
  </tr>
  </tbody>
@@ -64,7 +71,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('interfaceferror_1_1error__callback.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('structerror__handler.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -91,26 +98,38 @@ $(document).ready(function(){initNavTree('interfaceferror_1_1error__callback.htm
 
 <div class="header">
   <div class="summary">
-<a href="interfaceferror_1_1error__callback-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">ferror::error_callback Interface Reference</div></div>
+<a href="#pub-attribs">Data Fields</a>  </div>
+  <div class="headertitle"><div class="title">error_handler Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>Defines the signature of a routine that can be used to clean up after an error condition is encountered.  
- <a href="interfaceferror_1_1error__callback.html#details">More...</a></p>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p >Defines the signature of a routine that can be used to clean up after an error condition is encountered. </p>
+<p>A C compatible type encapsulating an errors object.  
+ <a href="structerror__handler.html#details">More...</a></p>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00376">376</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
-</div><hr/>The documentation for this interface was generated from the following file:<ul>
-<li>D:/Code/ferror/src/<a class="el" href="ferror_8f90_source.html">ferror.f90</a></li>
+<p><code>#include &lt;<a class="el" href="ferror_8h_source.html">ferror.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Data Fields</h2></td></tr>
+<tr class="memitem:a8f25c6d315fd80b11dbce89164c7344c"><td class="memItemLeft" align="right" valign="top"><a id="a8f25c6d315fd80b11dbce89164c7344c" name="a8f25c6d315fd80b11dbce89164c7344c"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>ptr</b></td></tr>
+<tr class="memdesc:a8f25c6d315fd80b11dbce89164c7344c"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pointer to the errors object. <br /></td></tr>
+<tr class="separator:a8f25c6d315fd80b11dbce89164c7344c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a169731ac4aea42c56a702fa5716a4066"><td class="memItemLeft" align="right" valign="top"><a id="a169731ac4aea42c56a702fa5716a4066" name="a169731ac4aea42c56a702fa5716a4066"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>object_size</b></td></tr>
+<tr class="memdesc:a169731ac4aea42c56a702fa5716a4066"><td class="mdescLeft">&#160;</td><td class="mdescRight">The size of the errors object, in bytes. <br /></td></tr>
+<tr class="separator:a169731ac4aea42c56a702fa5716a4066"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >A C compatible type encapsulating an errors object. </p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<li>D:/Code/ferror/include/<a class="el" href="ferror_8h_source.html">ferror.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespaceferror.html">ferror</a></li><li class="navelem"><a class="el" href="interfaceferror_1_1error__callback.html">error_callback</a></li>
+    <li class="navelem"><a class="el" href="structerror__handler.html">error_handler</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
   </ul>
 </div>
