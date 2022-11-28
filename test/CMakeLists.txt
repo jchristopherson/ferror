@@ -1,29 +1,22 @@
-# ------------------------------------------------------------------------------
-# FORTRAN API TESTS
-# ------------------------------------------------------------------------------
-# Locate the source files
-set(f_test_source ferror_test.f90)
+macro(create_test testname codename)
+    add_executable(${testname} ${codename})
+    target_link_libraries(${testname} ferror)
+    add_test(
+        NAME ${testname}
+        WORKING_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+        COMMAND $<TARGET_FILE:${testname}>
+    )
+endmacro()
 
-# Build the executable
-add_executable(ferror_test ${f_test_source})
-target_link_libraries(ferror_test ferror)
+macro(create_c_test testname codename)
+    add_executable(${testname} ${codename})
+    target_link_libraries(${testname} ferror)
+    add_test(
+        NAME ${testname}
+        WORKING_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+        COMMAND $<TARGET_FILE:${testname}>
+    )
+endmacro()
 
-# Force the tests to run as part of the build process
-add_custom_command(OUTPUT ferror_api_test DEPENDS ${f_test_source}
-  COMMAND ferror_test)
-add_custom_target(run_ferror_tests ALL DEPENDS ferror_api_test)
-
-# ------------------------------------------------------------------------------
-# C API TESTS
-# ------------------------------------------------------------------------------
-# Locate the source files
-set(c_test_source ferror_test_c.c)
-
-# Build the executable
-add_executable(ferror_test_c ${c_test_source})
-target_link_libraries(ferror_test_c ferror)
-
-# Force the tests to run as part of the build process
-add_custom_command(OUTPUT c_api_test DEPENDS ${c_test_source}
-  COMMAND ferror_test_c)
-add_custom_target(run_c_api_test ALL DEPENDS c_api_test)
+create_test(ferror_test ferror_test.f90)
+create_test(ferror_test_c ferror_test_c.c)
