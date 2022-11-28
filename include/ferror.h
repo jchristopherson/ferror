@@ -2,6 +2,92 @@
 #ifndef FERROR_H_DEFINED
 #define FERROR_H_DEFINED
 
+/**
+ *
+ * @mainpage
+ *
+ * @section intro_sec Introduction
+ * FERROR is a library to assist with error handling in Fortran projects.  The 
+ * error handling capabilities also have been extended to be called from C
+ * thereby providing both an error handling mechanism for C projects as well as
+ * allowing C interop with Fortran projects that use this library to handle
+ * errors.
+ *
+ * @par Example
+ * The following piece of code offers a simple introduction to the use of this
+ * C API of this library.
+ * @code{.c}
+ * #include <stdio.h>
+ * #include "ferror.h"
+ *
+ * void causes_error(error_handler *err);
+ *
+ * int main(void) {
+ *     // Variables
+ *     error_handler err_mgr;
+ *     char fname[256], msg[256];
+ *     int flag, fnamelength = 256, msglength = 256;
+ *
+ *     // Initialization
+ *     alloc_error_handler(&err_mgr);
+ *
+ *     // Ensure the error reporting doesn't terminate the application - optional
+ *     set_exit_on_error(&err_mgr, false);
+ *
+ *     // Don't print the error message to the command line - optional
+ *     set_suppress_printing(&err_mgr, true);
+ *
+ *     // Call the routine that causes the error
+ *     causes_error(&err_mgr);
+ *
+ *     // Retrieve the error information
+ *     get_error_fcn_name(&err_mgr, fname, &fnamelength);
+ *     get_error_message(&err_mgr, msg, &msglength);
+ *     flag = get_error_flag(&err_mgr);
+ *
+ *     // Print the error information
+ *     printf("An error occurred in the following subroutine: %s\nThe error message is: %s\nThe error code is: %i\n",
+ *         fname, msg, flag);
+ *
+ *     // End
+ *     free_error_handler(&err_mgr);
+ *     return 0;
+ * }
+ *
+ * void causes_error(error_handler *err) {
+ *     report_error(err,                       // The error_handler object
+ *         "causes_error",                     // The function name
+ *         "This is a test error message.",    // The error message
+ *         200);                               // The error flag
+ * }
+ * @endcode
+ *
+ * @par
+ * The above program produces the following output.
+ * @code{.txt}
+ * An error occurred in the following subroutine: causes_error
+ * The error message is: This is a test error message.
+ * The error code is: 200
+ * @endcode
+ *
+ * @par
+ * The above program also creates a log file.  The log file is titled 
+ * error_log.txt by default, but can be named whatever by the user.  The 
+ * contents of the file written from the above program are as follows.  
+ * @code{.txt}
+ * ***** ERROR *****
+ * 1/2/2018; 16:49:40
+ * Function: causes_error
+ * Error Flag: 200
+ * Message:
+ * This is a test error message.
+ * @endcode
+ *
+ * @par
+ * If additional errors are encountered, the information is simply appended to
+ * the end of the file.
+*/
+
 #include <stdbool.h>
 
 /** @brief A C compatible type encapsulating an errors object. */
