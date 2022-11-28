@@ -55,13 +55,13 @@ int main() {
 bool test_log_file_get_set(void) {
     // Local Variables
     bool rst = true;
-    errorhandler obj;
+    error_handler obj;
     const char fname[] = "test_filename.txt";
     char buffer[256];
     int flag, nbuffer = 256;
 
     // Initialization
-    alloc_errorhandler(&obj);
+    alloc_error_handler(&obj);
 
     // See if the get and set functions work appropriately
     set_log_filename(&obj, fname);
@@ -74,7 +74,7 @@ bool test_log_file_get_set(void) {
     }
 
     // End
-    free_errorhandler(&obj);
+    free_error_handler(&obj);
     return rst;
 }
 
@@ -82,7 +82,7 @@ bool test_log_file_get_set(void) {
 bool test_error_reporting(void) {
     // Local Variables
     bool test, rst = true;
-    errorhandler obj;
+    error_handler obj;
     const int code = 100;
     const char msg[] = "Test error message.  Do not be alarmed.";
     const char fcn[] = "Test_Fcn";
@@ -90,7 +90,7 @@ bool test_error_reporting(void) {
     char buffer[256], fbuffer[256];
 
     // Initialization
-    alloc_errorhandler(&obj);
+    alloc_error_handler(&obj);
 
     // Ensure the error reporting doesn't terminate the application
     set_exit_on_error(&obj, false);
@@ -136,7 +136,7 @@ bool test_error_reporting(void) {
     }
 
     // End
-    free_errorhandler(&obj);
+    free_error_handler(&obj);
     return rst;
 }
 
@@ -144,7 +144,7 @@ bool test_error_reporting(void) {
 bool test_warning_reporting(void) {
     // Local Variables
     bool test, rst = true;
-    errorhandler obj;
+    error_handler obj;
     const int code = 100;
     const char msg[] = "Test warning message.  Do not be alarmed.";
     const char fcn[] = "Test_Fcn";
@@ -152,7 +152,7 @@ bool test_warning_reporting(void) {
     char buffer[256], fbuffer[256];
 
     // Initialization
-    alloc_errorhandler(&obj);
+    alloc_error_handler(&obj);
 
     // Don't print the warning message to the command line
     set_suppress_printing(&obj, true);
@@ -195,7 +195,7 @@ bool test_warning_reporting(void) {
     }
 
     // End
-    free_errorhandler(&obj);
+    free_error_handler(&obj);
     return rst;
 }
 
@@ -203,10 +203,10 @@ bool test_warning_reporting(void) {
 bool test_error_reset(void) {
     // Local Variables
     bool rst = true;
-    errorhandler obj;
+    error_handler obj;
 
     // Initialization
-    alloc_errorhandler(&obj);
+    alloc_error_handler(&obj);
 
     // Ensure the error reporting doesn't kill the application
     set_exit_on_error(&obj, false);
@@ -228,7 +228,7 @@ bool test_error_reset(void) {
 
 
     // End
-    free_errorhandler(&obj);
+    free_error_handler(&obj);
     return rst;
 }
 
@@ -236,10 +236,10 @@ bool test_error_reset(void) {
 bool test_warning_reset(void) {
     // Local Variables
     bool rst = true;
-    errorhandler obj;
+    error_handler obj;
 
     // Initialization
-    alloc_errorhandler(&obj);
+    alloc_error_handler(&obj);
 
     // Don't print anything
     set_suppress_printing(&obj, true);
@@ -258,7 +258,7 @@ bool test_warning_reset(void) {
 
 
     // End
-    free_errorhandler(&obj);
+    free_error_handler(&obj);
     return rst;
 }
 
@@ -266,7 +266,7 @@ bool test_warning_reset(void) {
 bool test_error_callback(void) {
     // Local Variables
     bool test, rst = true;
-    errorhandler obj;
+    error_handler obj;
     const int code = 100;
     const char msg[] = "Test error message.  Do not be alarmed.";
     const char fcn[] = "Test_Fcn";
@@ -274,7 +274,7 @@ bool test_error_callback(void) {
     char buffer[256], fbuffer[256];
 
     // Initialization
-    alloc_errorhandler(&obj);
+    alloc_error_handler(&obj);
 
     // Ensure the error reporting doesn't terminate the application
     set_exit_on_error(&obj, false);
