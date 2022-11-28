@@ -149,19 +149,18 @@ module ferror
 
 !> @brief Defines a type for managing errors and warnings.
     type :: errors
-        private
-        character(len = 256) :: m_fname = "error_log.txt"
-        logical :: m_foundError = .false.
-        logical :: m_foundWarning = .false.
-        integer(int32) :: m_errorFlag = 0
-        integer(int32) :: m_warningFlag = 0
-        logical :: m_exitOnError = .true.
-        logical :: m_suppressPrinting = .false.
-        character(len = :), allocatable :: m_errorMessage
-        character(len = :), allocatable :: m_warningMessage
-        character(len = :), allocatable :: m_eFunName
-        character(len = :), allocatable :: m_wFunName
-        procedure(error_callback), pointer, pass :: m_errCleanUp => null()
+        character(len = 256), private :: m_fname = "error_log.txt"
+        logical, private :: m_foundError = .false.
+        logical, private :: m_foundWarning = .false.
+        integer(int32), private :: m_errorFlag = 0
+        integer(int32), private :: m_warningFlag = 0
+        logical, private :: m_exitOnError = .true.
+        logical, private :: m_suppressPrinting = .false.
+        character(len = :), private, allocatable :: m_errorMessage
+        character(len = :), private, allocatable :: m_warningMessage
+        character(len = :), private, allocatable :: m_eFunName
+        character(len = :), private, allocatable :: m_wFunName
+        procedure(error_callback), private, pointer, pass :: m_errCleanUp => null()
     contains
         !> Gets the name of the error log file.
         !!

@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['has_5ferror_5foccurred',['has_error_occurred',['../structferror_1_1errors.html#a7150a5cddd8b96eaecaf8a4d2ca1aa59',1,'ferror::errors::has_error_occurred()'],['../namespaceferror__c__binding.html#af758a414bb8b6a0bd1cf096ab51d770b',1,'ferror_c_binding::has_error_occurred()']]],
-  ['has_5fwarning_5foccurred',['has_warning_occurred',['../structferror_1_1errors.html#ad165f873adee10565b162d72f43730aa',1,'ferror::errors::has_warning_occurred()'],['../namespaceferror__c__binding.html#aceab16cd93b5ef278f7924352fc581a5',1,'ferror_c_binding::has_warning_occurred()']]]
+  ['report_5ferror_0',['report_error',['../structferror_1_1errors.html#a16967ced63ebe7899fa3b3427f98e553',1,'ferror::errors']]],
+  ['report_5fwarning_1',['report_warning',['../structferror_1_1errors.html#a1d2ba3d2a17aaf2fea4d0899185e4656',1,'ferror::errors']]],
+  ['reset_5ferror_5fstatus_2',['reset_error_status',['../structferror_1_1errors.html#a8ee64e42feb5449917383b19aa82f344',1,'ferror::errors']]],
+  ['reset_5fwarning_5fstatus_3',['reset_warning_status',['../structferror_1_1errors.html#a94744a9b38703be4a84ce427dc749b00',1,'ferror::errors']]]
 ];
