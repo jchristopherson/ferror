@@ -1,15 +1,12 @@
 # CMake project file for FERROR
 cmake_minimum_required(VERSION 3.0)
-project(ferror C CXX Fortran)
-
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)
-
-# Define version information
-set(FERROR_MAJOR_VERSION 1)
-set(FERROR_MINOR_VERSION 4)
-set(FERROR_PATCH_VERSION 0)
-set(FERROR_VERSION ${FERROR_MAJOR_VERSION}.${FERROR_MINOR_VERSION}.${FERROR_PATCH_VERSION})
+project(
+  ferror 
+  LANGUAGES
+    C
+    Fortran
+  VERSION "1.4.0"
+)
 
 # Set a default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -26,10 +23,12 @@ option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
 # Locate the module files
-set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/include)
+set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/mod)
 
 # Define the include directories
 include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/mod)
+set(MODULE_DIR ${PROJECT_SOURCE_DIR}/mod)
 
 # Build the library
 add_subdirectory(src)
@@ -60,3 +59,70 @@ if (BUILD_TESTING)
     enable_testing()
     add_subdirectory(test)
 endif()
+
+# ------------------------------------------------------------------------------
+# INSTALLATION INSTRUCTIONS
+# ------------------------------------------------------------------------------
+# Locate the "include" directories
+set(ferror_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include)
+list(APPEND ferror_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/mod)
+
+# Define the installation instructions
+install(TARGETS ferror EXPORT ferrorTargets
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    CONFIGURATIONS Release
+    INCLUDES DESTINATION include
+)
+install(
+    DIRECTORY ${PROJECT_SOURCE_DIR}/include
+    DESTINATION ${CMAKE_INSTALL_PREFIX}
+)
+install(
+  DIRECTORY ${MODULE_DIR}
+  DESTINATION ${CMAKE_INSTALL_PREFIX}
+)
+
+# Include the documentation
+install(
+  DIRECTORY ${PROJECT_SOURCE_DIR}/doc/html 
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/doc/Fortran
+)
+install(
+  DIRECTORY ${PROJECT_SOURCE_DIR}/doc/C/html
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/doc/C
+)
+
+# Configure
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    ${CMAKE_BINARY_DIR}/{$PROJECT_NAME}ConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+)
+
+configure_file(
+    ${PROJECT_SOURCE_DIR}/ferrorConfig.cmake.in
+    ${CMAKE_BINARY_DIR}/ferrorConfig.cmake
+    COPYONLY
+)
+set(ConfigPackageLocation ferror/lib/cmake/ferror)
+install(
+    EXPORT ferrorTargets
+    FILE ferrorTargets.cmake
+    DESTINATION ${ConfigPackageLocation}
+)
+install(
+    FILES
+        ${CMAKE_BINARY_DIR}/ferrorConfig.cmake
+        ${CMAKE_BINARY_DIR}/ferrorConfigVersion.cmake
+    DESTINATION
+        ${ConfigPackageLocation}
+    COMPONENT
+        Devel
+)
