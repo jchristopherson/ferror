@@ -1,10 +1,12 @@
 #Define sources
-set(ferror_sources 
-    ferror.f90 
-    ferror_implementation.f90 
-    ferror_c_binding.f90
-    ferror_c_implementation.f90
+set(dir ${CMAKE_CURRENT_SOURCE_DIR})
+
+list(
+    APPEND FERROR_SOURCES
+    ${dir}/ferror.f90
+    ${dir}/ferror_implementation.f90 
+    ${dir}/ferror_c_binding.f90
+    ${dir}/ferror_c_implementation.f90
 )
 
-# Build the library
-add_library(ferror ${ferror_sources})
+set(FERROR_SOURCES ${FERROR_SOURCES} PARENT_SCOPE)
