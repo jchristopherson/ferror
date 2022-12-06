@@ -6,7 +6,7 @@ install_library(
     ${PROJECT_NAME}
     ${CMAKE_INSTALL_LIBDIR}
     ${PROJECT_INCLUDE_DIR}
-    ${CMAKE_INSTALL_INCLUDEDIR}
+    ${CMAKE_INSTALL_PREFIX}
 )
 
 # Install the documentation files
