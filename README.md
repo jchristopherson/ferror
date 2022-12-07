@@ -62,17 +62,17 @@ The error code is: 200
 #include <stdio.h>
 #include "ferror.h"
 
-void causes_error(errorhandler *err);
+void causes_error(error_handler *err);
 
 
 int main(void) {
     // Variables
-    errorhandler err_mgr;
+    error_handler err_mgr;
     char fname[256], msg[256];
     int flag, fnamelength = 256, msglength = 256;
 
     // Initialization
-    alloc_errorhandler(&err_mgr);
+    alloc_error_handler(&err_mgr);
 
     // Ensure the error reporting doesn't terminate the application
     set_exit_on_error(&err_mgr, false);
@@ -93,12 +93,12 @@ int main(void) {
         fname, msg, flag);
 
     // End
-    free_errorhandler(&err_mgr);
+    free_error_handler(&err_mgr);
     return 0;
 }
 
-void causes_error(errorhandler *err) {
-    report_error(err,                       // The errorhandler object
+void causes_error(error_handler *err) {
+    report_error(err,                       // The error_handler object
         "causes_error",                     // The function name
         "This is a test error message.",    // The error message
         200);                               // The error flag
@@ -114,10 +114,7 @@ The error code is: 200
 ## Documentation
 Documentation can be found [here](http://htmlpreview.github.io/?https://github.com/jchristopherson/ferror/blob/master/doc/html/index.html).
 
-## Build Instructions
-This library utilizes [CMake](https://cmake.org/) to facilitate its build.  Using CMake is as simple as issuing the following commands.
-- cmake ...
-- make
-- make install
+## Compiling
+[CMake](https://cmake.org/) is the preferred build system for this library.  See [Running CMake](https://cmake.org/runningcmake/) for instructions on how to build using CMake.
 
-See [Running CMake](https://cmake.org/runningcmake/) for more details on the use of CMake.
+[Meson](https://mesonbuild.com/index.html) can also be used to build this library.  See [this](https://mesonbuild.com/Quick-guide.html) quick start guid on how to use Meson.

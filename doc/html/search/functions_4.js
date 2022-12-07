@@ -1,14 +1,7 @@
 var searchData=
 [
-  ['get_5fclean_5fup_5froutine',['get_clean_up_routine',['../structferror_1_1errors.html#a8ab3b7e0bf177ee92fc13cb41c3c2bd4',1,'ferror::errors']]],
-  ['get_5ferror_5ffcn_5fname',['get_error_fcn_name',['../structferror_1_1errors.html#aff0cf7d5947822b910127b1e24bf7510',1,'ferror::errors::get_error_fcn_name()'],['../namespaceferror__c__binding.html#a8d1a72071feddcbca0b9c10ef6cec765',1,'ferror_c_binding::get_error_fcn_name()']]],
-  ['get_5ferror_5fflag',['get_error_flag',['../structferror_1_1errors.html#a2de1505cfbb7b1b84d7abcbe30e2e8eb',1,'ferror::errors::get_error_flag()'],['../namespaceferror__c__binding.html#a409f193998b052acd3f159161e9c2a4f',1,'ferror_c_binding::get_error_flag()']]],
-  ['get_5ferror_5fmessage',['get_error_message',['../structferror_1_1errors.html#a45d032329fc938ecefb73efca37884d0',1,'ferror::errors::get_error_message()'],['../namespaceferror__c__binding.html#a30e23a417eb7bf9ea5d227bf890efa1a',1,'ferror_c_binding::get_error_message()']]],
-  ['get_5ferrorhandler',['get_errorhandler',['../namespaceferror__c__binding.html#a47f1c523fc2be4ebef675f363906a5f4',1,'ferror_c_binding']]],
-  ['get_5fexit_5fon_5ferror',['get_exit_on_error',['../structferror_1_1errors.html#a770bad6ac36ab4889dfdf8f2fdff4cd2',1,'ferror::errors::get_exit_on_error()'],['../namespaceferror__c__binding.html#a236bcfc9e45d70ddc62fd37390d32e98',1,'ferror_c_binding::get_exit_on_error()']]],
-  ['get_5flog_5ffilename',['get_log_filename',['../structferror_1_1errors.html#ab534f219b33ce710454e6dc1e79f2c31',1,'ferror::errors::get_log_filename()'],['../namespaceferror__c__binding.html#a559efcc71c8694e04c388a20f8dc2d8b',1,'ferror_c_binding::get_log_filename()']]],
-  ['get_5fsuppress_5fprinting',['get_suppress_printing',['../structferror_1_1errors.html#a60c64f75f53b5bd59aa62fa67c09452a',1,'ferror::errors::get_suppress_printing()'],['../namespaceferror__c__binding.html#a99f5f809b898b88ca05a0bab8e892cf2',1,'ferror_c_binding::get_suppress_printing()']]],
-  ['get_5fwarning_5ffcn_5fname',['get_warning_fcn_name',['../structferror_1_1errors.html#ac4c7033b8e9ce76dac5c93b9c112886c',1,'ferror::errors::get_warning_fcn_name()'],['../namespaceferror__c__binding.html#a24506c947a67435ece49c4a01ec7c101',1,'ferror_c_binding::get_warning_fcn_name()']]],
-  ['get_5fwarning_5fflag',['get_warning_flag',['../structferror_1_1errors.html#a58ed68f9974f81f30a3bd51d53b0d365',1,'ferror::errors::get_warning_flag()'],['../namespaceferror__c__binding.html#a97b65fb5afab4dc0b7e832d25d7e5a7e',1,'ferror_c_binding::get_warning_flag()']]],
-  ['get_5fwarning_5fmessage',['get_warning_message',['../structferror_1_1errors.html#a0116f6ab44eba258b05126d0a1ee46b2',1,'ferror::errors::get_warning_message()'],['../namespaceferror__c__binding.html#a571e293eaf9a0e29cf5126994de247a2',1,'ferror_c_binding::get_warning_message()']]]
+  ['set_5fclean_5fup_5froutine_0',['set_clean_up_routine',['../structferror_1_1errors.html#a46ef910aa997cafc90e7b08cf866e0db',1,'ferror::errors']]],
+  ['set_5fexit_5fon_5ferror_1',['set_exit_on_error',['../structferror_1_1errors.html#abc26e2c627f1f55ba0c7c2297c9f31bb',1,'ferror::errors']]],
+  ['set_5flog_5ffilename_2',['set_log_filename',['../structferror_1_1errors.html#af4ddb927168c8a93ebad47cb14b6fda7',1,'ferror::errors']]],
+  ['set_5fsuppress_5fprinting_3',['set_suppress_printing',['../structferror_1_1errors.html#afed99c7458896167db213a96a3b4f765',1,'ferror::errors']]]
 ];

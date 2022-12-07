@@ -36,6 +36,7 @@ bin/
 build/
 latex/
 lib/
+mod/
 
 # CMake Stuff
 *.json

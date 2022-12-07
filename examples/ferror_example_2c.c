@@ -3,17 +3,17 @@
 #include <stdio.h>
 #include "ferror.h"
 
-void causes_error(errorhandler *err);
+void causes_error(error_handler *err);
 
 
 int main(void) {
     // Variables
-    errorhandler err_mgr;
+    error_handler err_mgr;
     char fname[256], msg[256];
     int flag, fnamelength = 256, msglength = 256;
 
     // Initialization
-    alloc_errorhandler(&err_mgr);
+    alloc_error_handler(&err_mgr);
 
     // Ensure the error reporting doesn't terminate the application
     set_exit_on_error(&err_mgr, false);
@@ -34,12 +34,12 @@ int main(void) {
         fname, msg, flag);
 
     // End
-    free_errorhandler(&err_mgr);
+    free_error_handler(&err_mgr);
     return 0;
 }
 
-void causes_error(errorhandler *err) {
-    report_error(err,                       // The errorhandler object
+void causes_error(error_handler *err) {
+    report_error(err,                       // The error_handler object
         "causes_error",                     // The function name
         "This is a test error message.",    // The error message
         200);                               // The error flag
