@@ -2,12 +2,12 @@
 #include "ferror.h"
 
 int main() {
-    errorhandler err;
+    error_handler err;
     int errorFlag, sz;
     char buffer[256];
 
-    // Initialize the errorhandler object
-    alloc_errorhandler(&err);
+    // Initialize the error_handler object
+    alloc_error_handler(&err);
 
     // Get the name of the error log file
     get_log_filename(&err, buffer, &sz);
@@ -31,5 +31,5 @@ int main() {
     printf("Retrieved Error Code: %i\n", get_error_flag(&err));
 
     // Clean Up
-    free_errorhandler(&err);
+    free_error_handler(&err);
 }
