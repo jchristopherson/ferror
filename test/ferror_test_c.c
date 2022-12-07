@@ -270,8 +270,6 @@ bool test_error_callback(void) {
     const int code = 100;
     const char msg[] = "Test error message.  Do not be alarmed.";
     const char fcn[] = "Test_Fcn";
-    int flag, nbuffer = 256, nfbuffer = 256;
-    char buffer[256], fbuffer[256];
 
     // Initialization
     alloc_error_handler(&obj);
