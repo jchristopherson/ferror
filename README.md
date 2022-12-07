@@ -114,10 +114,7 @@ The error code is: 200
 ## Documentation
 Documentation can be found [here](http://htmlpreview.github.io/?https://github.com/jchristopherson/ferror/blob/master/doc/html/index.html).
 
-## Build Instructions
-This library utilizes [CMake](https://cmake.org/) to facilitate its build.  Using CMake is as simple as issuing the following commands.
-- cmake ...
-- make
-- make install
+## Compiling
+[CMake](https://cmake.org/) is the preferred build system for this library.  See [Running CMake](https://cmake.org/runningcmake/) for instructions on how to build using CMake.
 
-See [Running CMake](https://cmake.org/runningcmake/) for more details on the use of CMake.
+[Meson](https://mesonbuild.com/index.html) can also be used to build this library.  See [this](https://mesonbuild.com/Quick-guide.html) quick start guid on how to use Meson.
