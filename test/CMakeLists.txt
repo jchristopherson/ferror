@@ -1,6 +1,7 @@
 macro(create_test testname codename)
     add_executable(${testname} ${codename})
     target_link_libraries(${testname} ferror)
+    target_include_directories(${testname} PUBLIC ${PROJECT_BINARY_DIR}/include)
     add_test(
         NAME ${testname}
         WORKING_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}

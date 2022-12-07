@@ -1,10 +1,12 @@
 # Example 1
 add_executable(ferror_example_1 ferror_example_1.f90)
 target_link_libraries(ferror_example_1 ferror)
+target_include_directories(ferror_example_1 PUBLIC ${PROJECT_BINARY_DIR}/include)
 
-# Exampel 2
+# Example 2
 add_executable(ferror_example_2 ferror_example_2.f90)
 target_link_libraries(ferror_example_2 ferror)
+target_include_directories(ferror_example_2 PUBLIC ${PROJECT_BINARY_DIR}/include)
 
 # Example 1 - C API
 include_directories(${PROJECT_SOURCE_DIR}/include)

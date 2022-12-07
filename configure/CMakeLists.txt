@@ -21,3 +21,4 @@ include(GNUInstallDirs)
 # Locate the local include directory
 set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 set(PROJECT_INCLUDE_DIR ${PROJECT_INCLUDE_DIR} PARENT_SCOPE)
+set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_INCLUDE_DIR})
