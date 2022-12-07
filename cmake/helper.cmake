@@ -41,7 +41,6 @@ function(install_library lib_name lib_install_dir bin_install_dir mod_dir instal
         RUNTIME DESTINATION ${bin_install_dir}
         LIBRARY DESTINATION ${lib_install_dir}
         ARCHIVE DESTINATION ${lib_install_dir}
-        INCLUDES DESTINATION ${install_dir}/include
     )
     install(
         DIRECTORY ${mod_dir}
