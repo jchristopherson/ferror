@@ -21,7 +21,7 @@ endmacro()
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/include
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
 )
 
 create_test(ferror_test ferror_test.f90)
