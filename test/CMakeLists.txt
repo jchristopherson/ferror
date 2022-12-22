@@ -19,5 +19,10 @@ macro(create_c_test testname codename)
     )
 endmacro()
 
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/include
+)
+
 create_test(ferror_test ferror_test.f90)
 create_test(ferror_test_c ferror_test_c.c)
