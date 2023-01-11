@@ -34,7 +34,7 @@ jobs:
     
     - name: Configure CMake - Windows
       if: contains( matrix.os, 'windows' )
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_C_COMPILER=${{ env.CC }} "C:/ProgramData/Chocolatey/bin" -DCMAKE_Fortran_COMPILER=${{ env.FC }} "C:/ProgramData/Chocolatey/bin"
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_C_COMPILER="C:/ProgramData/Chocolatey/bin/${{ env.CC }}" -DCMAKE_Fortran_COMPILER="C:/ProgramData/Chocolatey/bin${{ env.FC }}"
       
     - name: Configure CMake - Others
       if: false==contains( matrix.os, 'windows' )
