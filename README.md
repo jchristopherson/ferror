@@ -2,7 +2,7 @@
 A library to assist with error handling in Fortran projects.
 
 ## Status
-![Build Status](https://travis-ci.org/jchristopherson/ferror.svg?branch=master)
+![Build Status](https://github.com/jchristopherson/ferror/actions/workflows/cmake.yml/badge.svg)
 
 ## Usage
 
