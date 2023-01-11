@@ -57,22 +57,22 @@ module ferror_c_binding
         !> @brief Initializes a new error handler object.
         !!
         !! @param[in] obj The error_handler object to allocate.
-        module subroutine alloc_error_handler(obj) bind(C, name = "alloc_error_handler")
-            ! Arguments
+        module subroutine alloc_error_handler(obj) &
+            bind(C, name = "alloc_error_handler")
             type(error_handler), intent(inout) :: obj
         end subroutine
 
         !> @brief Frees resources held by the error_handler object.
         !!
         !! @param[in,out] obj The error_handler object.
-        module subroutine free_error_handler(obj) 
+        module subroutine free_error_handler(obj) &
+            bind(C, name = "free_error_handler")
             type(error_handler), intent(inout), target :: obj
         end subroutine
 
         !> @brief Gets the @ref errors object stored within the 
         !! @ref error_handler object.
         module subroutine get_error_handler(obj, eobj)
-            ! Arguments
             type(error_handler), intent(in), target :: obj
             type(errors), intent(out), pointer :: eobj
         end subroutine
@@ -87,7 +87,8 @@ module ferror_c_binding
         !!  sure to leave room for the null terminator character.  On output, 
         !!  the actual number of characters written to @p fname (not including 
         !!  the null character).
-        module subroutine get_log_filename(err, fname, nfname)
+        module subroutine get_log_filename(err, fname, nfname) &
+            bind(C, name = "get_log_filename")
             type(error_handler), intent(in) :: err
             character(kind = c_char), intent(out) :: fname(*)
             integer(c_int), intent(inout) :: nfname
@@ -97,7 +98,8 @@ module ferror_c_binding
         !!
         !! @param[in,out] err The error_handler object.
         !! @param[in] fname A null-terminated string containing the filename.
-        module subroutine set_log_filename(err, fname) 
+        module subroutine set_log_filename(err, fname) &
+            bind(C, name = "set_log_filename")
             type(error_handler), intent(inout) :: err
             character(kind = c_char), intent(in) :: fname(*)
         end subroutine
@@ -109,7 +111,8 @@ module ferror_c_binding
         !!  error was encountered.
         !! @param[in] msg The error message.
         !! @param[in] flag The error flag.
-        module subroutine report_error(err, fcn, msg, flag) 
+        module subroutine report_error(err, fcn, msg, flag) &
+            bind(C, name = "report_error")
             type(error_handler), intent(inout) :: err
             character(kind = c_char), intent(in) :: fcn, msg
             integer(c_int), intent(in), value :: flag
@@ -122,7 +125,8 @@ module ferror_c_binding
         !!  warning was encountered.
         !! @param[in] msg The warning message.
         !! @param[in] flag The warning flag.
-        module subroutine report_warning(err, fcn, msg, flag)
+        module subroutine report_warning(err, fcn, msg, flag) &
+            bind(C, name = "report_warning")
             type(error_handler), intent(inout) :: err
             character(kind = c_char), intent(in) :: fcn, msg
             integer(c_int), intent(in), value :: flag
@@ -135,7 +139,8 @@ module ferror_c_binding
         !!  error was encountered.
         !! @param[in] msg The error message.
         !! @param[in] flag The error flag.
-        module subroutine log_error(err, fcn, msg, flag)
+        module subroutine log_error(err, fcn, msg, flag) &
+            bind(C, name = "log_error")
             type(error_handler), intent(in) :: err
             character(kind = c_char), intent(in) :: fcn, msg
             integer(c_int), intent(in), value :: flag
@@ -145,7 +150,8 @@ module ferror_c_binding
         !!
         !! @param[in] err A pointer to the error handler object.
         !! @return Returns true if an error has been encountered; else, false.
-        module function has_error_occurred(err) result(x)
+        module function has_error_occurred(err) result(x) &
+            bind(C, name = "has_error_occurred")
             type(error_handler), intent(in) :: err
             logical(c_bool) :: x
         end function
@@ -154,7 +160,8 @@ module ferror_c_binding
         !! to zero.
         !!
         !! @param[in,out] err The error_handler object.
-        module subroutine reset_error_status(err) 
+        module subroutine reset_error_status(err) &
+            bind(C, name = "reset_error_status")
             type(error_handler), intent(inout) :: err
         end subroutine
 
@@ -162,7 +169,8 @@ module ferror_c_binding
         !!
         !! @param[in] err The error_handler object.
         !! @return Returns true if a warning has been encountered; else, false.
-        module function has_warning_occurred(err) result(x)
+        module function has_warning_occurred(err) result(x) &
+            bind(C, name = "has_warning_occurred")
             type(error_handler), intent(in) :: err
             logical(c_bool) :: x
         end function
@@ -171,7 +179,8 @@ module ferror_c_binding
         !! warning flag to zero.
         !!
         !! @param[in,out] err The error_handler object.
-        module subroutine reset_warning_status(err) 
+        module subroutine reset_warning_status(err) &
+            bind(C, name = "reset_warning_status")
             type(error_handler), intent(inout) :: err
         end subroutine
 
@@ -179,7 +188,8 @@ module ferror_c_binding
         !!
         !! @param[in] err The error_handler object.
         !! @return The current error flag.
-        module function get_error_flag(err) result(x)
+        module function get_error_flag(err) result(x) &
+            bind(C, name = "get_error_flag")
             type(error_handler), intent(in) :: err
             integer(c_int) :: x
         end function
@@ -188,7 +198,8 @@ module ferror_c_binding
         !!
         !! @param[in] err The error_handler object.
         !! @return The current warning flag.
-        module function get_warning_flag(err) result(x) 
+        module function get_warning_flag(err) result(x) &
+            bind(C, name = "get_warning_flag")
             type(error_handler), intent(in) :: err
             integer(c_int) :: x
         end function
@@ -199,7 +210,8 @@ module ferror_c_binding
         !! @param[in] err The error_handler object.
         !! @return Returns true if the application should be terminated; else,
         !!  false.
-        module function get_exit_on_error(err) result(x) 
+        module function get_exit_on_error(err) result(x) &
+            bind(C, name = "get_exit_on_error")
             type(error_handler), intent(in) :: err
             logical(c_bool) :: x
         end function
@@ -210,8 +222,8 @@ module ferror_c_binding
         !! @param[in,out] err The error_handler object.
         !! @param[in] x Set to true if the application should be terminated when 
         !!  an error is reported; else, false.
-        module subroutine set_exit_on_error(err, x) 
-            ! Arguments
+        module subroutine set_exit_on_error(err, x) &
+            bind(C, name = "set_exit_on_error")
             type(error_handler), intent(inout) :: err
             logical(c_bool), intent(in), value :: x
         end subroutine
@@ -222,7 +234,8 @@ module ferror_c_binding
         !! @param[in] err The error_handler object.
         !! @return True if message printing should be suppressed; else, false to 
         !!  allow printing.
-        module function get_suppress_printing(err) result(x) 
+        module function get_suppress_printing(err) result(x) &
+            bind(C, name = "get_suppress_printing")
             type(error_handler), intent(in) :: err
             logical(c_bool) :: x
         end function
@@ -233,7 +246,8 @@ module ferror_c_binding
         !! @param[in,out] err The error_handler object.
         !! @param[in] x Set to true if message printing should be suppressed; 
         !!  else, false to allow printing.
-        module subroutine set_suppress_printing(err, x) 
+        module subroutine set_suppress_printing(err, x) &
+            bind(C, name = "set_suppress_printing")
             type(error_handler), intent(inout) :: err
             logical(c_bool), intent(in), value :: x
         end subroutine
@@ -245,7 +259,8 @@ module ferror_c_binding
         !! @param[in,out] nmsg On input, the actual size of the buffer.  On 
         !!  output, the actual number of characters written to @p msg (not 
         !!  including the null character).
-        module subroutine get_error_message(err, msg, nmsg) 
+        module subroutine get_error_message(err, msg, nmsg) &
+            bind(C, name = "get_error_message")
             type(error_handler), intent(in) :: err
             character(kind = c_char), intent(out) :: msg(*)
             integer(c_int), intent(inout) :: nmsg
@@ -258,7 +273,8 @@ module ferror_c_binding
         !! @param[in,out] nmsg On input, the actual size of the buffer.  On 
         !!  output, the actual number of characters written to @p msg (not 
         !!  including the null character).
-        module subroutine get_warning_message(err, msg, nmsg)
+        module subroutine get_warning_message(err, msg, nmsg) &
+            bind(C, name = "get_warning_message")
             type(error_handler), intent(in) :: err
             character(kind = c_char), intent(out) :: msg(*)
             integer(c_int), intent(inout) :: nmsg
@@ -272,7 +288,8 @@ module ferror_c_binding
         !! @param[in,out] nfname On input, the actual size of the buffer.  On 
         !!  output, the actual number of characters written to @p fname (not
         !!  including the null character).
-        module subroutine get_error_fcn_name(err, fname, nfname)
+        module subroutine get_error_fcn_name(err, fname, nfname) &
+            bind(C, name = "get_error_fcn_name")
             type(error_handler), intent(in) :: err
             character(kind = c_char), intent(out) :: fname(*)
             integer(c_int), intent(inout) :: nfname
@@ -286,7 +303,8 @@ module ferror_c_binding
         !! @param[in,out] nfname On input, the actual size of the buffer.  On 
         !!  output, the actual number of characters written to @p fname (not
         !!  including the null character).
-        module subroutine get_warning_fcn_name(err, fname, nfname)
+        module subroutine get_warning_fcn_name(err, fname, nfname) &
+            bind(C, name = "get_warning_fcn_name")
             type(error_handler), intent(in) :: err
             character(kind = c_char), intent(out) :: fname(*)
             integer(c_int), intent(inout) :: nfname
@@ -304,7 +322,7 @@ module ferror_c_binding
         !! @param[in] args A pointer to an object to pass to the callback 
         !!  function.
         module subroutine report_error_with_callback(err, fcn, msg, flag, &
-            cback, args) 
+            cback, args) bind(C, name = "report_error_with_callback")
             type(error_handler), intent(inout) :: err
             character(kind = c_char), intent(in) :: fcn, msg
             integer(c_int), intent(in), value :: flag
