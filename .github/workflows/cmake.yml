@@ -43,18 +43,3 @@ jobs:
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{env.BUILD_TYPE}}
-      
-    - name: Create Coverage Report
-      run: |
-        mkdir -p ${{ env.COV_DIR }}
-        lcov --capture --initial --base-directory . --directory build/gfortran_*/ --output-file ${{ env.COV_DIR }}/coverage.base
-        lcov --capture --base-directory . --directory build/gfortran_*/ --output-file ${{ env.COV_DIR }}/coverage.capture
-        lcov --add-tracefile ${{ env.COV_DIR }}/coverage.base --add-tracefile ${{ env.COV_DIR }}/coverage.capture --output-file ${{ env.COV_DIR }}/coverage.info
-      env:
-        COV_DIR: build/coverage
-
-    - name: Upload Coverage Report
-      uses: codecov/codecov-action@v2
-      with:
-        files: build/coverage/coverage.info
-
