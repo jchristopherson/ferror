@@ -57,7 +57,7 @@ module ferror_c_binding
         !> @brief Initializes a new error handler object.
         !!
         !! @param[in] obj The error_handler object to allocate.
-        module subroutine alloc_error_handler(obj) 
+        module subroutine alloc_error_handler(obj) bind(C, name = "alloc_error_handler")
             ! Arguments
             type(error_handler), intent(inout) :: obj
         end subroutine
