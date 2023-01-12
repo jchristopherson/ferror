@@ -278,10 +278,10 @@ module function er_get_warning_fcn(this) result(fcn)
 end function
 
 ! ------------------------------------------------------------------------------
-module function er_get_err_fcn_ptr(this) result(ptr)
+module function er_get_err_fcn_ptr(this)
     class(errors), intent(in) :: this
-    procedure(error_callback), pointer :: ptr
-    ptr => this%m_errCleanUp
+    procedure(error_callback), pointer :: er_get_err_fcn_ptr
+    er_get_err_fcn_ptr => this%m_errCleanUp
 end function
 
 ! ------------------------------------------------------------------------------
