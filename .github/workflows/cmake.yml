@@ -18,7 +18,6 @@ jobs:
       matrix:
         fortran_compiler: [gfortran, ifort]
         os: [ubuntu-latest, macos-latest] # issue with windows-latest & CMake with CMake not recognizing defined compilers
-        gfortran_version: [9, 10, 11]
 
     steps:
 
@@ -32,7 +31,7 @@ jobs:
       id: setup-fortran
       with:
         compiler: gcc
-        version: ${{ matrix.gfortran_version }}
+        version: 12
         
       env:
         FC: ${{ steps.setup-fortran.outputs.fc }}
