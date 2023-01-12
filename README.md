@@ -111,9 +111,6 @@ The error message is: This is a test error message.
 The error code is: 200
 ```
 
-## Documentation
-Documentation can be found [here](http://htmlpreview.github.io/?https://github.com/jchristopherson/ferror/blob/master/doc/html/index.html).
-
 ## Compiling
 [CMake](https://cmake.org/) is the preferred build system for this library.  See [Running CMake](https://cmake.org/runningcmake/) for instructions on how to build using CMake.
 
