@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ferror<span id="projectnumber">&#160;1.4.0</span>
+   <div id="projectname">ferror<span id="projectnumber">&#160;1.4.1</span>
    </div>
    <div id="projectbrief">FERROR is a library to assist with error handling in Fortran projects.</div>
   </td>
@@ -184,15 +184,15 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Gets the routine to call when an error has been logged. </p>
-<dl class="section user"><dt>Syntax</dt><dd><div class="fragment"><div class="line"><span class="keywordtype">procedure</span>(error_callback), <span class="keywordtype">pointer</span> function get_clean_up_routine(<span class="keywordtype">class</span>(errors) this)</div>
+<dl class="section user"><dt>Syntax</dt><dd><div class="fragment"><div class="line"><span class="keyword">subroutine </span>get_clean_up_routine(class(errors) this, procedure(error_callback) pointer ptr)</div>
 </div><!-- fragment --></dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">this</td><td>The <a class="el" href="structferror_1_1errors.html">errors</a> object. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">ptr</td><td>A pointer to the <a class="el" href="interfaceferror_1_1error__callback.html">error_callback</a> routine. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A pointer to the <a class="el" href="interfaceferror_1_1error__callback.html">error_callback</a> routine. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00358">358</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 

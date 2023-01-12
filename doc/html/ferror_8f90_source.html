@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ferror<span id="projectnumber">&#160;1.4.0</span>
+   <div id="projectname">ferror<span id="projectnumber">&#160;1.4.1</span>
    </div>
    <div id="projectbrief">FERROR is a library to assist with error handling in Fortran projects.</div>
   </td>
@@ -276,10 +276,10 @@ $(document).ready(function(){initNavTree('ferror_8f90_source.html',''); initResi
 <div class="line"><a id="l00487" name="l00487"></a><span class="lineno">  487</span>            <span class="keywordtype">integer(int32)</span> :: n</div>
 <div class="line"><a id="l00488" name="l00488"></a><span class="lineno">  488</span>        <span class="keyword">end function</span></div>
 <div class="line"><a id="l00489" name="l00489"></a><span class="lineno">  489</span> </div>
-<div class="line"><a id="l00490" name="l00490"></a><span class="lineno">  490</span>        <span class="keyword">module</span> function er_get_err_fcn_ptr(this) result(ptr)</div>
+<div class="line"><a id="l00490" name="l00490"></a><span class="lineno">  490</span>        <span class="keyword">module</span> subroutine er_get_err_fcn_ptr(this, ptr)</div>
 <div class="line"><a id="l00491" name="l00491"></a><span class="lineno">  491</span>            <span class="keywordtype">class</span>(errors), <span class="keywordtype">intent(in)</span> :: this</div>
-<div class="line"><a id="l00492" name="l00492"></a><span class="lineno">  492</span>            <span class="keywordtype">procedure</span>(error_callback), <span class="keywordtype">pointer</span> :: ptr</div>
-<div class="line"><a id="l00493" name="l00493"></a><span class="lineno">  493</span>        <span class="keyword">end function</span></div>
+<div class="line"><a id="l00492" name="l00492"></a><span class="lineno">  492</span>            <span class="keywordtype">procedure</span>(error_callback), <span class="keywordtype">intent(out)</span>, <span class="keywordtype">pointer</span> :: ptr</div>
+<div class="line"><a id="l00493" name="l00493"></a><span class="lineno">  493</span>        <span class="keyword">end subroutine</span></div>
 <div class="line"><a id="l00494" name="l00494"></a><span class="lineno">  494</span> </div>
 <div class="line"><a id="l00495" name="l00495"></a><span class="lineno">  495</span>        <span class="keyword">module</span> subroutine er_set_err_fcn_ptr(this, ptr)</div>
 <div class="line"><a id="l00496" name="l00496"></a><span class="lineno">  496</span>            <span class="keywordtype">class</span>(errors), <span class="keywordtype">intent(inout)</span> :: this</div>
