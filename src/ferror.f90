@@ -487,10 +487,14 @@ module ferror
             integer(int32) :: n
         end function
 
-        module function er_get_err_fcn_ptr(this)
+        ! module function er_get_err_fcn_ptr(this) result(ptr)
+        !     class(errors), intent(in) :: this
+        !     procedure(error_callback), pointer :: ptr
+        ! end function
+        module subroutine er_get_err_fcn_ptr(this, ptr)
             class(errors), intent(in) :: this
-            procedure(error_callback), pointer :: er_get_err_fcn_ptr
-        end function
+            procedure(error_callback), intent(out), pointer :: ptr
+        end subroutine
 
         module subroutine er_set_err_fcn_ptr(this, ptr)
             class(errors), intent(inout) :: this
