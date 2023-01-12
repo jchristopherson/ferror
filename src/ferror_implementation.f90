@@ -120,14 +120,21 @@ module subroutine er_log_error(this, fcn, msg, flag)
     integer(int32), intent(in) :: flag
 
     ! Local Variables
-    integer(int32) :: fid, time(3), date(3)
+    integer(int32) :: fid, time(3), date(3), t1, t2, t3, d1, d2, d3
 
     ! Open the file
     open(newunit = fid, file = this%m_fname, access = "append")
 
     ! Determine the time
+#ifdef IFORT
+    call itime(t1, t2, t3)
+    call idate(d1, d2, d3)
+    time = [t1, t2, t3]
+    date = [d1, d2, d3]
+#else
     call itime(time)
     call idate(date)
+#endif
 
     ! Write the error information
     write(fid, '(A)') ""

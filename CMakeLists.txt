@@ -17,6 +17,15 @@ option(BUILD_C_API "Build FERROR C API?" OFF)
 # Configure everything
 add_subdirectory(configure)
 
+# Determine if IFORT is being used
+if (CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
+  # IFORT uses a different IDATE and ITIME routine than GFORTRAN.  This flag
+  # informs the code to be aware of the switch.
+  set(CMAKE_Fortran_FLAGS "-fpp -DIFORT")
+else()
+  set(CMAKE_Fortran_FLAGS "-cpp")
+endif()
+
 # Build the library
 add_subdirectory(src)
 add_fortran_library(
