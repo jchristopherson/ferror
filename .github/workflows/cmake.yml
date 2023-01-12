@@ -12,13 +12,13 @@ env:
 
 jobs:
   build:
-#     runs-on: ${{ matrix.os }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    # runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         fortran_compiler: [gfortran, ifort]
-#         os: [ubuntu-latest, macos-latest] # issue with windows-latest & CMake with CMake not recognizing defined compilers
+        os: [ubuntu-latest, macos-latest] # issue with windows-latest & CMake with CMake not recognizing defined compilers
 
     steps:
 
