@@ -28,14 +28,8 @@ program main
     test_result = test_error_callback()
     if (.not.test_result) overall = .false.
 
-    if (overall) then
-        print '(A)', "FERROR TEST STATUS: PASS"
-        call exit(0)
-    else
-        print '(A)', "FERROR TEST STATUS: FAIL"
-        call exit(1)
-    end if
-
+    ! End
+    if (.not.overall) stop 1
 contains
 ! ------------------------------------------------------------------------------
     function test_log_file_get_set() result(rst)
@@ -92,7 +86,7 @@ contains
         ! Check the error flag
         if (obj%get_error_flag() /= code) then
             rst = .false.
-            print '(AI0AI0)', "Expected an error code of ", code, &
+            print 100, "Expected an error code of ", code, &
                 ", but received an error code of ", flag, "."
         end if
 
@@ -111,6 +105,9 @@ contains
             print '(A)', "Expected a function name of: " // fcn // &
                 ", but found a name of: " // check // "."
         end if
+
+        ! Formatting
+    100 format(A, I0, A, I0)
     end function
 
 ! ------------------------------------------------------------------------------
@@ -144,7 +141,7 @@ contains
         ! Check the warning flag
         if (obj%get_warning_flag() /= code) then
             rst = .false.
-            print '(AI0AI0)', "Expected an warning code of ", code, &
+            print 100, "Expected an warning code of ", code, &
                 ", but received an warning code of ", flag, "."
         end if
 
@@ -163,6 +160,9 @@ contains
             print '(A)', "Expected a function name of: " // fcn // &
                 ", but found a name of: " // check // "."
         end if
+
+        ! Formatting
+    100 format(A, I0, A, I0)
     end function
 
 ! ------------------------------------------------------------------------------

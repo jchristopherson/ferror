@@ -263,10 +263,12 @@ bool test_warning_reset(void) {
 }
 
 /* ************************************************************************** */
+bool pass_check = false;
 bool test_error_callback(void) {
     // Local Variables
-    bool test, rst = true;
+    bool rst = true;
     error_handler obj;
+    int val = 100;
     const int code = 100;
     const char msg[] = "Test error message.  Do not be alarmed.";
     const char fcn[] = "Test_Fcn";
@@ -281,24 +283,20 @@ bool test_error_callback(void) {
     set_suppress_printing(&obj, true);
 
     // Report the error
-    test = false;
-    report_error_with_callback(&obj, fcn, msg, code, callback, &test);
+    report_error_with_callback(&obj, fcn, msg, code, callback, &val);
 
-    // Ensure test is now true
-    if (!test) {
-        rst = false;
-        printf("The error callback routine did not modify the test value.");
-    }
+    // Check to see if pass_check was modified
+    rst = pass_check;
 
     // End
+    free_error_handler(&obj);
     return rst;
 }
 
 /* ************************************************************************** */
 void callback(void *args) {
-    bool *stuff;
-    stuff = (bool*)args;
-    *stuff = true;
+    int *valptr = (int*)args;
+    pass_check = (*valptr == 100);
 }
 
 /* ************************************************************************** */

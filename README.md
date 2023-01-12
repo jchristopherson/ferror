@@ -2,7 +2,7 @@
 A library to assist with error handling in Fortran projects.
 
 ## Status
-![Build Status](https://travis-ci.org/jchristopherson/ferror.svg?branch=master)
+![Build Status](https://github.com/jchristopherson/ferror/actions/workflows/cmake.yml/badge.svg)
 
 ## Usage
 
@@ -110,9 +110,6 @@ An error occurred in the following subroutine: causes_error
 The error message is: This is a test error message.
 The error code is: 200
 ```
-
-## Documentation
-Documentation can be found [here](http://htmlpreview.github.io/?https://github.com/jchristopherson/ferror/blob/master/doc/html/index.html).
 
 ## Compiling
 [CMake](https://cmake.org/) is the preferred build system for this library.  See [Running CMake](https://cmake.org/runningcmake/) for instructions on how to build using CMake.
