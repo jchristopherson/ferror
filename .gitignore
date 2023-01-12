@@ -38,6 +38,8 @@ latex/
 lib/
 mod/
 html/
+doc/html/
+doc/C/
 
 # CMake Stuff
 *.json
