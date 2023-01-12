@@ -291,6 +291,7 @@ bool test_error_callback(void) {
     }
 
     // End
+    free_error_handler(&obj);
     return rst;
 }
 
