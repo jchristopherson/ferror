@@ -28,14 +28,8 @@ program main
     test_result = test_error_callback()
     if (.not.test_result) overall = .false.
 
-    if (overall) then
-        print '(A)', "FERROR TEST STATUS: PASS"
-        call exit(0)
-    else
-        print '(A)', "FERROR TEST STATUS: FAIL"
-        call exit(1)
-    end if
-
+    ! End
+    if (.not.overall) stop 1
 contains
 ! ------------------------------------------------------------------------------
     function test_log_file_get_set() result(rst)

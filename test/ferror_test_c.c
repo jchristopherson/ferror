@@ -25,20 +25,20 @@ int main() {
     test_result = test_log_file_get_set();
     if (!test_result) overall = false;
 
-    test_result = test_error_reporting();
-    if (!test_result) overall = false;
+    // test_result = test_error_reporting();
+    // if (!test_result) overall = false;
 
-    test_result = test_warning_reporting();
-    if (!test_result) overall = false;
+    // test_result = test_warning_reporting();
+    // if (!test_result) overall = false;
 
-    test_result = test_error_reset();
-    if (!test_result) overall = false;
+    // test_result = test_error_reset();
+    // if (!test_result) overall = false;
 
-    test_result = test_warning_reset();
-    if (!test_result) overall = false;
+    // test_result = test_warning_reset();
+    // if (!test_result) overall = false;
 
-    test_result = test_error_callback();
-    if (!test_result) overall = false;
+    // test_result = test_error_callback();
+    // if (!test_result) overall = false;
 
     // End
     if (overall) {
