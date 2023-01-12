@@ -350,11 +350,11 @@ module ferror
         !!
         !! @par Syntax
         !! @code{.f90}
-        !! procedure(error_callback), pointer function get_clean_up_routine(class(errors) this)
+        !! subroutine get_clean_up_routine(class(errors) this, procedure(error_callback) pointer ptr)
         !! @endcode
         !! 
         !!  @param[in] this The @ref errors object.
-        !!  @return A pointer to the @ref error_callback routine.
+        !!  @param[out] ptr A pointer to the @ref error_callback routine.
         procedure, public :: get_clean_up_routine => er_get_err_fcn_ptr
         
         !> Sets the routine to call when an error has been logged.
@@ -487,10 +487,6 @@ module ferror
             integer(int32) :: n
         end function
 
-        ! module function er_get_err_fcn_ptr(this) result(ptr)
-        !     class(errors), intent(in) :: this
-        !     procedure(error_callback), pointer :: ptr
-        ! end function
         module subroutine er_get_err_fcn_ptr(this, ptr)
             class(errors), intent(in) :: this
             procedure(error_callback), intent(out), pointer :: ptr
