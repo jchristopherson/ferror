@@ -31,8 +31,8 @@ int main() {
     test_result = test_warning_reporting();
     if (!test_result) overall = false;
 
-    // test_result = test_error_reset();
-    // if (!test_result) overall = false;
+    test_result = test_error_reset();
+    if (!test_result) overall = false;
 
     // test_result = test_warning_reset();
     // if (!test_result) overall = false;
