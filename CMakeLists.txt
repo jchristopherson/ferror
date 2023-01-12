@@ -12,7 +12,7 @@ project(
 include("${PROJECT_SOURCE_DIR}/cmake/helper.cmake")
 
 # Build the C API?
-option(BUILD_C_API "Build FERROR C API?" OFF)
+option(BUILD_C_API "Build C API?" OFF)
 
 # Configure everything
 add_subdirectory(configure)
