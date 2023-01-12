@@ -52,8 +52,8 @@ module ferror_c_binding
     end type
 
 ! ------------------------------------------------------------------------------
-    interface
-        subroutine c_error_callback(ptr)
+    abstract interface
+        subroutine c_error_callback(ptr) bind(C)
             use, intrinsic :: iso_c_binding
             type(c_ptr), intent(in), value :: ptr
         end subroutine
@@ -602,13 +602,13 @@ contains
         type(error_handler), intent(inout) :: err
         character(kind = c_char), intent(in) :: fcn, msg
         integer(c_int), intent(in), value :: flag
-        procedure(error_callback), pointer :: ffcn
         type(c_funptr), intent(in), value :: cback
         type(c_ptr), intent(in), value :: args
 
         ! Local Variables
         type(errors), pointer :: ferr
         type(callback_manager) :: mgr
+        procedure(error_callback), pointer :: ffcn
         procedure(c_error_callback), pointer :: fcback
 
         ! Get the errors object
@@ -625,6 +625,7 @@ contains
         ! Report the error
         call ferr%report_error(cstr_2_fstr(fcn), cstr_2_fstr(msg), flag, mgr)
     end subroutine
+
 ! ******************************************************************************
 ! HELPER ROUTINES
 ! ------------------------------------------------------------------------------
