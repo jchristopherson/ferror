@@ -5,7 +5,7 @@ project(
   LANGUAGES
     C
     Fortran
-  VERSION "1.4.0"
+  VERSION "1.4.1"
 )
 
 # Get the macros and functions we'll need
