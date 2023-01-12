@@ -8,11 +8,11 @@ project(
   VERSION "1.4.0"
 )
 
-# Utilize the GNU installation structure
-include(GNUInstallDirs)
-
 # Get the macros and functions we'll need
 include("${PROJECT_SOURCE_DIR}/cmake/helper.cmake")
+
+# Build the C API?
+option(BUILD_C_API "Build FERROR C API?" OFF)
 
 # Configure everything
 add_subdirectory(configure)

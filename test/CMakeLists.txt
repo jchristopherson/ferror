@@ -25,4 +25,7 @@ include_directories(
 )
 
 create_test(ferror_test ferror_test.f90)
-create_test(ferror_test_c ferror_test_c.c)
+
+if (${BUILD_C_API})
+    create_test(ferror_test_c ferror_test_c.c)
+endif()
