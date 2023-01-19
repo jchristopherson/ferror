@@ -115,3 +115,6 @@ The error code is: 200
 [CMake](https://cmake.org/) is the preferred build system for this library.  See [Running CMake](https://cmake.org/runningcmake/) for instructions on how to build using CMake.
 
 [Meson](https://mesonbuild.com/index.html) can also be used to build this library.  See [this](https://mesonbuild.com/Quick-guide.html) quick start guid on how to use Meson.
+
+## Documentation
+The documentation can be found [here](https://jchristopherson.github.io/ferror/).
