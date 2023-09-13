@@ -1,31 +1,23 @@
-macro(create_test testname codename)
-    add_executable(${testname} ${codename})
-    target_link_libraries(${testname} ferror)
-    target_include_directories(${testname} PUBLIC ${PROJECT_BINARY_DIR}/include)
-    add_test(
-        NAME ${testname}
-        WORKING_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-        COMMAND $<TARGET_FILE:${testname}>
-    )
-endmacro()
+include("${PROJECT_SOURCE_DIR}/cmake/helper.cmake")
 
-macro(create_c_test testname codename)
-    add_executable(${testname} ${codename})
-    target_link_libraries(${testname} ferror)
-    add_test(
-        NAME ${testname}
-        WORKING_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-        COMMAND $<TARGET_FILE:${testname}>
-    )
-endmacro()
-
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+add_executable(ferror_test ferror_test.f90)
+link_library(ferror_test ${PROJECT_NAME} ${PROJECT_INCLUDE_DIR})
+add_test(
+    NAME ferror_test
+    WORKING_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+    COMMAND $<TARGET_FILE:ferror_test>
 )
 
-create_test(ferror_test ferror_test.f90)
-
 if (${BUILD_C_API})
-    create_test(ferror_test_c ferror_test_c.c)
+    include_directories(
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    )
+    add_executable(ferror_test_c C/ferror_test_c.c)
+    link_library(ferror_test_c ${PROJECT_NAME} ${PROJECT_INCLUDE_DIR})
+    add_test(
+        NAME ferror_test_c
+        WORKING_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+        COMMAND $<TARGET_FILE:ferror_test_c>
+    )
 endif()
