@@ -41,6 +41,7 @@ function(install_library lib_name lib_install_dir bin_install_dir mod_dir instal
         RUNTIME DESTINATION ${bin_install_dir}
         LIBRARY DESTINATION ${lib_install_dir}
         ARCHIVE DESTINATION ${lib_install_dir}
+        INCLUDES DESTINATION ${install_dir}/include
     )
     install(
         DIRECTORY ${mod_dir}
@@ -56,10 +57,16 @@ function(install_documentation doc_dir install_dir)
     )
 endfunction()
 
+# Links the supplied library
+function(link_library targ lib include_dir)
+    target_link_libraries(${targ} ${lib})
+    target_include_directories(${targ} PUBLIC $<BUILD_INTERFACE:${include_dir}>)
+endfunction()
+
 # ------------------------------------------------------------------------------
 # Helpful Macros
 macro(print_all_variables)
-    message(STATUS "---------- CURRENTLY DEFIND VARIABLES -----------")
+    message(STATUS "---------- CURRENTLY DEFINED VARIABLES -----------")
     get_cmake_property(varNames VARIABLES)
     foreach(varName ${varNames})
         message(STATUS ${varName} = ${${varName}})
