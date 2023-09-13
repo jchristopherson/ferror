@@ -1,0 +1,24 @@
+name = "ferror"
+version = "1.4.2"
+license = "GPL-3.0"
+author = "Jason Christopherson"
+maintainer = "Jason Christopherson"
+copyright = "Copyright 2017-2023, Jason Christopherson"
+description = "A library to assist with error handling in Fortran projects."
+homepage = "https://github.com/jchristopherson/ferror"
+
+[library]
+source-dir = "src"
+
+[[test]]
+name = "ferror_test"
+source-dir = "test"
+main = "ferror_test.f90"
+
+[install]
+library = true
+
+[build]
+auto-executables = false
+auto-examples = false
+auto-tests = false
