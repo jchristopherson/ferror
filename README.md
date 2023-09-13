@@ -117,5 +117,15 @@ The error code is: 200
 
 [Meson](https://mesonbuild.com/index.html) can also be used to build this library.  See [this](https://mesonbuild.com/Quick-guide.html) quick start guid on how to use Meson.
 
+[FPM](https://github.com/fortran-lang/fpm) can also be used to build this library using the provided fpm.toml.
+```txt
+fpm build
+```
+The FERROR library can be used within your FPM project by adding the following to your fpm.toml file.
+```
+[dependencies]
+ferror = { git = "https://github.com/jchristopherson/ferror" }
+```
+
 ## Documentation
 The documentation can be found [here](https://jchristopherson.github.io/ferror/).
