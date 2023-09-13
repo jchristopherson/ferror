@@ -22,3 +22,6 @@ library = true
 auto-executables = false
 auto-examples = false
 auto-tests = false
+
+[preprocess]
+[preprocess.cpp]
