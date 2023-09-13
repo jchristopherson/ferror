@@ -3,6 +3,7 @@ A library to assist with error handling in Fortran projects.
 
 ## Status
 ![Build Status](https://github.com/jchristopherson/ferror/actions/workflows/cmake.yml/badge.svg)
+[![Actions Status](https://github.com/jchristopherson/ferror/workflows/fpm/badge.svg)](https://github.com/jchristopherson/ferror/actions)
 
 ## Usage
 
