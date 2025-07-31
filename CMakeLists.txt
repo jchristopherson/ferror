@@ -30,19 +30,12 @@ endif()
 
 # Build the library
 add_subdirectory(src)
-add_fortran_library(
-  ${PROJECT_NAME}
-  ${PROJECT_INCLUDE_DIR}
-  ${CMAKE_INSTALL_INCLUDEDIR}
-  ${PROJECT_VERSION}
-  ${PROJECT_VERSION_MAJOR}
-  ${FERROR_SOURCES}
-)
-target_compile_options(
-    ${PROJECT_NAME} 
-    PRIVATE
-    $<$<CONFIG:DEBUG>:-O0 -g>
-    $<$<CONFIG:RELEASE>:-O3 -s>
+
+# Installation Instructions
+install(
+  EXPORT ${PROJECT_NAME}-targets
+  NAMESPACE ${PROJECT_NAME}::
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )
 
 # ------------------------------------------------------------------------------
@@ -64,22 +57,6 @@ option(BUILD_TESTING "Build FERROR tests")
 if (BUILD_TESTING)
     # Inform the user we're building the tests
     message(STATUS "Building FERROR tests.")
-
-    # If building a shared library, ensure the test directory gets access to the
-    # library
-    
-    if (${BUILD_SHARED_LIBS})
-      set(FERROR_SHARED_LIB_NAME ${CMAKE_SHARED_LIBRARY_PREFIX})
-      string(APPEND FERROR_SHARED_LIB_NAME ${PROJECT_NAME})
-      string(APPEND FERROR_SHARED_LIB_NAME ${CMAKE_SHARED_LIBRARY_SUFFIX})
-      add_custom_command(
-        TARGET ${PROJECT_NAME}
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_BINARY_DIR}/${FERROR_SHARED_LIB_NAME}"
-        "${CMAKE_BINARY_DIR}/test"
-      )
-    endif()
 
     # Build the tests
     include(CTest)
