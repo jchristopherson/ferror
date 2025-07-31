@@ -8,7 +8,7 @@ add_test(
     COMMAND $<TARGET_FILE:ferror_test>
 )
 
-if (${BUILD_C_API})
+if (${BUILD_FERROR_C_API})
     include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>

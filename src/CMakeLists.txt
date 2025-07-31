@@ -1,7 +1,7 @@
 #Define sources
 set(dir ${CMAKE_CURRENT_SOURCE_DIR})
 
-if (${BUILD_C_API})
+if (${BUILD_FERROR_C_API})
     list(
         APPEND FERROR_SOURCES
         ${dir}/ferror.f90

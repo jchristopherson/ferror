@@ -120,10 +120,14 @@ module subroutine er_log_error(this, fcn, msg, flag)
     integer(int32), intent(in) :: flag
 
     ! Local Variables
-    integer(int32) :: fid, time(3), date(3), t1, t2, t3, d1, d2, d3
+    integer(int32) :: fid, time(3), date(3)
+#ifdef IFORT
+    integer(int32) :: t1, t2, t3, d1, d2, d3
+#endif
 
     ! Open the file
-    open(newunit = fid, file = this%m_fname, access = "append")
+    open(newunit = fid, file = this%m_fname, access = "sequential", &
+        position = "append")
 
     ! Determine the time
 #ifdef IFORT
