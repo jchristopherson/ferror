@@ -47,20 +47,3 @@ install(
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 )
 install(DIRECTORY ${FERROR_MOD_DIR} DESTINATION "${CMAKE_INSTALL_MODULEDIR}")
-
-# If building a shared library, ensure the test directory gets access to the
-# library
-if (BUILD_TESTING AND ${BUILD_SHARED_LIBS})
-    if (${BUILD_SHARED_LIBS})
-    set(FERROR_SHARED_LIB_NAME ${CMAKE_SHARED_LIBRARY_PREFIX})
-    string(APPEND FERROR_SHARED_LIB_NAME ${PROJECT_NAME})
-    string(APPEND FERROR_SHARED_LIB_NAME ${CMAKE_SHARED_LIBRARY_SUFFIX})
-    add_custom_command(
-        TARGET ${PROJECT_NAME}
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_BINARY_DIR}/${FERROR_SHARED_LIB_NAME}"
-        "${CMAKE_BINARY_DIR}/test"
-    )
-    endif()
-endif()
