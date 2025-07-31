@@ -10,9 +10,6 @@ project(
 set(CMAKE_Fortran_STANDARD 2018)
 set(CMAKE_Fortran_STANDARD_REQUIRED TRUE)
 
-# Get the macros and functions we'll need
-include("${PROJECT_SOURCE_DIR}/cmake/helper.cmake")
-
 # Build the C API?
 option(BUILD_FERROR_C_API "Build FERROR C API?" OFF)
 
