@@ -38,6 +38,16 @@ target_include_directories(
 )
 
 install(
+    FILES "${PROJECT_SOURCE_DIR}/include/ferror.h"
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+target_include_directories(
+    ${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
+install(
     TARGETS ${PROJECT_NAME}
     EXPORT ${PROJECT_NAME}-targets
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
