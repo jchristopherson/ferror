@@ -5,6 +5,9 @@ A library to assist with error handling in Fortran projects.
 ![Build Status](https://github.com/jchristopherson/ferror/actions/workflows/cmake.yml/badge.svg)
 [![Actions Status](https://github.com/jchristopherson/ferror/workflows/fpm/badge.svg)](https://github.com/jchristopherson/ferror/actions)
 
+## Documentation
+The documentation can be found [here](https://jchristopherson.github.io/ferror/).
+
 ## Usage
 
 ```fortran
@@ -151,6 +154,3 @@ The FERROR library can be used within your FPM project by adding the following t
 [dependencies]
 ferror = { git = "https://github.com/jchristopherson/ferror" }
 ```
-
-## Documentation
-The documentation can be found [here](https://jchristopherson.github.io/ferror/).
