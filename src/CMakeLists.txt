@@ -4,14 +4,12 @@ if (${BUILD_FERROR_C_API})
     list(
         APPEND FERROR_SOURCES
         ${dir}/ferror.f90
-        ${dir}/ferror_implementation.f90 
         ${dir}/ferror_c_binding.f90
     )
 else()
     list(
         APPEND FERROR_SOURCES
         ${dir}/ferror.f90
-        ${dir}/ferror_implementation.f90
     )
 endif()
 
