@@ -8,7 +8,8 @@
     <meta name="author" content="Jason Christopherson" >
     <link rel="icon" href="./favicon.png">
 
-    <title> FERROR </title>
+    <title>Search Results &ndash; FERROR
+</title>
 
     <link href="./css/bootstrap.min.css" rel="stylesheet">
     <link href="./css/pygments.css" rel="stylesheet">
@@ -83,75 +84,29 @@
     </nav>
 
     <div class="container">
-      <!-- Main component for a primary marketing message or call to action -->
-      <div class="jumbotron">
-        <p>FERROR is a library to assist with error handling in Fortran projects.</p>
-	<p> Find us on&hellip;</p>
-        <p>
-          <a class="btn btn-lg btn-primary" href="https://github.com/jchristopherson/ferror" role="button">GitHub</a>
-        </p>
-      </div>
-
-      <div class="row" id='text'>
-        <div class="col-md-8">
-          <h1>FERROR</h1>
-          
+      <div class="row">
+        <div class="col-lg-12">
+			 <h1>Search Results</h1>
+             <div id="tipue_search_content"><div id="tipue_search_loading"></div></div>
         </div>
-        <div class="col-md-4">
-	  <div class="well">
-          <h2>Developer Info</h2>
-          <h4>Jason Christopherson</h4>
-          
-       </div>
-       </div>
       </div>
-        <div class="row">
-          <hr>
-          <div class="col-xs-6 col-sm-3">
-            <div>
-              <h3>Source Files</h3>
-              <ul><li><a href='./sourcefile/ferror.f90.html'>ferror.f90</a></li></ul>
-            </div>
-            <div>
-              <ul>
-                <li><a href="./lists/files.html"><em>All source files&hellip;</em></a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-xs-6 col-sm-3">
-            <div>
-              <h3>Modules</h3>
-              <ul><li><a href='./module/ferror.html'>ferror</a></li></ul>
-            </div>
-            <div>
-              <ul>
-                <li><a href="./lists/modules.html"><em>All modules&hellip;</em></a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-xs-6 col-sm-3">
-            <div>
-              <h3>Procedures</h3>
-              <ul><li><a href='./interface/error_callback.html'>error_callback</a></li></ul>
-            </div>
-            <div>
-              <ul>
-                <li><a href="./lists/procedures.html"><em>All procedures&hellip;</em></a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-xs-6 col-sm-3">
-            <div>
-              <h3>Derived Types</h3>
-              <ul><li><a href='./type/errors.html'>errors</a></li></ul>
-            </div>
-            <div>
-              <ul>
-                <li><a href="./lists/types.html"><em>All derived types&hellip;</em></a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+<!--
+    <script>
+      $(document).ready(function() {
+           $('#tipue_search_input').tipuesearch({
+             'mode' : 'static',
+             'show': 10,
+             'newWindow': false,
+             'descriptiveWords': 35,
+         });
+      });
+    </script>
+-->
+<script>
+$(document).ready(function() {
+     $('#tipue_search_input').tipuesearch();
+});
+</script>
       <hr>
     </div> <!-- /container -->
     <footer>
