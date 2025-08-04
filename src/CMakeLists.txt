@@ -1,19 +1,57 @@
-#Define sources
 set(dir ${CMAKE_CURRENT_SOURCE_DIR})
 
-if (${BUILD_C_API})
+if (${BUILD_FERROR_C_API})
     list(
         APPEND FERROR_SOURCES
         ${dir}/ferror.f90
-        ${dir}/ferror_implementation.f90 
         ${dir}/ferror_c_binding.f90
     )
 else()
     list(
         APPEND FERROR_SOURCES
         ${dir}/ferror.f90
-        ${dir}/ferror_implementation.f90
     )
 endif()
 
-set(FERROR_SOURCES ${FERROR_SOURCES} PARENT_SCOPE)
+add_library(${PROJECT_NAME} ${FERROR_SOURCES})
+
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+    WINDOWS_EXPORT_ALL_SYMBOLS ON
+)
+
+set(FERROR_MOD_DIR ${CMAKE_CURRENT_BINARY_DIR}/mod_files/)
+if (NOT EXISTS "${FERROR_MOD_DIR}")
+    file(MAKE_DIRECTORY "${FERROR_MOD_DIR}")
+endif()
+
+set_target_properties(
+    ${PROJECT_NAME} PROPERTIES
+    Fortran_MODULE_DIRECTORY ${FERROR_MOD_DIR}
+)
+target_include_directories(
+    ${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${FERROR_MOD_DIR}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_MODULEDIR}>
+)
+
+install(
+    FILES "${PROJECT_SOURCE_DIR}/include/ferror.h"
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+target_include_directories(
+    ${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
+install(
+    TARGETS ${PROJECT_NAME}
+    EXPORT ${PROJECT_NAME}-targets
+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+)
+install(DIRECTORY ${FERROR_MOD_DIR} DESTINATION "${CMAKE_INSTALL_MODULEDIR}")

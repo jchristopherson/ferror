@@ -113,7 +113,32 @@ The error code is: 200
 ```
 
 ## Compiling
-[CMake](https://cmake.org/) is the preferred build system for this library.  See [Running CMake](https://cmake.org/runningcmake/) for instructions on how to build using CMake.
+[CMake](https://cmake.org/) is the preferred build system for this library. 
+To configure, first navigate to the project directory and then issue the following command. 
+```txt
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+```
+To build the C API:
+```txt
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_FERROR_C_API=TRUE
+```
+If testing is to be included then:
+```txt
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=TRUE
+```
+or
+```txt
+cmake -B "build" -DCMAKE_BUILD_TYPE=Release -DBUILD_FERROR_C_API=TRUE -DBUILD_TESTING=TRUE
+```
+To build:
+```txt
+cmake --build build
+```
+Finally, to run the tests:
+```txt
+ctest --test-dir build/test
+```
+
 
 [Meson](https://mesonbuild.com/index.html) can also be used to build this library.  See [this](https://mesonbuild.com/Quick-guide.html) quick start guid on how to use Meson.
 

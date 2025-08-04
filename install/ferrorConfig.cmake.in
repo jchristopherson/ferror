@@ -1,3 +1,0 @@
-if (NOT TARGET ferror)
-    include("${CMAKE_CURRENT_LIST_DIR}/ferrorTargets.cmake")
-endif()

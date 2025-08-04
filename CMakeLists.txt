@@ -5,14 +5,13 @@ project(
   LANGUAGES
     C
     Fortran
-  VERSION "1.4.2"
+  VERSION "1.4.3"
 )
-
-# Get the macros and functions we'll need
-include("${PROJECT_SOURCE_DIR}/cmake/helper.cmake")
+set(CMAKE_Fortran_STANDARD 2018)
+set(CMAKE_Fortran_STANDARD_REQUIRED TRUE)
 
 # Build the C API?
-option(BUILD_C_API "Build C API?" OFF)
+option(BUILD_FERROR_C_API "Build FERROR C API?" OFF)
 
 # Configure everything
 add_subdirectory(configure)
@@ -28,17 +27,13 @@ endif()
 
 # Build the library
 add_subdirectory(src)
-add_fortran_library(
-  ${PROJECT_NAME}
-  ${PROJECT_INCLUDE_DIR}
-  ${CMAKE_INSTALL_INCLUDEDIR}
-  ${PROJECT_VERSION}
-  ${PROJECT_VERSION_MAJOR}
-  ${FERROR_SOURCES}
-)
 
-# Install the library
-add_subdirectory(install)
+# Installation Instructions
+install(
+  EXPORT ${PROJECT_NAME}-targets
+  NAMESPACE ${PROJECT_NAME}::
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+)
 
 # ------------------------------------------------------------------------------
 # EXAMPLES
@@ -55,8 +50,7 @@ endif()
 # ------------------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------
-# C Based Testing
-option(BUILD_TESTING "Build tests")
+option(BUILD_TESTING "Build FERROR tests")
 if (BUILD_TESTING)
     # Inform the user we're building the tests
     message(STATUS "Building FERROR tests.")

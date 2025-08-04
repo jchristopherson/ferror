@@ -1,93 +1,4 @@
 ! ferror.f90
-
-!> @mainpage
-!!
-!! @section intro_sec Introduction
-!! FERROR is a library to assist with error handling in Fortran projects.  The 
-!! error handling capabilities also have been extended to be called from C
-!! thereby providing both an error handling mechanism for C projects as well as
-!! allowing C interop with Fortran projects that use this library to handle
-!! errors.
-!!
-!! @par Example
-!! The following piece of code offers a simple introduction to the use of this
-!! library.
-!! @code{.f90}
-!! program example
-!!     use ferror
-!!     use, intrinsic :: iso_fortran_env, only : int32
-!!     implicit none
-!! 
-!!     ! Variables
-!!     type(errors) :: err_mgr
-!! 
-!!     ! Ensure the error reporting doesn't terminate the application.  The default
-!!     ! behavior terminates the application - optional.
-!!     call err_mgr%set_exit_on_error(.false.)
-!! 
-!!     ! Don't print the error message to the command line.  The default behavior
-!!     ! prints the error information to the command line - optional.
-!!     call err_mgr%set_suppress_printing(.true.)
-!! 
-!!     ! Call the routine that causes the error
-!!     call causes_error(err_mgr)
-!! 
-!!     ! Print the error information
-!!     print '(A)', "An error occurred in the following subroutine: " // &
-!!         err_mgr%get_error_fcn_name()
-!!     print '(A)', "The error message is: " // err_mgr%get_error_message()
-!!     print '(AI0)', "The error code is: ", err_mgr%get_error_flag()
-!! contains
-!! 
-!! ! The purpose of this subroutine is to simply trigger an error condition.
-!! subroutine causes_error(err)
-!!     ! Arguments
-!!     class(errors), intent(inout) :: err
-!! 
-!!     ! Define an error flag
-!!     integer(int32), parameter :: error_flag = 200
-!! 
-!!     ! Trigger the error condition
-!!     call err%report_error(&
-!!         "causes_error", &                   ! The subroutine or function name
-!!         "This is a test error message.", &  ! The error message.
-!!         error_flag)                         ! The error flag
-!! end subroutine
-!! 
-!! end program
-!! @endcode
-!!
-!! @par
-!! The above program produces the following output.
-!! @code{.txt}
-!! An error occurred in the following subroutine: causes_error
-!! The error message is: This is a test error message.
-!! The error code is: 200
-!! @endcode
-!!
-!! @par
-!! The above program also creates a log file.  The log file is titled 
-!! error_log.txt by default, but can be named whatever by the user.  The 
-!! contents of the file written from the above program are as follows.  
-!! @code{.txt}
-!! ***** ERROR *****
-!! 1/2/2018; 16:49:40
-!! Function: causes_error
-!! Error Flag: 200
-!! Message:
-!! This is a test error message.
-!! @endcode
-!!
-!! @par
-!! If additional errors are encountered, the information is simply appended to
-!! the end of the file.
-
-! ------------------------------------------------------------------------------
-
-!> @brief \b ferror
-!!
-!! @par Purpose
-!! Provides a series of error codes and error handling mechanisms.
 module ferror
     use, intrinsic :: iso_fortran_env, only : int32
     implicit none
@@ -110,393 +21,423 @@ module ferror
         character(len = :), private, allocatable :: m_wFunName
         procedure(error_callback), private, pointer, pass :: m_errCleanUp => null()
     contains
-        !> Gets the name of the error log file.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! character(len = :) function get_log_filename(class(errors) this, )
-        !! @endcode
-        !!
-        !! @param[in] this The @ref errors object.
-        !! @return The filename.
         procedure, public :: get_log_filename => er_get_log_filename
-
-        !> Sets the name of the error log file.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! subroutine set_log_filename(class(errors) this, character(len = *) str)
-        !! @endcode
-        !!
-        !! @param[in,out] this The @ref errors object.
-        !! @param[in] str The filename.
         procedure, public :: set_log_filename => er_set_log_filename
-
-        !> Reports an error condition to the user.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! subroutine report_error(class(errors) this, character(len = *) msg, integer(int32) flag, optional class(*) obj)
-        !! @endcode
-        !! 
-        !!  @param[in,out] this The @ref errors object.
-        !!  @param[in] fcn The name of the function or subroutine in which the error
-        !!   was encountered.
-        !!  @param[in] msg The error message.
-        !!  @param[in] flag The error flag.
-        !!  @param[in,out] obj An optional unlimited polymorphic object that can be
-        !!   passed to provide information to the clean-up routine.
-        !! 
-        !!  @par Remarks
-        !!  The default behavior prints an error message, appends the supplied 
-        !!  information to a log file, and terminates the program.
         procedure, public :: report_error => er_report_error
-
-        !> Reports a warning message to the user.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! subroutine report_warning(class(errors) this, character(len = *) msg, integer(int32) flag)
-        !! @endcode
-        !!
-        !!  @param[in,out] this The @ref errors object.
-        !!  @param[in] fcn The name of the function or subroutine from which the
-        !!   warning was issued.
-        !!  @param[in] msg The warning message.
-        !!  @param[in] flag The warning flag.
-        !! 
-        !!  @par Remarks
-        !!  The default behavior prints the warning message, and returns control
-        !!  back to the calling code.
         procedure, public :: report_warning => er_report_warning
-        
-        !> brief Writes an error log file.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! subroutine log_error(class(errors) this, character(len = *) fcn, character(len = *) msg, integer(int32) flag)
-        !! @endcode
-        !! 
-        !!  @param[in] this The @ref errors object.
-        !!  @param[in] fcn The name of the function or subroutine in which the error
-        !!   was encountered.
-        !!  @param[in] msg The error message.
-        !!  @param[in] flag The error flag.
         procedure, public :: log_error => er_log_error
-        
-        !> Tests to see if an error has been encountered.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! logical function has_error_occurred(class(errors) this)
-        !! @endcode
-        !! 
-        !!  @param[in] this The @ref errors object.
-        !!  @return Returns true if an error has been encountered; else, false.
         procedure, public :: has_error_occurred => er_has_error_occurred
-        
-        !> Resets the error status flag to false, and the current error flag
-        !!  to zero.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! subroutine reset_error_status(class(errors) this)
-        !! @endcode
-        !! 
-        !!  @param[in,out] this The @ref errors object.
         procedure, public :: reset_error_status => er_reset_error_status
-        
-        !> Tests to see if a warning has been encountered.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! logical function has_warning_occurred(class(errors) this)
-        !! @endcode
-        !! 
-        !!  @param[in] this The @ref errors object.
-        !!  @return Returns true if a warning has been encountered; else, false.
         procedure, public :: has_warning_occurred => er_has_warning_occurred
-        
-        !> Resets the warning status flag to false, and the current warning
-        !!  flag to zero.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! subroutine reset_warning_status(class(errors) this)
-        !! @endcode
-        !! 
-        !!  @param[in,out] this The @ref errors object.
         procedure, public :: reset_warning_status => er_reset_warning_status
-
-        !> Gets the current error flag.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! integer(int32) function get_error_flag(class(errors) this)
-        !! @endcode
-        !! 
-        !!  @param[in] this The @ref errors object.
-        !!  @return The current error flag.
         procedure, public :: get_error_flag => er_get_error_flag
-        
-        !> Gets the current warning flag.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! integer(int32) function get_warning_flag(class(errors) this)
-        !! @endcode
-        !! 
-        !!  @param[in] this The @ref errors object.
-        !!  @return The current warning flag.
         procedure, public :: get_warning_flag => er_get_warning_flag
-        
-        !> Gets a logical value determining if the application should be
-        !! terminated when an error is encountered.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! logical function get_exit_on_error(class(errors) this)
-        !! @endcode
-        !! 
-        !!  @param[in] this The @ref errors object.
-        !!  @return Returns true if the application should be terminated; else, 
-        !!   false.
         procedure, public :: get_exit_on_error => er_get_exit_on_error
-        
-        !> Sets a logical value determining if the application should be
-        !!  terminated when an error is encountered.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! subroutine set_exit_on_error(class(errors) this, logical x)
-        !! @endcode
-        !! 
-        !!  @param[in,out] this The @ref errors object.
-        !!  @param[in] x Set to true if the application should be terminated when an
-        !!   error is reported; else, false.
         procedure, public :: set_exit_on_error => er_set_exit_on_error
-        
-        !> Gets a logical value determining if printing of error and warning
-        !! messages should be suppressed.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! logical function get_suppress_printing(class(errors) err)
-        !! @endcode
-        !! 
-        !!  @param[in] this The @ref errors object.
-        !!  @return True if message printing should be suppressed; else, false to 
-        !!   allow printing.
         procedure, public :: get_suppress_printing => er_get_suppress_printing
-        
-        !> Sets a logical value determining if printing of error and warning
-        !!  messages should be suppressed.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! subroutine set_suppress_printing(class(errors) this, logical x)
-        !! @endcode
-        !! 
-        !!  @param[in,out] this The @ref errors object.
-        !!  @param[in] x Set to true if message printing should be suppressed; else,
-        !!   false to allow printing.
         procedure, public :: set_suppress_printing => er_set_suppress_printing
-        
-        !> Gets the current error message.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! character(len = :) function get_error_message(class(errors) this)
-        !! @endcode
-        !! 
-        !!  @param[in] this The @ref errors object.
-        !!  @return The error message.
         procedure, public :: get_error_message => er_get_err_msg
-        
-        !> Gets the current warning message.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! character(len = :) function get_warning_message(class(errors) this)
-        !! @endcode
-        !! 
-        !!  @param[in] this The @ref errors object.
-        !!  @return The warning message.
         procedure, public :: get_warning_message => er_get_warning_msg
-        
-        !> Gets the name of the routine that initiated the error.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! character(len = :) function get_error_fcn_name(class(errors) this)
-        !! @endcode
-        !! 
-        !!  @param[in] this The @ref errors object.
-        !!  @return The routine or function name.
         procedure, public :: get_error_fcn_name => er_get_err_fcn
-        
-        !> Gets the name of the routine that initiated the warning.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! character(len = :) function get_warning_fcn_name(class(errors) this)
-        !! @endcode
-        !! 
-        !!  @param[in] this The @ref errors object.
-        !!  @return The routine or function name.
         procedure, public :: get_warning_fcn_name => er_get_warning_fcn
-        
-        !> Gets the routine to call when an error has been logged.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! subroutine get_clean_up_routine(class(errors) this, procedure(error_callback) pointer ptr)
-        !! @endcode
-        !! 
-        !!  @param[in] this The @ref errors object.
-        !!  @param[out] ptr A pointer to the @ref error_callback routine.
         procedure, public :: get_clean_up_routine => er_get_err_fcn_ptr
-        
-        !> Sets the routine to call when an error has been logged.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! subroutine set_clean_up_routine(class(errors) this, procedure(error_callback) pointer ptr)
-        !! @endcode
-        !! 
-        !!  @param[in,out] this The @ref errors object.
-        !!  @param[in] ptr A pointer to the @ref error_callback routine.
         procedure, public :: set_clean_up_routine => er_set_err_fcn_ptr
         
     end type
 
     interface
-        !> Defines the signature of a routine that can be used to clean up
-        !! after an error condition is encountered.
         subroutine error_callback(err, obj)
+            !! Defines the signature of a routine that can be used to clean up
+            !! after an error condition is encountered.
             import errors
-            !> The errors-based object managing the error handling.
             class(errors), intent(in) :: err
-            !> An unlimited polymorphic object that can be passed to provide
-            !! information to the clean-up routine.
+                !! The errors-based object managing the error handling.
             class(*), intent(inout) :: obj
+                !! An unlimited polymorphic object that can be passed to provide
+                !! information to the clean-up routine.
         end subroutine
     end interface
 
-    ! ferror_implementation.f90
-    interface
-        pure module function er_get_log_filename(this) result(str)
-            class(errors), intent(in) :: this
-            character(len = :), allocatable :: str
-        end function
+! ------------------------------------------------------------------------------
+contains
+! ------------------------------------------------------------------------------
+pure function er_get_log_filename(this) result(str)
+    !! Gets the name of the error log file.
+    class(errors), intent(in) :: this
+        !! The errors object.
+    character(len = :), allocatable :: str
+        !! The filename.
+    str = trim(this%m_fname)
+end function
 
-        module subroutine er_set_log_filename(this, str)
-            class(errors), intent(inout) :: this
-            character(len = *), intent(in) :: str
-            integer(int32) :: n
-        end subroutine
+! --------------------
+subroutine er_set_log_filename(this, str)
+    !! Sets the name of the error log file.
+    class(errors), intent(inout) :: this
+        !! The errors object.
+    character(len = *), intent(in) :: str
+        !! The filename.
+    integer(int32) :: n
+    n = min(len(str), 256)
+    this%m_fname = ""
+    this%m_fname(1:n) = str(1:n)
+end subroutine
 
-        module subroutine er_report_error(this, fcn, msg, flag, obj)
-            class(errors), intent(inout) :: this
-            character(len = *), intent(in) :: fcn, msg
-            integer(int32), intent(in) :: flag
-            class(*), intent(inout), optional :: obj
-        end subroutine
+! ------------------------------------------------------------------------------
+subroutine er_report_error(this, fcn, msg, flag, obj)
+    !! Reports an error condition to the user.  The default behavior prints an 
+    !! error message, appends the supplied information to a log file, and 
+    !! terminates the program.
+    class(errors), intent(inout) :: this
+        !! The errors object.
+    character(len = *), intent(in) :: fcn
+        !! The name of the function or subroutine in which the error
+        !! was encountered.
+    character(len = *), intent(in) :: msg
+        !! The error message.
+    integer(int32), intent(in) :: flag
+        !! The error flag.
+    class(*), intent(inout), optional :: obj
+        !! An optional unlimited polymorphic object that can be passed to 
+        !! provide information to the clean-up routine.
 
-        module subroutine er_report_warning(this, fcn, msg, flag)
-            class(errors), intent(inout) :: this
-            character(len = *), intent(in) :: fcn, msg
-            integer(int32), intent(in) :: flag
-        end subroutine
+    ! Local Variables
+    integer(int32) :: n, dummy
 
-        module subroutine er_log_error(this, fcn, msg, flag)
-            class(errors), intent(in) :: this
-            character(len = *), intent(in) :: fcn, msg
-            integer(int32), intent(in) :: flag
-        end subroutine
+    ! Write the error message to the command line
+    if (.not.this%m_suppressPrinting) then
+        print *, ""
+        print '(A)', "***** ERROR *****"
+        print '(A)', "Function: " // fcn
+        print 100, "Error Flag: ", flag
+        print '(A)', "Message:"
+        print '(A)', msg
+        print *, ""
+    100 format(A, I0)            
+    end if
 
-        pure module function er_has_error_occurred(this) result(x)
-            class(errors), intent(in) :: this
-            logical :: x
-        end function
+    ! Update the error found status
+    this%m_foundError = .true.
+    this%m_errorFlag = flag
 
-        module subroutine er_reset_error_status(this)
-            class(errors), intent(inout) :: this
-        end subroutine
+    ! Store the message
+    n = len(msg)
+    if (allocated(this%m_errorMessage)) deallocate(this%m_errorMessage)
+    allocate(character(len = n) :: this%m_errorMessage)
+    this%m_errorMessage = msg(1:n)
 
-        pure module function er_has_warning_occurred(this) result(x)
-            class(errors), intent(in) :: this
-            logical :: x
-        end function
+    ! Store the function name
+    n = len(fcn)
+    if (allocated(this%m_eFunName)) deallocate(this%m_eFunName)
+    allocate(character(len = n) :: this%m_eFunName)
+    this%m_eFunName = fcn(1:n)
 
-        module subroutine er_reset_warning_status(this)
-            class(errors), intent(inout) :: this
-        end subroutine
+    ! Write the error message to a log file
+    call this%log_error(fcn, msg, flag)
 
-        pure module function er_get_error_flag(this) result(x)
-            class(errors), intent(in) :: this
-            integer(int32) :: x
-        end function
+    ! Call the clean-up routine, if available
+    if (associated(this%m_errCleanUp)) then
+        if (present(obj)) then
+            call this%m_errCleanUp(obj)
+        else
+            dummy = 0
+            call this%m_errCleanUp(dummy)
+        end if
+    end if
 
-        pure module function er_get_warning_flag(this) result(x)
-            class(errors), intent(in) :: this
-            integer(int32) :: x
-        end function
+    ! Exit the program
+    if (this%m_exitOnError) call exit(flag)
+end subroutine
 
-        pure module function er_get_exit_on_error(this) result(x)
-            class(errors), intent(in) :: this
-            logical :: x
-        end function
+! ------------------------------------------------------------------------------
+subroutine er_report_warning(this, fcn, msg, flag)
+    !! Reports a warning message to the user.  The default behavior prints the
+    !! warning message, and returns control back to the calling code.
+    class(errors), intent(inout) :: this
+        !! The errors object.
+    character(len = *), intent(in) :: fcn
+        !! The name of the function or subroutine from which the warning was
+        !! issued.
+    character(len = *), intent(in) :: msg
+        !! The warning message.
+    integer(int32), intent(in) :: flag
+        !! The warning flag.
 
-        module subroutine er_set_exit_on_error(this, x)
-            class(errors), intent(inout) :: this
-            logical, intent(in) :: x
-        end subroutine
+    ! Local Variables
+    integer(int32) :: n
 
-        pure module function er_get_suppress_printing(this) result(x)
-            class(errors), intent(in) :: this
-            logical :: x
-        end function
+    ! Write the warning message to the command line
+    if (.not.this%m_suppressPrinting) then
+        print *, ""
+        print '(A)', "***** WARNING *****"
+        print '(A)', "Function: " // fcn
+        print 100, "Warning Flag: ", flag
+        print '(A)', "Message:"
+        print '(A)', msg
+        print *, ""
+    100 format(A, I0)            
+    end if
 
-        module subroutine er_set_suppress_printing(this, x)
-            class(errors), intent(inout) :: this
-            logical, intent(in) :: x
-        end subroutine
+    ! Update the warning found status
+    this%m_foundWarning = .true.
+    this%m_warningFlag = flag
 
-        module function er_get_err_msg(this) result(msg)
-            class(errors), intent(in) :: this
-            character(len = :), allocatable :: msg
-            integer(int32) :: n
-        end function
+    ! Store the message
+    n = len(msg)
+    if (allocated(this%m_warningMessage)) deallocate(this%m_warningMessage)
+    allocate(character(len = n) :: this%m_warningMessage)
+    this%m_warningMessage = msg(1:n)
 
-        module function er_get_warning_msg(this) result(msg)
-            class(errors), intent(in) :: this
-            character(len = :), allocatable :: msg
-            integer(int32) :: n
-        end function
+    ! Store the function name
+    n = len(fcn)
+    if (allocated(this%m_wFunName)) deallocate(this%m_wFunName)
+    allocate(character(len = n) :: this%m_wFunName)
+    this%m_wFunName = fcn(1:n)
+end subroutine
 
-        module function er_get_err_fcn(this) result(fcn)
-            class(errors), intent(in) :: this
-            character(len = :), allocatable :: fcn
-            integer(int32) :: n
-        end function
+! ------------------------------------------------------------------------------
+subroutine er_log_error(this, fcn, msg, flag)
+    !! Writes an error log file.
+    class(errors), intent(in) :: this
+        !! The errors object.
+    character(len = *), intent(in) :: fcn
+        !! The name of the function or subroutine in which the error was 
+        !! encountered.
+    character(len = *), intent(in) :: msg
+        !! The error message.
+    integer(int32), intent(in) :: flag
+        !! The error flag.
 
-        module function er_get_warning_fcn(this) result(fcn)
-            class(errors), intent(in) :: this
-            character(len = :), allocatable :: fcn
-            integer(int32) :: n
-        end function
+    ! Local Variables
+    integer(int32) :: fid, time(3), date(3)
+#ifdef IFORT
+    integer(int32) :: t1, t2, t3, d1, d2, d3
+#endif
 
-        module subroutine er_get_err_fcn_ptr(this, ptr)
-            class(errors), intent(in) :: this
-            procedure(error_callback), intent(out), pointer :: ptr
-        end subroutine
+    ! Open the file
+    open(newunit = fid, file = this%m_fname, access = "sequential", &
+        position = "append")
 
-        module subroutine er_set_err_fcn_ptr(this, ptr)
-            class(errors), intent(inout) :: this
-            procedure(error_callback), intent(in), pointer :: ptr
-        end subroutine
-    end interface
+    ! Determine the time
+#ifdef IFORT
+    call itime(t1, t2, t3)
+    call idate(d1, d2, d3)
+    time = [t1, t2, t3]
+    date = [d1, d2, d3]
+#else
+    call itime(time)
+    call idate(date)
+#endif
+
+    ! Write the error information
+    write(fid, '(A)') ""
+    write(fid, '(A)') "***** ERROR *****"
+    write(fid, 100) date(1), "/", date(2), "/", date(3), &
+        "; ", time(1), ":", time(2), ":", time(3)
+    write(fid, '(A)') "Function: " // fcn
+    write(fid, 101) "Error Flag: ", flag
+    write(fid, '(A)') "Message:"
+    write(fid, '(A)') msg
+    write(fid, '(A)') ""
+
+    ! Close the file
+    close(fid)
+
+    ! Format Statements
+    100 format(I0, A, I0, A, I0, A, I0, A, I0, A, I0)        
+    101 format(A, I0)        
+end subroutine
+
+! ------------------------------------------------------------------------------
+pure function er_has_error_occurred(this) result(x)
+    !! Tests to see if an error has been encountered.
+    class(errors), intent(in) :: this
+        !! The errors object.
+    logical :: x
+        !! Returns true if an error has been encountered; else, false.
+    x = this%m_foundError
+end function
+
+! ------------------------------------------------------------------------------
+subroutine er_reset_error_status(this)
+    !! Resets the error status flag to false, and the current error flag to 
+    !! zero.
+    class(errors), intent(inout) :: this
+        !! The errors object.
+    this%m_foundError = .false.
+    this%m_errorFlag = 0
+    if (allocated(this%m_errorMessage)) deallocate(this%m_errorMessage)
+    if (allocated(this%m_eFunName)) deallocate(this%m_eFunName)
+end subroutine
+
+! ------------------------------------------------------------------------------
+pure function er_has_warning_occurred(this) result(x)
+    !! Tests to see if a warning has been encountered.
+    class(errors), intent(in) :: this
+        !! The errors object.
+    logical :: x
+        !! Returns true if a warning has been encountered; else, false.
+    x = this%m_foundWarning
+end function
+
+! ------------------------------------------------------------------------------
+subroutine er_reset_warning_status(this)
+    !! Resets the warning status flag to false, and the current warning
+    !! flag to zero.
+    class(errors), intent(inout) :: this
+        !! The errors object.
+    this%m_foundWarning = .false.
+    this%m_warningFlag = 0
+    if (allocated(this%m_warningMessage)) deallocate(this%m_warningMessage)
+    if (allocated(this%m_wFunName)) deallocate(this%m_wFunName)
+end subroutine
+
+! ------------------------------------------------------------------------------
+pure function er_get_error_flag(this) result(x)
+    !! Gets the current error flag.
+    class(errors), intent(in) :: this
+        !! The errors object.
+    integer(int32) :: x
+        !! The current error flag.
+    x = this%m_errorFlag
+end function
+
+! ------------------------------------------------------------------------------
+pure function er_get_warning_flag(this) result(x)
+    !! Gets the current warning flag.
+    class(errors), intent(in) :: this
+        !! The errors object.
+    integer(int32) :: x
+        !! The current warning flag.
+    x = this%m_warningFlag
+end function
+
+! ------------------------------------------------------------------------------
+pure function er_get_exit_on_error(this) result(x)
+    !! Gets a logical value determining if the application should be terminated 
+    !! when an error is encountered.
+    class(errors), intent(in) :: this
+        !! The errors object.
+    logical :: x
+        !! Returns true if the application should be terminated; else, false.
+    x = this%m_exitOnError
+end function
+
+! ------------------------------------------------------------------------------
+subroutine er_set_exit_on_error(this, x)
+    !! Sets a logical value determining if the application should be terminated 
+    !! when an error is encountered.
+    class(errors), intent(inout) :: this
+        !! The errors object.
+    logical, intent(in) :: x
+        !! Set to true if the application should be terminated when an error is 
+        !! reported; else, false.
+    this%m_exitOnError = x
+end subroutine
+
+! ------------------------------------------------------------------------------
+pure function er_get_suppress_printing(this) result(x)
+    !! Gets a logical value determining if printing of error and warning
+    !! messages should be suppressed.
+    class(errors), intent(in) :: this
+        !! The errors object.
+    logical :: x
+        !! True if message printing should be suppressed; else, false to 
+        !! allow printing.
+    x = this%m_suppressPrinting
+end function
+
+! --------------------
+subroutine er_set_suppress_printing(this, x)
+    !! Sets a logical value determining if printing of error and warning
+    !! messages should be suppressed.
+    class(errors), intent(inout) :: this
+        !! The errors object.
+    logical, intent(in) :: x
+        !! Set to true if message printing should be suppressed; else, false to 
+        !! allow printing.
+    this%m_suppressPrinting = x
+end subroutine
+
+! ------------------------------------------------------------------------------
+function er_get_err_msg(this) result(msg)
+    !! Gets the current error message.
+    class(errors), intent(in) :: this
+        !! The errors object.
+    character(len = :), allocatable :: msg
+        !! The error message.
+    integer(int32) :: n
+    if (allocated(this%m_errorMessage)) then
+        n = len(this%m_errorMessage)
+        allocate(character(len = n) :: msg)
+        msg = this%m_errorMessage(1:n)
+    end if
+end function
+
+! ------------------------------------------------------------------------------
+function er_get_warning_msg(this) result(msg)
+    !! Gets the current warning message.
+    class(errors), intent(in) :: this
+        !! The errors object.
+    character(len = :), allocatable :: msg
+        !! The warning message.
+    integer(int32) :: n
+    if (allocated(this%m_warningMessage)) then
+        n = len(this%m_warningMessage)
+        allocate(character(len = n) :: msg)
+        msg = this%m_warningMessage(1:n)
+    end if
+end function
+
+! ------------------------------------------------------------------------------
+function er_get_err_fcn(this) result(fcn)
+    !! Gets the name of the routine that initiated the error.
+    class(errors), intent(in) :: this
+        !! The errors object.
+    character(len = :), allocatable :: fcn
+        !! The subroutine or function name.
+    integer(int32) :: n
+    if (allocated(this%m_eFunName)) then
+        n = len(this%m_eFunName)
+        allocate(character(len = n) :: fcn)
+        fcn = this%m_eFunName
+    end if
+end function
+
+! ------------------------------------------------------------------------------
+function er_get_warning_fcn(this) result(fcn)
+    !! Gets the name of the routine that initiated the warning.
+    class(errors), intent(in) :: this
+        !! The errors object.
+    character(len = :), allocatable :: fcn
+        !! The subroutine or function name.
+    integer(int32) :: n
+    if (allocated(this%m_wFunName)) then
+        n = len(this%m_wFunName)
+        allocate(character(len = n) :: fcn)
+        fcn = this%m_wFunName
+    end if
+end function
+
+! ------------------------------------------------------------------------------
+subroutine er_get_err_fcn_ptr(this, ptr)
+    !! Gets the subroutine to call when an error has been logged.
+    class(errors), intent(in) :: this
+        !! The errors object.
+    procedure(error_callback), intent(out), pointer :: ptr
+        !! A pointer to the [[error_callback]] routine.
+    ptr => this%m_errCleanUp
+end subroutine
+
+! ------------------------------------------------------------------------------
+subroutine er_set_err_fcn_ptr(this, ptr)
+    !! Sets the subroutine to call when an error has been logged.
+    class(errors), intent(inout) :: this
+        !! The errors object.
+    procedure(error_callback), intent(in), pointer :: ptr
+        !! A pointer to the [[error_callback]] routine.
+    this%m_errCleanUp => ptr
+end subroutine
 
 ! ------------------------------------------------------------------------------
 end module
