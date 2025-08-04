@@ -2,8 +2,6 @@ project('ferror', 'fortran', 'c')
 
 sources = files(
   'src/ferror_c_binding.f90',
-  'src/ferror_c_implementation.f90',
-  'src/ferror_implementation.f90',
   'src/ferror.f90'
 )
 
