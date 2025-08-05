@@ -18,12 +18,6 @@ if (${BUILD_FERROR_C_API})
 endif()
 
 if (${BUILD_SHARED_LIBS})
-    # add_custom_command(
-    #     TARGET ferror_test
-    #     POST_BUILD
-    #     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:ferror_test> $<TARGET_FILE_DIR:ferror_test>
-    #     COMMAND_EXPAND_LISTS
-    # )
     add_custom_command(
         TARGET ferror_test
         POST_BUILD
