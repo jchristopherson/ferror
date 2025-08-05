@@ -5,7 +5,7 @@ project(
   LANGUAGES
     C
     Fortran
-  VERSION "1.4.3"
+  VERSION "1.4.4"
 )
 set(CMAKE_Fortran_STANDARD 2018)
 set(CMAKE_Fortran_STANDARD_REQUIRED TRUE)
