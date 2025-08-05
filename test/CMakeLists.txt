@@ -21,8 +21,7 @@ if (${BUILD_SHARED_LIBS})
     add_custom_command(
         TARGET ferror_test
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:ferror>
-        ${CMAKE_BINARY_DIR}/test
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:ferror_test> $<TARGET_FILE_DIR:ferror_test>
+        COMMAND_EXPAND_LISTS
     )
 endif()

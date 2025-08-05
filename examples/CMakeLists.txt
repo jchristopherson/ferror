@@ -16,3 +16,13 @@ target_link_libraries(ferror_example_1c ferror)
 # Example 2 - C API
 add_executable(ferror_example_2c ferror_example_2c.c)
 target_link_libraries(ferror_example_2c ferror)
+
+# Shared Library?
+if (${BUILD_SHARED_LIBS})
+    add_custom_command(
+        TARGET ferror_example_1
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:ferror_example_1> $<TARGET_FILE_DIR:ferror_example_1>
+        COMMAND_EXPAND_LISTS
+    )
+endif()
